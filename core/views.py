@@ -3,13 +3,21 @@ from .models import Item
 
 
 
-def item_list(request):
+def products(request):
 
 	context = {
 		'items': Item.objects.all()
 	}
-	return render(request, "home-page.html", context)
+	return render(request, "products.html", context)
 
-def checkout_page(request):
+def checkout(request):
 
-	return render(request, "checkout-page.html")
+	return render(request, "checkout.html")
+
+
+def home(request):
+
+	context = {
+		'items': Item.objects.all()
+	}
+	return render(request, "home.html", context)	
