@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.shortcuts import reverse
 
 
 CATEGORY_CHOICES = (
@@ -17,16 +18,25 @@ LABEL_CHOICES = (
 class Item(models.Model):
 	title = models.CharField(max_length=100)
 	price = models.FloatField()
+	discount_price = models.FloatField(blank=True, null=True)
 	category = models.CharField(choices=CATEGORY_CHOICES, max_length=2, default="S")
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
+	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
+	description = models.TextField(max_length=5000, default="This is a test description. Write something about this product.")
+
 
 	def __str__(self):
 		return self.title
 
 
+	def get_absolute_url(self):
+		return reverse("core:product", kwargs={ "slug": self.slug })
+
+
 class OrderItem(models.Model):
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)
-
+	quantity = models.IntegerField(default=1)
+	
 	def __str__(self):
 		return self.title
 
