@@ -72,17 +72,18 @@ def add_to_cart(request, slug):
 			order_item.quantity += 1
 			order_item.save()
 			messages.info(request, "This item quantity was updated.")
-
+			return redirect("core:order-summary")
 		else:
+			order_item.quantity == 0
 			messages.info(request, "This item was added to your cart.")
 			order.items.add(order_item)
-
+			return redirect("core:order-summary")
 	else:
 		ordered_date = timezone.now()
 		order = Order.objects.create(user=request.user, ordered_date=ordered_date)
 		order.items.add(order_item)
 		messages.info(request, "This item was added to your cart.")
-	return redirect("core:product", slug=slug)
+	return redirect("core:order-summary")
 
 
 @login_required
@@ -101,15 +102,20 @@ def remove_from_cart(request, slug):
 				user=request.user,
 				ordered=False
 			)[0]
-			order.items.remove(order_item)
+			if order_item.quantity > 2:
+				order_item.quantity = 1
+				order_item.save()
+				order.items.remove(order_item)
+			else:
+				order.items.remove(order_item)
 			messages.info(request, "This item was removed from your cart.")
 			return redirect("core:order-summary")
 		else:
 			messages.info(request, "This item was not in your cart")
-			return redirect("core:order-summary")
+			return redirect("core:product", slug=slug)
 	else:
 		messages.info(request, "You do not have an active order")
-		return redirect("core:order-summary")
+		return redirect("core:product", slug=slug)
 
 
 @login_required
@@ -128,8 +134,11 @@ def remove_single_item_from_cart(request, slug):
 				user=request.user,
 				ordered=False
 			)[0]
-			order_item.quantity -= 1
-			order_item.save()
+			if order_item.quantity > 1:
+				order_item.quantity -= 1
+				order_item.save()
+			else:
+				order.items.remove(order_item)
 			messages.info(request, "This item quantity was updated.")
 			return redirect("core:order-summary")
 		else:

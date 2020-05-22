@@ -42,6 +42,11 @@
                   {{ order_item.get_total_item_price }}
                 {% endif %}
               </td>
+              <td>
+                <a href="{% url 'core:remove-from-cart' order_item.item.slug %}">Delete all the items
+                 <i class="far fa-trash-alt"></i>
+                </a>
+              </td>
             </tr>
             
             {% empty %}
