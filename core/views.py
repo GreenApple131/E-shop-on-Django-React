@@ -102,7 +102,7 @@ def remove_from_cart(request, slug):
 				user=request.user,
 				ordered=False
 			)[0]
-			if order_item.quantity > 2:
+			if order_item.quantity > 1:
 				order_item.quantity = 1
 				order_item.save()
 				order.items.remove(order_item)
