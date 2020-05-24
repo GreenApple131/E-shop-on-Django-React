@@ -18,9 +18,17 @@ def product(request):
 	return render(request, "product.html", context)
 
 
-def checkout(request):
-
-	return render(request, "checkout.html")
+class CheckoutView(LoginRequiredMixin, View):
+	def get(self, *args, **kwargs):
+		try:
+			order = Order.objects.get(user=self.request.user, ordered=False)
+			context = {
+				'object': order
+			}
+			return render(self.request, 'checkout.html', context)
+		except ObjectDoesNotExist:
+			messages.error(self.request, "You do not have an active order")
+			return redirect('/')
 
 
 def home(request):
