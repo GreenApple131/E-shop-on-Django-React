@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib import messages
 
 from .models import Item, OrderItem, Order
+from .forms import CheckoutForm
 
 
 
@@ -22,13 +23,24 @@ class CheckoutView(LoginRequiredMixin, View):
 	def get(self, *args, **kwargs):
 		try:
 			order = Order.objects.get(user=self.request.user, ordered=False)
+			# form
+			form = CheckoutForm()
+
 			context = {
-				'object': order
+				'object': order,
+				'form': form,
 			}
 			return render(self.request, 'checkout.html', context)
 		except ObjectDoesNotExist:
 			messages.error(self.request, "You do not have an active order")
 			return redirect('/')
+
+	def post(self, *args, **kwargs):
+		form = CheckoutForm(self.request.POST or NONE)
+		if form.is_valid():
+			print('The form is valid')
+			return redirect('core:checkout')
+
 
 
 def home(request):
