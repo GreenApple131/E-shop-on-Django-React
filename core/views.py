@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.contrib import messages
 
-from .models import Item, OrderItem, Order
+from .models import Item, OrderItem, Order, BillingAddress
 from .forms import CheckoutForm
 
 
@@ -37,9 +37,40 @@ class CheckoutView(LoginRequiredMixin, View):
 
 	def post(self, *args, **kwargs):
 		form = CheckoutForm(self.request.POST or NONE)
-		if form.is_valid():
-			print('The form is valid')
+		try:
+			order = Order.objects.get(user=self.request.user, ordered=False)
+			# print(self.request.POST)  # в консолі показується вся інфа після підтвердження запиту
+			if form.is_valid():
+				first_name = form.cleaned_data.get('first_name')
+				last_name = form.cleaned_data.get('last_name')
+				phone_number = form.cleaned_data.get('phone_number')
+				email = form.cleaned_data.get('email')
+				city = form.cleaned_data.get('city')
+				delivery = form.cleaned_data.get('delivery')
+				#TODO: add functionality to this field!!!!!!!!!!!!
+				# save_info = form.cleaned_data.get('save_info')
+				payment_option = form.cleaned_data.get('payment_option')
+				billing_address = BillingAddress(
+					user=self.request.user,
+					first_name=first_name,
+					last_name=last_name,
+					phone_number=phone_number,
+					email=email,
+					city=city,
+					delivery=delivery,
+				)
+				billing_address.save()
+				order.billing_address=billing_address
+				order.save()
+				#TODO: add redirect to the selected payment option  !!!!!!
+				return redirect('core:checkout')
+			messages.warning(self.request, "Failed checkout")
 			return redirect('core:checkout')
+
+		except ObjectDoesNotExist:
+			messages.error(self.request, "You do not have an active order")
+			return redirect('core:order-summary')
+
 
 
 
@@ -59,7 +90,6 @@ class HomeView(ListView):
 
 class OrderSummaryView(LoginRequiredMixin, View):   # LoginRequiredMixin перекидає на сторінку входу/реєстрації
 	def get(self, *args, **kwargs):
-
 		try:
 			order = Order.objects.get(user=self.request.user, ordered=False)
 			context = {

@@ -2,20 +2,56 @@ from django.core.validators import RegexValidator
 from django import forms
 
 
-PAYMENT_CHOICES = (
+PAYMENT_CHOICES = ( # first param('S') is a "value", second('Stripe') - "name" !!!!!!!!!!!
 	('S', 'Stripe'),
 	('P', 'PayPal')
 )
 
+CITY_CHOICE = (
+	('K', 'Kyiv'),
+	('IF', 'Ivano-Frankivsk'),
+	('default', 'Choose Your City'),
+	('L', 'Lviv'),
+)
+
+DELIVERY_CHOICE = (
+	('NewP', 'New Post'),
+	('UkrP', 'Ukrainian Post')
+)
+
+
 class CheckoutForm(forms.Form):
-	first_name=forms.CharField()
-	last_name=forms.CharField()
-	phone_number=forms.CharField(
+	first_name = forms.CharField(widget=forms.TextInput(attrs={
+		'placeholder': 'Andrew'
+	}))
+	last_name = forms.CharField(widget=forms.TextInput(attrs={
+		'placeholder': 'Kowalski'
+	}))
+	phone_number = forms.CharField(
                  error_messages={'incomplete': 'Enter a phone number.'},
                  validators=[RegexValidator(r'^[0-9]+$', 'Enter a valid phone number.')],
+            	 widget=forms.TextInput(attrs={'placeholder': '0987654321'})
             	 )
-	email=forms.EmailField()
+	
+	email = forms.EmailField(widget=forms.TextInput(attrs={
+		'placeholder': 'your_email@gmail.com'
+	}))
+
+	city = forms.ChoiceField(required=True,
+		widget=forms.Select(attrs={
+			'label': 'Select Your City',
+			'class': 'custom-select d-block w-100'
+			}), choices=CITY_CHOICE)
+
+	delivery = forms.ChoiceField(required=True,
+		widget=forms.Select(attrs={
+			'label': 'Delivery type',
+			'class': 'custom-select d-block w-100'
+			}), choices=DELIVERY_CHOICE)
+
+	save_info = forms.BooleanField(required=False) # to make the require work need to check param "value"  -  form.save_info.value
+
 	# форма для вибору способу оплати: один з кружочків
-	payment_option=forms.ChoiceField(
-		widget=forms.RadioSelect(), choices=PAYMENT_CHOICES)
+	payment_option = forms.ChoiceField(
+		widget = forms.RadioSelect(), choices = PAYMENT_CHOICES)
 

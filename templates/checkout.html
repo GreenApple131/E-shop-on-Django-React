@@ -21,14 +21,9 @@
           <!--Card-->
           <div class="card">
 
-            <form action="">
-              {% csrf_token %}
-              {{ form|crispy }}
-              <button class="btn btn-primary" type="submit">Checkout</button>
-            </form>
-
             <!--Card content-->
-            <form class="card-body">
+            <form method="POST" class="card-body">
+            {% csrf_token %}
 
               <!--Grid row-->
               <div class="row">
@@ -37,13 +32,9 @@
                 <div class="col-md-6 mb-2" autocomplete="on">
 
                   <!--firstName-->
-                  <div class="md-form ">
-                    {% if user.is_authenticated %}
-                      <input type="text" id="firstName" class="form-control" value="{{ request.user.first_name }}">
-                    {% else %}
-                      <input type="text" id="firstName" class="form-control">
-                    {% endif %}
-                    <label for="firstName" class="">First name</label>
+                  <div class="md-form mb-5">
+                    <label for="custom-label" class="">First name</label>
+                    {{ form.first_name }}
                   </div>
 
                 </div>
@@ -52,13 +43,9 @@
                 <!--Grid column-->
                 <div class="col-md-6 mb-2">
                   <!--lastName-->
-                  <div class="md-form">
-                    {% if user.is_authenticated %}
-                      <input type="text" id="lastName" class="form-control" value="{{ request.user.last_name }}">
-                    {% else %}
-                      <input type="text" id="lastName" class="form-control">
-                    {% endif %}
-                    <label for="lastName" class="">Last name</label>
+                  <div class="md-form  mb-5">
+                    <label for="custom-label" class="">Last name</label>
+                    {{ form.last_name }}
                   </div>
 
                 </div>
@@ -68,62 +55,44 @@
 
               <!--Phone number-->
               <div class="md-form mb-5">
-                {% if user.is_authenticated %}
-                  <input type="text" id="tel-national" class="form-control" placeholder="+380" value="{{ request.user.phone }}">
-                {% else %}
-                  <input type="text" id="tel-national" class="form-control" placeholder="+380">
-                {% endif %}
-                <label for="email" class="">Phone number</label>
+                <label for="custom-label" class="">Phone number</label>
+                {{ form.phone_number }}
               </div>
 
               <!--email-->
               <div class="md-form mb-5">
-                {% if user.is_authenticated %}
-                  <input type="text" id="email" class="form-control" placeholder="youremail@example.com" value="{{ request.user.email }}">
-                {% else %}
-                  <input type="text" id="email" class="form-control" placeholder="youremail@example.com">
-                {% endif %}
-                <label for="email">Email (optional)</label>
+                <label for="custom-label">Email (optional)</label>
+                {{ form.email }}
               </div>
 
-
-<!--Доставка Доставка Доставка Доставка-->
-              <div class="row">
-                <div class="col-lg-8 col-md-12 mb-12">
-
-                  <label for="country">City</label>
-                  <select class="custom-select d-block w-100" id="country" required>
-                    <option value="">Choose...</option>
-                    <option>Івано-Франківськ</option>
-                  </select>
-                  <div class="invalid-feedback">
-                    Please select a valid country.
-                  </div>
-                </div>
+              <!--city-->
+              <div class="md-form mb-5">
+                <div class="custom-label">Please select Your city.</div>
+                {{ form.city }}
               </div>
 
+              <!--delivery-->
+              <div class="md-form mb-5">
+                <div class="custom-label">Please select delivery method.</div>
+                {{ form.delivery }}
+              </div>
 
-              <hr>
               <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="same-address">
-                <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="save-info">
+                <input {% if form.save_info.value %}checked{% endif %} type="checkbox" name='save_info' class="custom-control-input" id="save-info">
                 <label class="custom-control-label" for="save-info">Save this information for next time</label>
-              </div>
+              </div>            
 
               <hr>
 
               <div class="d-block my-3">
-                <div class="custom-control custom-radio">
-                  <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
-                  <label class="custom-control-label" for="credit">Stripe</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
-                  <label class="custom-control-label" for="paypal">Paypal</label>
-                </div>
+                {% for value, name in form.fields.payment_option.choices %}
+                  
+                  <div class="custom-control custom-radio">
+                    <input id="{{ name }}" name="payment_option" value='{{ value }}' type="radio" class="custom-control-input" required>
+                    <label class="custom-control-label" for="{{ name }}">{{ name }}</label>
+                    {# {{ form.payment_option }} #}
+                  </div>
+                {% endfor %}
               </div>
               <hr class="mb-4">
               <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
