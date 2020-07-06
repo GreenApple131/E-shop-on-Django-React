@@ -10,8 +10,8 @@ PAYMENT_CHOICES = ( # first param('S') is a "value", second('Stripe') - "name" !
 CITY_CHOICE = (
 	('K', 'Kyiv'),
 	('IF', 'Ivano-Frankivsk'),
-	('default', 'Choose Your City'),
 	('L', 'Lviv'),
+	('', 'Choose Your City')
 )
 
 DELIVERY_CHOICE = (

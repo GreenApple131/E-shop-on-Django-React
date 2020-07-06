@@ -2,6 +2,14 @@
 
 {% load cart_template_tags %}
 {% load crispy_forms_tags %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+    <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
+    <script src="{% static 'js/stripe-check.js' %}"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+{% endblock extra_head %}
 
 {% block content %}
   
@@ -131,6 +139,13 @@
             </li>
           {% endfor %}
             {% if object.get_total %}
+            <li class="list-group-item d-flex justify-content-between bg-light">
+              <div class="text-success">
+                <h6 class="my-0">Promo code</h6>
+                <small>EXAMPLECODE</small>
+              </div>
+              <span class="text-success">-$5</span>
+            </li>
             <li class="list-group-item d-flex justify-content-between">
               <span>Total (USD)</span>
               <strong>${{ object.get_total }}</strong>
@@ -139,7 +154,24 @@
           </ul>
           <!-- Cart -->
 
-        
+
+          <!-- Promo code -->
+          <form class="card p-2">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Promo code" aria-label="Recipient's username" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-secondary btn-md waves-effect m-0" type="button">Redeem</button>
+              </div>
+            </div>
+          </form>
+          <!-- Promo code -->
+          
+          <section class="section">
+            <div class="container">
+              <button class="button is-primary" id="submitBtn">Purchase with stripe!</button>
+            </div>
+          </section>
+
         </div>
         <!--Grid column-->
 

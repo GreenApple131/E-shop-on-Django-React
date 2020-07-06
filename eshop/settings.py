@@ -128,6 +128,11 @@ AUTHENTICATION_BACKENDS = (
 
 
 
+# Stripe
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx'
+STRIPE_SECRET_KEY = 'sk_test_51H1x1XK0Ldnw408vNVMO4DeIGzr5V6wb2cP0LXXgdVQJU6UeuajbDKqXMSSt5UuiuETcydLUclIIfjKIqn50c0s1001XzmU8J6'
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 

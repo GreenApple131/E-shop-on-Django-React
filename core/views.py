@@ -1,10 +1,15 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView,DetailView, View
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.base import TemplateView
+from django.http.response import JsonResponse
 from django.utils import timezone
 from django.contrib import messages
+import stripe
 
 from .models import Item, OrderItem, Order, BillingAddress
 from .forms import CheckoutForm
@@ -73,6 +78,59 @@ class CheckoutView(LoginRequiredMixin, View):
 
 
 
+
+# stripe part
+class PaymentView(View):
+	def get(self, *args, **kwargs):
+		return render(self.request, 'payment.html')		
+
+
+@csrf_exempt
+def stripe_config(request):
+    if request.method == 'GET':
+        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
+        return JsonResponse(stripe_config, safe=False)
+
+@csrf_exempt
+def create_checkout_session(request):
+    if request.method == 'GET':
+        domain_url = 'http://localhost:8000/stripe/'
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            # Create new Checkout Session for the order
+            # Other optional params include:
+            # [billing_address_collection] - to display billing address details on the page
+            # [customer] - if you have an existing Stripe Customer ID
+            # [payment_intent_data] - lets capture the payment later
+            # [customer_email] - lets you prefill the email input in the form
+            # For full details see https:#stripe.com/docs/api/checkout/sessions/create
+
+            # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+            checkout_session = stripe.checkout.Session.create(
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain_url + 'cancelled/',
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=[
+                    {
+                        'name': 'Your Order',
+                        'quantity': 3,
+                        'currency': 'usd',
+                        'amount': '100',     # 200 = $2.00
+                    }
+                ]
+            )
+            return JsonResponse({'sessionId': checkout_session['id']})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+
+class SuccessView(TemplateView):
+    template_name = 'stripe/success.html'
+
+
+class CancelledView(TemplateView):
+    template_name = 'stripe/cancelled.html'
+# end stripe
 
 def home(request):
 
