@@ -9,6 +9,22 @@
     <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
     <script src="{% static 'js/stripe-check.js' %}"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>
+    <script type='text/javascript'>
+        $(function () {
+            $('#id_first_name' && '#id_last_name' && '#id_phone_number' && '#id_email').keyup(function () {
+                if ($(this).val() == '') {
+                    //Check to see if there is any text entered
+                    // If there is no text within the input ten disable the button
+                    $('.enableOnInput').prop('disabled', true);
+                } else {
+                    //If there is text in the input, then enable the button
+                    $('.enableOnInput').prop('disabled', false);
+                }
+            });
+        }); 
+    </script>
+
 {% endblock extra_head %}
 
 {% block content %}
@@ -103,7 +119,19 @@
                 {% endfor %}
               </div>
               <hr class="mb-4">
-              <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+
+              <!-- ordinary submit button -->
+              {# <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button> #}
+              
+
+              <!-- stripe button -->
+              <section class="section">
+                <div class="container">
+                  <button class="enableOnInput button is-primary" type="submit" id="submitBtn" disabled="disabled" >Purchase with stripe!</button>
+                </div>
+              </section>
+            
+
 
             </form>
 
@@ -166,11 +194,7 @@
           </form>
           <!-- Promo code -->
           
-          <section class="section">
-            <div class="container">
-              <button class="button is-primary" id="submitBtn">Purchase with stripe!</button>
-            </div>
-          </section>
+          
 
         </div>
         <!--Grid column-->
@@ -181,6 +205,7 @@
     </div>
   </main>
   <!--Main layout-->
-
+  
+  
 
 {% endblock content %}

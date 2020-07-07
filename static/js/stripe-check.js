@@ -1,7 +1,7 @@
 console.log("Sanity check!");
 
 // Get Stripe publishable key
-fetch("/stripe/config/")
+fetch("/payment/stripe/config/")
 .then((result) => { return result.json(); })
 .then((data) => {
   // Initialize Stripe.js
@@ -11,7 +11,7 @@ fetch("/stripe/config/")
   // Event handler
   document.querySelector("#submitBtn").addEventListener("click", () => {
     // Get Checkout Session ID
-    fetch("/create-checkout-session/")
+    fetch("/payment/create-checkout-session/")
     .then((result) => { return result.json(); })
     .then((data) => {
       console.log(data);

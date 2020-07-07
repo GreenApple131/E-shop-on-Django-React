@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.contrib import messages
 import stripe
 
-from .models import Item, OrderItem, Order, BillingAddress
+from .models import Item, OrderItem, Order, BillingAddress, Payment
 from .forms import CheckoutForm
 
 
@@ -68,7 +68,7 @@ class CheckoutView(LoginRequiredMixin, View):
 				order.billing_address=billing_address
 				order.save()
 				#TODO: add redirect to the selected payment option  !!!!!!
-				return redirect('core:checkout')
+				return redirect('core:create-checkout-session')
 			messages.warning(self.request, "Failed checkout")
 			return redirect('core:checkout')
 
@@ -81,51 +81,82 @@ class CheckoutView(LoginRequiredMixin, View):
 
 # stripe part
 class PaymentView(View):
-	def get(self, *args, **kwargs):
-		return render(self.request, 'payment.html')		
+	# should be post
+	def get(self, request, *args, **kwargs):
+			domain_url = 'http://localhost:8000/payment/stripe/'
+			stripe.api_key = settings.STRIPE_SECRET_KEY
+			order = Order.objects.get(user=self.request.user, ordered=False)
+			amount = int((order.get_total()) * 100)
 
 
-@csrf_exempt
+			try:
+				stripe_checkout_session = stripe.checkout.Session.create(
+					success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+					cancel_url=domain_url + 'cancelled/',
+					payment_method_types=['card'],
+					mode='payment',
+					line_items=[
+						{
+							'name': 'Your Order',
+							'quantity': 1,
+							'currency': 'usd',
+							'amount': amount,     # 200 = $2.00
+						}
+					]
+				)
+
+				# create the payment
+				payment = Payment()
+				payment.stripe_charge_id = stripe_checkout_session['id']
+				payment.user = self.request.user
+				payment.amount = order.get_total()
+				payment.save()
+
+				# assign thee payment to the order
+				order.ordered = True
+				order.payment = payment
+				order.save()
+				
+				messages.success(self.request, "Your order was successful!")
+				return JsonResponse({'sessionId': stripe_checkout_session['id']})
+				
+			except stripe.error.CardError as e:
+				# Since it's a decline, stripe.error.CardError will be caught
+				body = e.error.message
+				messages.error(self.request, f"{body.get('message')}")
+				return redirect("/")
+			except stripe.error.RateLimitError as e:
+				# Too many requests made to the API too quickly
+				messages.error(self.request, "Too many requests made to the API too quickly")
+				return redirect("/")
+			except stripe.error.InvalidRequestError as e:
+				# Invalid parameters were supplied to Stripe's API
+				messages.error(self.request, "Invalid parameters were supplied to Stripe's API")
+				return redirect("/")
+			except stripe.error.AuthenticationError as e:
+				# Authentication with Stripe's API failed
+				# (maybe you changed API keys recently)
+				messages.error(self.request, "Authentication with Stripe's API failed")
+				return redirect("/")
+			except stripe.error.APIConnectionError as e:
+				# Network communication with Stripe failed
+				messages.error(self.request, "Network communication with Stripe failed")
+				return redirect("/")
+			except stripe.error.StripeError as e:
+				# Display a very generic error to the user, and maybe send yourself an email
+				messages.error(self.request, "Something went wrong. You were not charged. Please try again")
+				return redirect("/")
+			except Exception as e:
+				return (messages.error(request, {'error': str(e)}))
+
 def stripe_config(request):
-    if request.method == 'GET':
-        stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
-        return JsonResponse(stripe_config, safe=False)
-
-@csrf_exempt
-def create_checkout_session(request):
-    if request.method == 'GET':
-        domain_url = 'http://localhost:8000/stripe/'
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            # Create new Checkout Session for the order
-            # Other optional params include:
-            # [billing_address_collection] - to display billing address details on the page
-            # [customer] - if you have an existing Stripe Customer ID
-            # [payment_intent_data] - lets capture the payment later
-            # [customer_email] - lets you prefill the email input in the form
-            # For full details see https:#stripe.com/docs/api/checkout/sessions/create
-
-            # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-            checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=domain_url + 'cancelled/',
-                payment_method_types=['card'],
-                mode='payment',
-                line_items=[
-                    {
-                        'name': 'Your Order',
-                        'quantity': 3,
-                        'currency': 'usd',
-                        'amount': '100',     # 200 = $2.00
-                    }
-                ]
-            )
-            return JsonResponse({'sessionId': checkout_session['id']})
-        except Exception as e:
-            return JsonResponse({'error': str(e)})
+	if request.method == 'GET':
+		stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
+		return JsonResponse(stripe_config, safe=False)
 
 class SuccessView(TemplateView):
-    template_name = 'stripe/success.html'
+	template_name = 'stripe/success.html'
+
 
 
 class CancelledView(TemplateView):

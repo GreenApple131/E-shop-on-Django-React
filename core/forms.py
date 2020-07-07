@@ -4,7 +4,7 @@ from django import forms
 
 PAYMENT_CHOICES = ( # first param('S') is a "value", second('Stripe') - "name" !!!!!!!!!!!
 	('S', 'Stripe'),
-	('P', 'PayPal')
+	('IP', 'IPay')
 )
 
 CITY_CHOICE = (
