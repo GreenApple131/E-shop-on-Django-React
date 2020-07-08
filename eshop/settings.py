@@ -93,7 +93,7 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, "/media/") ??????????????????
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/').replace('\\', '/')
+MEDIA_ROOT = os.path.join('C:\\coding\\django\\ecommerce\\eshop\\eshop\\media\\').replace('\\', '/')
 
 
 LOGIN_REDIRECT_URL = '/'
@@ -126,7 +126,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 # Stripe
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx'

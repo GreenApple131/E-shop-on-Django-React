@@ -23,6 +23,7 @@ class Item(models.Model):
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
 	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
 	description = models.TextField(max_length=5000, default="This is a test description. Write something about this product.")
+	image = models.ImageField()
 
 
 	def __str__(self):
@@ -79,17 +80,24 @@ class Order(models.Model):
 	ordered_date = models.DateTimeField()
 	ordered = models.BooleanField(default=False)
 	billing_address = models.ForeignKey(
-		'BillingAddress', on_delete=models.SET_NULL, blank=True, null=True)
+		'BillingAddress', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
 	payment = models.ForeignKey(
 		'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+	coupon = models.ForeignKey(
+		'Coupon', on_delete=models.SET_NULL, blank=True, null=True)
 
 	def __str__(self):
 		return self.user.username
 
 	def get_total(self):
 		total = 0
+		# if coupon.amount == null:
+		# 	for order_item in self.items.all():
+		# 		total += order_item.get_final_price()
+		# else:
 		for order_item in self.items.all():
 			total += order_item.get_final_price()
+			total -= self.coupon.amount
 		return total
 
 
@@ -115,4 +123,13 @@ class Payment(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return self.user.username
+		return '{} - {}'.format(self.user, self.amount)
+
+
+
+class Coupon(models.Model):
+	code = models.CharField(max_length=15)
+	amount = models.FloatField(default='20')
+
+	def __str__(self):
+		return self.code

@@ -3,8 +3,8 @@ from django import forms
 
 
 PAYMENT_CHOICES = ( # first param('S') is a "value", second('Stripe') - "name" !!!!!!!!!!!
-	('S', 'Stripe'),
-	('IP', 'IPay')
+	('Stripe', 'Stripe'),
+	('IPay', 'IPay')
 )
 
 CITY_CHOICE = (
@@ -55,3 +55,11 @@ class CheckoutForm(forms.Form):
 	payment_option = forms.ChoiceField(
 		widget = forms.RadioSelect(), choices = PAYMENT_CHOICES)
 
+
+class CouponForm(forms.Form):
+	code = forms.CharField(widget=forms.TextInput(attrs={
+		'class': 'form-control',
+		'placeholder': 'Promo code',
+		'aria-label': 'Recipient\'s username',
+		'aria-describedby': 'basic-addon2'
+	}))
