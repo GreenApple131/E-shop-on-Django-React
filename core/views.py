@@ -9,11 +9,17 @@ from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse
 from django.utils import timezone
 from django.contrib import messages
+import string, random
 import stripe
 
-from .models import Item, OrderItem, Order, BillingAddress, Payment, Coupon
-from .forms import CheckoutForm, CouponForm
+from .models import Item, OrderItem, Order, BillingAddress, Payment, Coupon, Refund
+from .forms import CheckoutForm, CouponForm, RefundForm
 
+
+
+def create_ref_code():
+	
+	return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
 
 
 def product(request):
@@ -72,10 +78,11 @@ class CheckoutView(LoginRequiredMixin, View):
 				billing_address.save()
 
 				order.billing_address = billing_address
-				order.save()  # doesn`t work !!
+				# order.save()
+				order.save(update_fields=["billing_address"])
 				
 				if payment_option == 'Stripe':
-					return redirect('core:checkout-stripe')
+					return redirect('core:payment', payment_option='stripe')
 				elif payment_option == 'IPay':
 					# !!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO IPay !!!!!!!!!!!!!!!!!!
 					return redirect('core:checkout-ipay')
@@ -92,8 +99,21 @@ class CheckoutView(LoginRequiredMixin, View):
 
 # stripe part
 class PaymentView(View):
-	# should be post
-	def get(self, request, *args, **kwargs):
+	def get(self, *args, **kwargs):
+		order = Order.objects.get(user=self.request.user, ordered=False)
+		if order.billing_address:
+			context = {
+				'order': order,
+				'DISPLAY_COUPON_FORM': False,
+			}
+			return render(self.request, "payment.html", context)
+		else:
+			messages.warning(
+				self.request, "You have not added a billing address")
+			return redirect("core:checkout")
+
+	# # should be post? maybe not
+	def post(self, *args, **kwargs):
 			domain_url = 'http://localhost:8000/payment/stripe/'
 			stripe.api_key = settings.STRIPE_SECRET_KEY
 			order = Order.objects.get(user=self.request.user, ordered=False)
@@ -132,58 +152,67 @@ class PaymentView(View):
 
 				order.ordered = True
 				order.payment = payment
+				order.ref_code = create_ref_code()
 				order.save()
 
 				# remove all from cart
 				
+				if order.billing_address:
+					context = {
+						'order': order,
+						'DISPLAY_COUPON_FORM': False,
+						'STRIPE_PUBLISHABLE_KEY' : settings.STRIPE_PUBLISHABLE_KEY
+					}
+
 				messages.success(self.request, "Your order was successful!")
-				return JsonResponse({'sessionId': stripe_checkout_session['id']})
-				
-			except stripe.warning.CardError as e:
-				# Since it's a decline, stripe.warning.CardError will be caught
-				body = e.warning.message
-				messages.warning(self.request, f"{body.get('message')}")
 				return redirect("/")
-			except stripe.warning.RateLimitError as e:
+
+			except stripe.error.CardError as e:
+				body = e.json_body
+				err = body.get('error', {})
+				messages.warning(self.request, f"{err.get('message')}")
+				return redirect("/")
+
+			except stripe.error.RateLimitError as e:
 				# Too many requests made to the API too quickly
-				messages.warning(self.request, "Too many requests made to the API too quickly")
+				messages.warning(self.request, "Rate limit error")
 				return redirect("/")
-			except stripe.warning.InvalidRequestError as e:
+
+			except stripe.error.InvalidRequestError as e:
 				# Invalid parameters were supplied to Stripe's API
-				messages.warning(self.request, "Invalid parameters were supplied to Stripe's API")
+				print(e)
+				messages.warning(self.request, "Invalid parameters")
 				return redirect("/")
-			except stripe.warning.AuthenticationError as e:
+
+			except stripe.error.AuthenticationError as e:
 				# Authentication with Stripe's API failed
 				# (maybe you changed API keys recently)
-				messages.warning(self.request, "Authentication with Stripe's API failed")
+				messages.warning(self.request, "Not authenticated")
 				return redirect("/")
-			except stripe.warning.APIConnectionError as e:
+
+			except stripe.error.APIConnectionError as e:
 				# Network communication with Stripe failed
-				messages.warning(self.request, "Network communication with Stripe failed")
+				messages.warning(self.request, "Network error")
 				return redirect("/")
-			except stripe.warning.StripeError as e:
-				# Display a very generic error to the user, and maybe send yourself an email
-				messages.warning(self.request, "Something went wrong. You were not charged. Please try again")
+
+			except stripe.error.StripeError as e:
+				# Display a very generic error to the user, and maybe send
+				# yourself an email
+				messages.warning(
+				self.request, "Something went wrong. You were not charged. Please try again.")
 				return redirect("/")
+
 			except Exception as e:
-				return (messages.warning(request, {'error': str(e)}))
-
-def stripe_config(request):
-	if request.method == 'GET':
-		stripe_config = {'publicKey': settings.STRIPE_PUBLISHABLE_KEY}
-		return JsonResponse(stripe_config, safe=False)
-
-class SuccessView(TemplateView):
-	template_name = 'stripe/success.html'
-
-
-
-class CancelledView(TemplateView):
-    template_name = 'stripe/cancelled.html'
+				# send an email to ourselves
+				messages.warning(
+				self.request, "A serious error occurred. We have been notifed.")
+				return redirect("/")
+			messages.warning(self.request, "Invalid data received")
+			return redirect('/payment/stripe/')
 # end stripe
 
-def home(request):
 
+def home(request):
 	context = {
 		'items': Item.objects.all()
 	}
@@ -330,3 +359,43 @@ class AddCupounView(View):
 			except ObjectDoesNotExist:
 				messages.info(self.request, "You do not have an active order")
 				return redirect('code:checkout')
+
+
+class RequestRefundView(View):
+	def get(self, *args, **qwargs):
+		form = RefundForm()
+		context = {
+			'form': form
+		}
+
+		return render(self.request, "request_refund.html", context)
+
+
+	def post(self, *args, **qwargs):
+		form = RefundForm(self.request.POST)
+		if form.is_valid():
+			ref_code = form.cleaned_data.get('ref_code')
+			message = form.cleaned_data.get('message')
+			email = form.cleaned_data.get('email')
+			# edit the order
+			try:
+				order = Order.objects.get(ref_code=ref_code)
+				order.refund_requested = True   # перевірка чи збігається введений код товару з якимось у базі
+				order.save()
+
+				# store the refund
+				refund = Refund()
+				refund.order = order
+				refund.reason = message
+				refund.email = email
+				refund.save()
+
+				messages.info(self.request, "Your request is received")
+				return redirect('core:request-refund')
+
+			except ObjectDoesNotExist:
+				messages.info(self.request, "This order does not exist")
+				return redirect('core:request-refund')
+		else:
+			messages.info(self.request, "The form is invalid")
+			return redirect('core:request-refund')
