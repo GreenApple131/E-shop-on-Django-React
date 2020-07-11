@@ -4,6 +4,8 @@
 {% load crispy_forms_tags %}
 {% load static %}
 
+{% block head_title %}Checkout{% endblock %}
+
 {% block extra_head %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
     <script src="https://js.stripe.com/v3/"></script>  <!-- new -->
@@ -126,7 +128,7 @@
               <!-- stripe button -->
               <section class="section">
                 <div class="container">
-                  <button class="enableOnInput button is-primary" type="submit" id="submit" disabled="disabled" >Purchase with stripe!</button>
+                  <button class="enableOnInput button is-primary" type="submit" id="submit" disabled="disabled" >Continue to payment</button>
                 </div>
               </section>
             

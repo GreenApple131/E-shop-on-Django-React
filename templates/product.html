@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block head_title %}
+{{ object.title }}
+{% endblock %}
+
 {% block content %}
   <!--Main layout-->
   <main class="mt-5 pt-4">
@@ -22,11 +26,14 @@
           <!--Content-->
           <div class="p-4">
 
+            <p class="lead font-weight-bold">{{ object.title }}</p>
+            
             <div class="mb-3">
               <a href="">
                 <span class="badge purple mr-1">{{ object.get_category_display }}</span>
               </a>
             </div>
+
 
             <p class="lead">
                 {% if object.discount_price %}
