@@ -2,10 +2,10 @@ import React from "react";
 import { Route } from "react-router-dom";
 import Hoc from "./hoc/hoc";
 
-import Login from "./containers/Login";
-import Signup from "./containers/Signup";
-import HomepageLayout from "./containers/Home";
-import ProductList from "./containers/ProductList";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import HomepageLayout from "./components/Home";
+import ProductList from "./components/ProductList";
 
 const BaseRouter = () => (
   <Hoc>
