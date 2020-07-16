@@ -12,7 +12,7 @@ import {
   Message, 
   Segment 
 } from 'semantic-ui-react';
-import {productLisUrl} from '../constants'
+import {productListURL} from '../constants'
 
 
 class ProductList extends Component {
@@ -20,26 +20,40 @@ class ProductList extends Component {
   state = {
     loading: false,
     error: null,
-    data: []
+    data: [],
+
   }
 
-  componenDidMount() {
-    this.setState({ loading: true });
-    axios
-    .get(productLisUrl)
-    .then(res => {
-      console.log(res.data);
-      this.setState({ data: res.data, loading: false });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-    });
-  }
+  // async componenDidMount() {
+  //   this.setState({ loading: true });
+  //   // const res = await fetch('http://127.0.0.1:8000/api/product-list/'); // fetching the data from api, before the page loaded
+  //   // const data = await res.json();
+  //   axios
+  //   .fetch(productListURL)
+  //   .then(res => {
+  //     console.log(res.data);
+  //     this.setState({ data: res.data, loading: false });
+  //   })
+  //   .catch(err => {
+  //     this.setState({ error: err, loading: false });
+  //   });
+  // }
 
+  async componentDidMount() {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/product-list/'); // fetching the data from api, before the page loaded
+      const data = await res.json();
+      this.setState({
+        data
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   render() {
-    const {data, error, loading} = this.state;
-    return(
+    const { data, error, loading } = this.state;
+    return (
       <Container>
         {error && ( // if error then do smth after &&
           <Message
@@ -58,7 +72,7 @@ class ProductList extends Component {
           </Segment>
         )}
         <Item.Group divided>
-          {data.map(item => {
+          {this.state.data.map(item => {
 
             return <Item key={item.id}>
               <Item.Image src={item.image} />
@@ -73,7 +87,10 @@ class ProductList extends Component {
                     Add to cart
                     <Icon name='cart plus' />
                   </Button>
-                  {item.discount_price && <Label>{item.label}</Label>}
+                  {item.discount_price && 
+                    <Label color={item.label === "primary" ? "blue": item.label === "secondary" ? "green": "olive"}>
+                      {item.label}
+                    </Label>}
                 </Item.Extra>
               </Item.Content>
             </Item>
@@ -83,5 +100,6 @@ class ProductList extends Component {
     );
   }
 }
+
 
 export default ProductList

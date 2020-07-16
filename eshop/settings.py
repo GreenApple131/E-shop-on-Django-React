@@ -40,6 +40,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +50,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
 
 ROOT_URLCONF = 'eshop.urls'
 
@@ -84,17 +92,17 @@ DATABASES = {
 }
 
 
-if ENVIRONMENT == 'production':
-    DEBUG = False
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    SESSION_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_REDIRECT_EXEMPT = []
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# if ENVIRONMENT == 'production':
+#     DEBUG = False
+#     SECRET_KEY = os.getenv('SECRET_KEY')
+#     SESSION_COOKIE_SECURE = True
+#     SECURE_BROWSER_XSS_FILTER = True
+#     SECURE_CONTENT_TYPE_NOSNIFF = True
+#     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#     SECURE_HSTS_SECONDS = 31536000
+#     SECURE_REDIRECT_EXEMPT = []
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # STATIC_ROOT = ''
@@ -102,10 +110,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [ 
     os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, "/media/") ??????????????????
-MEDIA_ROOT = os.path.join('C:/coding/django/ecommerce/eshop/eshop/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 LOGIN_REDIRECT_URL = '/'
@@ -176,3 +185,16 @@ USE_TZ = True
 # CRISPY FORMS
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+# C:\coding\django\ecommerce\eshop\Scripts\activate
+# cd C:\coding\django\ecommerce\eshop\eshop
+# python manage.py runserver
+
+
+
+# C:\coding\django\ecommerce\eshop\Scripts\activate
+# cd C:\coding\django\ecommerce\eshop\eshop\frontend
+
+
+# npm run-script build
