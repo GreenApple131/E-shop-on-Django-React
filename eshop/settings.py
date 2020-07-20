@@ -119,8 +119,10 @@ DATABASES = {
 # STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ 
-    os.path.join(BASE_DIR, 'frontend/build/static'),
+    '/frontend/build/static',
+    '/home/dmytro/Projects/eshop/lib/python3.6/site-packages/django/contrib/admin/static',
 ]
+
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
@@ -198,14 +200,21 @@ USE_TZ = True
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
+''' Windows '''
+
 # C:\coding\django\ecommerce\eshop\Scripts\activate
 # cd C:\coding\django\ecommerce\eshop\eshop
+
 # python manage.py runserver
 
+# npm run-script build
+# npm start - запуск localhost:3000
 
+''' Linux '''
 
-# C:\coding\django\ecommerce\eshop\Scripts\activate
-# cd C:\coding\django\ecommerce\eshop\eshop\frontend
-
+# source /home/dmytro/Projects/eshop/bin/activate
+# python manage.py runserver
 
 # npm run-script build
+
+# npm start - запуск localhost:3000

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import React, { Component } from "react";
+import _ from 'lodash';
+import React, { Component, createRef } from "react";
 import {
   Button,
   Container,
@@ -10,10 +11,13 @@ import {
   Image,
   List,
   Menu,
+  Rail,
+  Ref,
   Responsive,
   Segment,
   Sidebar,
-  Visibility
+  Sticky,
+  Visibility,
 } from "semantic-ui-react";
 
 const getWidth = () => {
@@ -86,8 +90,52 @@ ResponsiveContainer.propTypes = {
   children: PropTypes.node
 };
 
+const ImagePlaceholder = () => <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' />
+
+class StickyExamplePushing extends Component {
+  contextRef = createRef()
+
+  render() {
+    return (
+      <Grid centered columns={3}>
+        <Grid.Column>
+          <Ref innerRef={this.contextRef}>
+            <Segment>
+              {_.times(10, (i) => (
+                <ImagePlaceholder key={i} />
+              ))}
+
+              <Rail position='left'>
+                {_.times(3, (i) => (
+                  <ImagePlaceholder key={i} />
+                ))}
+
+                <Sticky context={this.contextRef}>
+                  <Header as='h3'>Stuck Content</Header>
+                  <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+                </Sticky>
+              </Rail>
+
+              <Rail position='right'>
+                <Sticky context={this.contextRef}>
+                  <Header as='h3'>Stuck Content</Header>
+                  <Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+                </Sticky>
+              </Rail>
+            </Segment>
+          </Ref>
+        </Grid.Column>
+      </Grid>
+    )
+  }
+}
+
+
 const HomepageLayout = () => (
   <ResponsiveContainer>
+    <Segment>
+      <StickyExamplePushing />
+    </Segment>
     <Segment style={{ padding: "8em 0em" }} vertical>
       <Grid container stackable verticalAlign="middle">
         <Grid.Row>
