@@ -1,21 +1,16 @@
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView,DetailView, View
-from django.core.exceptions import ObjectDoesNotExist
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.base import TemplateView
-from django.http.response import JsonResponse
 from django.utils import timezone
-from django.contrib import messages
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import AllowAny
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.exceptions import ObjectDoesNotExist
+
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from core.models import Item
-from .serializers import ItemSerializer
+
+from core.models import Item, Order, OrderItem
+from .serializers import ItemSerializer, OrderSerializer
 
 class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
@@ -52,3 +47,16 @@ class AddToCartView(APIView):
                 order = Order.objects.create(user=request.user, ordered_date=ordered_date)
                 order.items.add(order_item)
                 return Response(status=HTTP_200_OK)
+
+
+class OrderDetailView(RetrieveAPIView):
+    serializer_class = OrderSerializer
+    permission_class = (IsAuthenticated, )
+    
+    def get_object(self):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            return order
+        except ObjectDoesNotExist:
+            return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
+    

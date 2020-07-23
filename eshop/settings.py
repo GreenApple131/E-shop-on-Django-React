@@ -218,3 +218,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # npm run-script build
 
 # npm start - запуск localhost:3000
+

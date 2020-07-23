@@ -12,8 +12,8 @@ import {
   Message, 
   Segment 
 } from 'semantic-ui-react';
-import { productListURL, addToCartURL } from '../constants'
-
+import { productListURL, addToCartURL } from '../constants';
+import { authAxios } from '../utils';
 
 class ProductList extends Component {
 
@@ -42,15 +42,16 @@ class ProductList extends Component {
   handleAddToCart = slug => {
     this.setState({ loading: true });
     
-    axios.post(addToCartURL, {slug})
-    .then(res => {
-      console.log(res.data);
-      // update the cart count
-      this.setState({ loading: false });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-    })
+    authAxios
+      .post(addToCartURL, { slug })
+      .then(res => {
+        console.log(res.data);
+        // update the cart count
+        this.setState({ loading: false });
+      })
+      .catch(err => {
+        this.setState({ error: err, loading: false });
+      })
   }
 
   render() {
