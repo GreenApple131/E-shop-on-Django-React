@@ -66,7 +66,7 @@ class OrderSummary extends React.Component {
                             <Table.Cell />
                             <Table.Cell />
                             <Table.Cell />
-                            <Table.Cell colSpan="2" textAlign="right">
+                            <Table.Cell colSpan="2" textAlign="center">
                                 Total: ${data.total}
                             </Table.Cell>
                         </Table.Row>
@@ -77,7 +77,12 @@ class OrderSummary extends React.Component {
                     <Table.Footer>
                         <Table.Row>
                             <Table.HeaderCell colSpan="5" textAlign="right">
-                                <Button color="yellow">Checkout</Button>
+                                <Button 
+                                    color="yellow"
+                                    onClick={() => this.props.history.push('/checkout')}
+                                >
+                                    Checkout
+                                </Button>
                             </Table.HeaderCell>
                         </Table.Row>
                     </Table.Footer>
