@@ -4,7 +4,7 @@ import { authAxios } from '../utils';
 import axios from 'axios';
 import {chargeURL} from '../constants';
 
-import {Elements, useStripe, CardElement, useElements} from '@stripe/react-stripe-js';
+import {Elements, ElementsConsumer, useStripe, CardElement, useElements} from '@stripe/react-stripe-js';
 import {loadStripe} from '@stripe/stripe-js';
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
@@ -16,11 +16,22 @@ const CheckoutForm = () => {
     const elements = useElements();
     
     const handleSubmit = async (event) => {
+        // Block native form submission.
         event.preventDefault();
+
+        if (!stripe || !elements) {
+            // Stripe.js has not loaded yet. Make sure to disable
+            // form submission until Stripe.js has loaded.
+            return;
+        }
+
+        // Get a reference to a mounted CardElement. Elements knows how to find your
+        // CardElement because there can only ever be one of each type of element.
+        const cardElement = elements.getElement(CardElement);
 
         const {error, paymentMethod} = await stripe.createPaymentMethod({
             type: 'card',
-            card: elements.getElement(CardElement)
+            card: cardElement,
         });
 
         if (!error) {
@@ -51,25 +62,13 @@ const CheckoutForm = () => {
 }
 
 
-class Checkout extends React.Component {
+const Checkout = () => {
 
-    state = {
-        
-    }
-    
-    componentDidMount() {
-        
-
-    }
-
-
-    render() {
-        return(
-            <Elements stripe={stripePromise}>
-                <CheckoutForm />
-            </Elements>
-        );
-    }
+    return(
+        <Elements stripe={stripePromise}>
+            <CheckoutForm />
+        </Elements>
+    );
 }
 
 export default Checkout;

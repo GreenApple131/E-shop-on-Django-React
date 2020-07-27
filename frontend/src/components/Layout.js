@@ -13,7 +13,7 @@ import {
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { logout } from "../store/actions/auth";
-import { fetchCart } from '../store/actions/cart'
+import { fetchCart } from '../store/actions/cart';
 
 class CustomLayout extends React.Component {
 
