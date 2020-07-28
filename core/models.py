@@ -7,24 +7,36 @@ CATEGORY_CHOICES = (
 	('S', 'Shirt'),
 	('Sw', 'Sport wear'),
 	('Ow', 'Outwear'),
-	)
+)
 
 LABEL_CHOICES = (
 	('P', 'primary'),
 	('S', 'secondary'),
 	('D', 'danger'),
-	)
+)
+
+
+class UserProfile(models.Model):
+	user = models.OneToOneField(
+		settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+	stripe_customer_id = models.CharField(max_length=50, blank=True, null=True)
+	one_click_purchasing = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.user.username
+
 
 class Item(models.Model):
 	title = models.CharField(max_length=100)
 	price = models.FloatField()
 	discount_price = models.FloatField(blank=True, null=True)
-	category = models.CharField(choices=CATEGORY_CHOICES, max_length=2, default="S")
+	category = models.CharField(
+	    choices=CATEGORY_CHOICES, max_length=2, default="S")
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
 	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
-	description = models.TextField(max_length=5000, default="This is a test description. Write something about this product.")
+	description = models.TextField(
+	    max_length=5000, default="This is a test description. Write something about this product.")
 	image = models.ImageField()
-
 
 	def __str__(self):
 		return self.title
@@ -122,20 +134,19 @@ class BillingAddress(models.Model):
 	city = models.CharField(max_length=100)
 	delivery = models.CharField(max_length=100)
 
-
 	def __str__(self):
 		return self.user.username
-		
+
 
 class Payment(models.Model):
 	stripe_charge_id = models.CharField(max_length=100)
-	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,
+	                         on_delete=models.SET_NULL, blank=True, null=True)
 	amount = models.FloatField()
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return '{} - {}'.format(self.user, self.amount)
-
 
 
 class Coupon(models.Model):
@@ -154,3 +165,8 @@ class Refund(models.Model):
 
 	def __str__(self):
 		return f"{self.pk}"
+
+
+def userprofile_receiver(sender, instance, created, *args, **kwargs):
+    if created:
+        userprofile = UserProfile.objects.create(user=instance)
