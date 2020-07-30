@@ -71,3 +71,5 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_total(self, obj):
         return obj.get_total() # уже є ця функція в models
+
+

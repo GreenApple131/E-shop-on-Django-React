@@ -1,159 +1,144 @@
-import React, { Component, useState } from 'react';
-import { Button, Container, Header, Label, Menu, Message, Table } from 'semantic-ui-react';
-import { authAxios } from '../utils';
-import axios from 'axios';
-import {checkoutURL} from '../constants';
+import React, { Component } from "react";
+import {Link, withRouter } from 'react-router-dom';
+import {
+  Button,
+  Container,
+  Header,
+  Label,
+  Menu,
+  Message,
+  Table,
+} from "semantic-ui-react";
+import { authAxios } from "../utils";
+import { checkoutURL } from "../constants";
 
-import {Elements, ElementsConsumer, useStripe, CardElement, useElements} from '@stripe/react-stripe-js';
-import {loadStripe} from '@stripe/stripe-js';
-import { injectStripe, StripeProvider } from 'react-stripe-elements';
-
+import { Elements, CardElement, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { injectStripe, StripeProvider } from "react-stripe-elements";
 
 // Custom styling can be passed to options when creating an Element.
 const CARD_ELEMENT_OPTIONS = {
-    style: {
-      base: {
-        color: '#32325d',
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-        fontSize: '16px',
-        '::placeholder': {
-          color: '#aab7c4'
-        }
+  style: {
+    base: {
+      color: "#32325d",
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: "antialiased",
+      fontSize: "16px",
+      "::placeholder": {
+        color: "#aab7c4",
       },
-      invalid: {
-        color: '#fa755a',
-        iconColor: '#fa755a'
-      }
-    }
-  };
+    },
+    invalid: {
+      color: "#fa755a",
+      iconColor: "#fa755a",
+    },
+  },
+};
+
+function CardSection() {
+  return (
+    <label>
+      Card details
+      <CardElement options={CARD_ELEMENT_OPTIONS} />
+    </label>
+  );
+};
+
 
 class CheckoutForm extends Component {
+  state = {
+    loading: false,
+    error: null,
+    success: false,
+  };
 
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         error:null
-    //     }
-    // }
+  handleSubmit = (event) => {
+    // Block native form submission.
+    event.preventDefault();
+    this.setState({loading: true});
 
-    state = {
-        loading: false,
-        error: null,
-        success: false
-    }
 
-    // const [error, setError] = () => this.useState(null);
-
-    // Handle real-time validation errors from the card Element.
-    handleChange = (event) => {
-        if (event.error) {
-            this.setError(event.error.message);
-        } else {
-            this.setError(null);
-        }
-    }
-    
-    handleSubmit = async (event) => {
-        // Block native form submission.
-        event.preventDefault();
-
-        const {stripe, elements} = this.props;
-
-        // Get a reference to a mounted CardElement. Elements knows how to find your
-        // CardElement because there can only ever be one of each type of element.
-        const cardElement = elements.getElement(CardElement);
-        const result = await stripe.createToken(CardElement) // CardElement isn't necessary
-
+    // if (this.props.stripe) {
+      this.props.stripe.createToken().then(result => {
         if (result.error) {
-            // Inform the user if there was an error.
-            this.setError(result.error.message);
-          } else {
-            this.setError(null);
-            // Send the token to your server.
-            this.stripeTokenHandler(result.token);
-          }
-
-        const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-        });
-
-    };
-
-    // POST the token ID to your backend.
-    async stripeTokenHandler(token) {
-        this.setState({ loading: true });
-        authAxios.post('/api/handle-payment', {token: token.id})
+          this.setState({ error: result.error.message, loading: false });
+        } else {
+          this.setState({ error: null });
+          authAxios
+            .post(checkoutURL, { stripeToken: result.token.id })
             .then(res => {
-                this.setState({ loading: false, success: true });
-            }).catch(err => {
-                this.setState({ loading: false, error: err });
+              this.setState({ loading: false, success: true });
             })
-        
-    
-        return this.response.json();
-    }
+            .catch(err => {
+              this.setState({ loading: false, error: err });
+            });
+        }
+      });
+    // } else {
+      // console.log("Stripe is not loaded");
+    // }
+  };
 
-    render() {
-        const {error, loading, success} = this.state;
 
-        return(
-            <div class="form-row">
-                {error  && <Message negative>
-                                <Message.Header>Your payment was unsuccessfull</Message.Header>
-                                <p>{JSON.stringify(error)}</p>
-                            </Message>}
-                {success && <Message positive>
-                                <Message.Header>Your payment was successfull</Message.Header>
-                                <p>
-                                Go to your <b>profile</b> to see the delivery status.
-                                </p>
-                            </Message>}
-                <label for="card-element">
-                    Would You like to complete the purchase?
-                </label>
-                <CardElement
-                    id="card-element"
-                    options={CARD_ELEMENT_OPTIONS}
-                    onChange={this.handleChange}
-                />
-                <Button 
-                    primary 
-                    onClick={this.handleSubmit} 
-                    type="submit"
-                    loading={loading}
-                    disabled={loading} // cant submit twise !
-                    // disabled={!this.stripe} 
 
-                    style={{marginTop: "10px"}}
-                    >
-                    Submit
-                </Button>
-            </div>
-        );
-    }
+  render() {
+    const { error, loading, success } = this.state;
+
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <div className="form-row">
+          {error && (
+            <Message negative>
+              <Message.Header>Your payment was unsuccessfull</Message.Header>
+              <p>{JSON.stringify(error)}</p>
+            </Message>
+          )}
+          {success && (
+            <Message positive>
+              <Message.Header>Your payment was successfull</Message.Header>
+              <p>
+                Go to your <b>profile</b> to see the delivery status.
+              </p>
+            </Message>
+          )}
+          <label htmlFor="card-element">
+            Would You like to complete the purchase?
+          </label>
+          <CardSection />
+          <Button
+            primary
+            onClick={this.handleSubmit}
+            // type="submit"
+            loading={loading}
+            disabled={loading} // cant submit twise !
+            // disabled={!this.props.stripe}
+
+            style={{ marginTop: "10px" }}
+          >
+            Submit
+          </Button>
+        </div>
+      </form>
+    );
+  }
 }
 
+const stripePromise = loadStripe(
+  "pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx"
+);
+const stripeApi = 'pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx'
 
-
-const stripePromise = loadStripe('pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx');
-
-const InjectedCheckoutForm = injectStripe(CheckoutForm);
+const InjectedForm = withRouter(injectStripe(CheckoutForm));
 
 const Checkout = () => (
-    <Container text>
-        <StripeProvider apiKey={stripePromise}>
-            <div>
-                <h1>Complete Your order</h1>
-                <Elements>
-                    <InjectedCheckoutForm />
-                </Elements>
-            </div>
-        </StripeProvider>
-    </Container>
+  <Container text>
+      <div>
+        <h1>Complete your order</h1>
+        <Elements stripe={stripePromise}>
+          <CheckoutForm />
+        </Elements>
+      </div>
+  </Container>
 );
-
-
 
 export default Checkout;
