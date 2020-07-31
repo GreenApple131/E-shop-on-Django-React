@@ -12,7 +12,7 @@ import {
 } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { logout } from "../store/actions/auth";
+import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from '../store/actions/cart';
 
 class CustomLayout extends React.Component {
@@ -35,6 +35,7 @@ class CustomLayout extends React.Component {
             </Link>
             <Menu.Menu position='right'>
             {authenticated ? (
+              
               <React.Fragment>
               <Dropdown
                 icon='cart'
@@ -60,7 +61,7 @@ class CustomLayout extends React.Component {
                   />
                 </Dropdown.Menu>
               </Dropdown>
-              <Menu.Item header onClick={() => this.props.logout()}>
+              <Menu.Item header onClick={() => {this.props.logout(); this.props.logoutReload() }}>
                 Logout
               </Menu.Item>
               </React.Fragment>
@@ -77,7 +78,6 @@ class CustomLayout extends React.Component {
             </Menu.Menu>
           </Container>
         </Menu>
-
 
         {this.props.children}
 
@@ -158,6 +158,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     logout: () => dispatch(logout()),
+    logoutReload: () => dispatch(logoutReload()),
     fetchCart: () => dispatch(fetchCart())
   };
 };

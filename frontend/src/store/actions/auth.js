@@ -29,10 +29,18 @@ export const logout = () => {
   };
 };
 
+export const logoutReload = () => {
+  window.location.reload(false);
+  return {
+    type: actionTypes.AUTH_RELOAD
+  };
+};
+
 export const checkAuthTimeout = expirationTime => {
   return dispatch => {
     setTimeout(() => {
       dispatch(logout());
+      dispatch(logoutReload());
     }, expirationTime * 1000);
   };
 };
@@ -52,6 +60,7 @@ export const authLogin = (username, password) => {
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(3600));
+        window.location.reload(false);
       })
       .catch(err => {
         dispatch(authFail(err));
@@ -76,6 +85,7 @@ export const authSignup = (username, email, password1, password2) => {
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(3600));
+        window.location.reload(false);
       })
       .catch(err => {
         dispatch(authFail(err));

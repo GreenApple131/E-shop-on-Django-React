@@ -9,20 +9,12 @@ import {
 } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { NavLink, Redirect } from "react-router-dom";
-import { addToCartURL } from '../constants';
 import { authLogin } from "../store/actions/auth";
-import { authAxios } from '../utils';
-import { fetchCart } from '../store/actions/cart';
-
 
 class LoginForm extends React.Component {
   state = {
     username: "",
     password: ""
-  };
-
-  componentDidMount() {
-    this.props.fetchCart();
   };
 
   handleChange = e => {
@@ -33,11 +25,7 @@ class LoginForm extends React.Component {
     e.preventDefault();
     const { username, password } = this.state;
     this.props.login(username, password);
-
-    this.props.fetchCart(); // update the cart count
-    this.setState({ loading: false });
   };
-
 
   render() {
     const { error, loading, token } = this.props;
@@ -105,15 +93,13 @@ const mapStateToProps = state => {
   return {
     loading: state.auth.loading,
     error: state.auth.error,
-    token: state.auth.token,
-    cart: state.cart.shoppingCart,
+    token: state.auth.token
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    login: (username, password) => dispatch(authLogin(username, password)),
-    fetchCart: () => dispatch(fetchCart())
+    login: (username, password) => dispatch(authLogin(username, password))
   };
 };
 

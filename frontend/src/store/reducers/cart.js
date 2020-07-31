@@ -10,7 +10,7 @@ const initialState = {
 const cartStart = (state, action) => {
   return updateObject(state, {
     error: null,
-    loading: true
+    loading: false
   });
 };
 
