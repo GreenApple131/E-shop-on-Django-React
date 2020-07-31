@@ -3,6 +3,7 @@ import {Link, withRouter } from 'react-router-dom';
 import {
   Button,
   Container,
+  Form,
   Header,
   Label,
   Menu,
@@ -85,7 +86,7 @@ class CheckoutForm extends Component {
     const { error, loading, success } = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <Form onSubmit={this.handleSubmit}>
         <div className="form-row">
           {error && (
             <Message negative>
@@ -118,7 +119,7 @@ class CheckoutForm extends Component {
             Submit
           </Button>
         </div>
-      </form>
+      </Form>
     );
   }
 }

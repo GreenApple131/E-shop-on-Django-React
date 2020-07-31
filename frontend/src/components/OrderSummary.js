@@ -40,27 +40,29 @@ class OrderSummary extends React.Component {
                 <Header>Order Summary</Header>
                 { data && ( <Table celled>
                     <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Item #</Table.HeaderCell>
-                        <Table.HeaderCell>Item name</Table.HeaderCell>
-                        <Table.HeaderCell>Item price</Table.HeaderCell>
-                        <Table.HeaderCell>Item quantity</Table.HeaderCell>
-                        <Table.HeaderCell>Total item price</Table.HeaderCell>
-                    </Table.Row>
+                        <Table.Row>
+                            <Table.HeaderCell>Item #</Table.HeaderCell>
+                            <Table.HeaderCell>Item name</Table.HeaderCell>
+                            <Table.HeaderCell>Item price</Table.HeaderCell>
+                            <Table.HeaderCell>Item quantity</Table.HeaderCell>
+                            <Table.HeaderCell>Total item price</Table.HeaderCell>
+                        </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
                         {data.order_items.map((order_item, i) => {
                             return (
                                 <Table.Row key={order_item.id}>
-                                    <Table.Cell>{i}</Table.Cell>
-                                    <Table.Cell>{order_item.item}</Table.Cell>
-                                    <Table.Cell >${order_item.item_obj.price}</Table.Cell>
-                                    <Table.Cell>{order_item.item_obj.quantity}</Table.Cell>
-                                    { order_item.item_obj.discount_price && (
-                                        <Label color="green" ribbon>ON DISCOUNT</Label>
-                                    )}
-                                    ${order_item.final_price}
+                                    <React.Fragment>
+                                        <Table.Cell>{i}</Table.Cell>
+                                        <Table.Cell>{order_item.item}</Table.Cell>
+                                        <Table.Cell >${order_item.item_obj.price}</Table.Cell>
+                                        <Table.Cell>{order_item.item_obj.quantity}</Table.Cell>
+                                        { order_item.item_obj.discount_price && (
+                                            <Label color="green" ribbon>ON DISCOUNT</Label>
+                                        )}
+                                        ${order_item.final_price}
+                                    </React.Fragment>
                                 </Table.Row>
                             )
                         })}

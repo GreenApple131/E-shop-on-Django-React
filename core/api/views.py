@@ -106,10 +106,10 @@ class PaymentView(APIView):
         try:
 
             charge = stripe.Charge.create(
-                amount=2000,
+                amount=amount,
                 currency="eur",
                 description="My First Test Charge (created for API docs)",
-                source="token", # obtained with Stripe.js
+                source=token, # obtained with Stripe.js
             )
 
             # charge = stripe.Charge.create(
