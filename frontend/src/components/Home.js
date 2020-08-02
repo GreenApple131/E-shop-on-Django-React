@@ -1,129 +1,256 @@
-import React, { Component, useEffect } from 'react'
-import axios from 'axios';
-import { connect } from 'react-redux';
-import { 
-  Button, 
-  Container, 
-  Dimmer, 
-  Icon, 
-  Image, 
-  Item, 
-  Label, 
-  Loader, 
-  Message, 
-  Segment 
-} from 'semantic-ui-react';
-import { productListURL, addToCartURL } from '../constants';
-import { authAxios } from '../utils';
-import { fetchCart } from '../store/actions/cart';
+import React, { Component, createRef } from "react"
+import PropTypes from "prop-types"
+import _ from 'lodash'
+import { createMedia } from '@artsy/fresnel'
+import {
+  Button,
+  Container,
+  Divider,
+  Grid,
+  Header,
+  Icon,
+  Image,
+  List,
+  Menu,
+  Rail,
+  Ref,
+  Responsive,
+  Segment,
+  Sidebar,
+  Sticky,
+  Visibility,
+} from "semantic-ui-react"
 
+const { MediaContextProvider, Media } = createMedia({
+  breakpoints: {
+    mobile: 0,
+    tablet: 768,
+    computer: 1024,
+  },
+})
 
-class Home extends Component {
+/* Heads up!
+ * HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled
+ * components for such things.
+ */
+const HomepageHeading = ({ mobile }) => (
+  <Container text>
+    <Header
+      as='h1'
+      content='Imagine-a-Company'
+      inverted
+      style={{
+        fontSize: mobile ? '2em' : '4em',
+        fontWeight: 'normal',
+        marginBottom: 0,
+        marginTop: mobile ? '1.5em' : '3em',
+      }}
+    />
+    <Header
+      as='h2'
+      content='Do whatever you want when you want to.'
+      inverted
+      style={{
+        fontSize: mobile ? '1.5em' : '1.7em',
+        fontWeight: 'normal',
+        marginTop: mobile ? '0.5em' : '1.5em',
+      }}
+    />
+    <Button primary size='huge'>
+      Get Started
+      <Icon name='right arrow' />
+    </Button>
+  </Container>
+)
 
-  state = {
-    loading: false,
-    error: null,
-    data: [],
-  }
+HomepageHeading.propTypes = {
+  mobile: PropTypes.bool,
+}
 
+/* Heads up!
+ * Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
+ * It can be more complicated, but you can create really flexible markup.
+ */
+class DesktopContainer extends Component {
+  state = {}
 
-  async componentDidMount() {
-    this.setState({ loading: true });
-
-    this.props.fetchCart(); // update the cart count
-    
-    const res = await axios.get(productListURL)
-    .then(res => {
-      console.log(res.data);
-      this.setState({ data: res.data, loading: false });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-    })
-    
-  }
-
-  
-
-  handleAddToCart = slug => {
-    this.setState({ loading: true });
-    
-    authAxios
-      .post(addToCartURL, { slug })
-      .then(res => {
-
-        this.props.fetchCart(); // update the cart count
-
-        this.setState({ loading: false });
-      })
-      .catch(err => {
-        this.setState({ error: err, loading: false });
-      })
-  }
-
-
+  hideFixedMenu = () => this.setState({ fixed: false })
+  showFixedMenu = () => this.setState({ fixed: true })
 
   render() {
-    const { data, error, loading } = this.state;
-    
+    const { children } = this.props
+    const { fixed } = this.state
+
     return (
-      <Container>
-        {error && ( // if error then do smth after &&
-          <Message
-            error
-            header='There was some errors with your submission'
-            content={JSON.stringify(error)}
-          />
-        )}
-        {loading && ( // if loading then do smth after &&
-          <Segment>
-            <Dimmer active inverted>
-              <Loader inverted>Loading</Loader>
-            </Dimmer>
-
-            <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+      <Media greaterThan='mobile'>
+        <Visibility
+          once={false}
+          onBottomPassed={this.showFixedMenu}
+          onBottomPassedReverse={this.hideFixedMenu}
+        >
+          <Segment
+            inverted
+            textAlign='center'
+            style={{ minHeight: 700, padding: '1em 0em' }}
+            vertical
+          >
+            <HomepageHeading />
           </Segment>
-        )}
-        <div className="container">
-          <h2 className="center">Our items</h2>
-        </div>
-        <Item.Group divided>
-          {this.state.data.map(item => {
+        </Visibility>
 
-            return <Item key={item.id}>
-              <Item.Image src={item.image} />
-              <Item.Content>
-                <Item.Header as='a'>{item.title}</Item.Header>
-                <Item.Meta>
-                  <span className='cinema'>{item.category}</span>
-                </Item.Meta>
-                <Item.Description>{item.description}</Item.Description>
-                <Item.Extra>
-                  <Button primary floated='right' icon labelPosition='right' onClick={() => this.handleAddToCart(item.slug)}>
-                    Add to cart
-                    <Icon name='cart plus' />
-                  </Button>
-                  {item.discount_price && 
-                    <Label color={item.label === "primary" ? "blue": item.label === "secondary" ? "green": "olive"}>
-                      {item.label}
-                    </Label>}
-                </Item.Extra>
-              </Item.Content>
-            </Item>
-          })}
-        </Item.Group>
+        {children}
+      </Media>
+    )
+  }
+}
+
+DesktopContainer.propTypes = {
+  children: PropTypes.node,
+}
+
+class MobileContainer extends Component {
+  state = {}
+
+  handleSidebarHide = () => this.setState({ sidebarOpened: false })
+
+  handleToggle = () => this.setState({ sidebarOpened: true })
+
+  render() {
+    const { children } = this.props
+    const { sidebarOpened } = this.state
+
+    return (
+      <Media as={Sidebar.Pushable} at='mobile'>
+        <Segment
+            inverted
+            textAlign='center'
+            style={{ minHeight: 700, padding: '1em 0em' }}
+            vertical
+          >
+            <HomepageHeading />
+          </Segment>
+
+            {children}
+
+      </Media>
+    )
+  }
+}
+
+MobileContainer.propTypes = {
+  children: PropTypes.node,
+}
+
+const ResponsiveContainer = ({ children }) => (
+  /* Heads up!
+   * For large applications it may not be best option to put all page into these containers at
+   * they will be rendered twice for SSR.
+   */
+  <MediaContextProvider>
+    <DesktopContainer>{children}</DesktopContainer>
+    <MobileContainer>{children}</MobileContainer>
+  </MediaContextProvider>
+)
+
+ResponsiveContainer.propTypes = {
+  children: PropTypes.node,
+}
+
+const HomepageLayout = () => (
+  <ResponsiveContainer>
+    <Segment style={{ padding: '8em 0em' }} vertical>
+      <Grid container stackable verticalAlign='middle'>
+        <Grid.Row>
+          <Grid.Column width={8}>
+            <Header as='h3' style={{ fontSize: '2em' }}>
+              We Help Companies and Companions
+            </Header>
+            <p style={{ fontSize: '1.33em' }}>
+              We can give your company superpowers to do things that they never thought possible.
+              Let us delight your customers and empower your needs... through pure data analytics.
+            </p>
+            <Header as='h3' style={{ fontSize: '2em' }}>
+              We Make Bananas That Can Dance
+            </Header>
+            <p style={{ fontSize: '1.33em' }}>
+              Yes that's right, you thought it was the stuff of dreams, but even bananas can be
+              bioengineered.
+            </p>
+          </Grid.Column>
+          <Grid.Column floated='right' width={6}>
+            <Image bordered rounded size='large' src='/images/wireframe/white-image.png' />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column textAlign='center'>
+            <Button size='huge'>Check Them Out</Button>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Segment>
+
+    <Segment style={{ padding: '0em' }} vertical>
+      <Grid celled='internally' columns='equal' stackable>
+        <Grid.Row textAlign='center'>
+          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
+            <Header as='h3' style={{ fontSize: '2em' }}>
+              "What a Company"
+            </Header>
+            <p style={{ fontSize: '1.33em' }}>That is what they all say about us</p>
+          </Grid.Column>
+          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
+            <Header as='h3' style={{ fontSize: '2em' }}>
+              "I shouldn't have gone with their competitor."
+            </Header>
+            <p style={{ fontSize: '1.33em' }}>
+              <Image avatar src='/images/avatar/large/nan.jpg' />
+              <b>Nan</b> Chief Fun Officer Acme Toys
+            </p>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    </Segment>
+
+    <Segment style={{ padding: '8em 0em' }} vertical>
+      <Container text>
+        <Header as='h3' style={{ fontSize: '2em' }}>
+          Breaking The Grid, Grabs Your Attention
+        </Header>
+        <p style={{ fontSize: '1.33em' }}>
+          Instead of focusing on content creation and hard work, we have learned how to master the
+          art of doing nothing by providing massive amounts of whitespace and generic content that
+          can seem massive, monolithic and worth your attention.
+        </p>
+        <Button as='a' size='large'>
+          Read More
+        </Button>
+
+        <Divider
+          as='h4'
+          className='header'
+          horizontal
+          style={{ margin: '3em 0em', textTransform: 'uppercase' }}
+        >
+          <a href='#'>Case Studies</a>
+        </Divider>
+
+        <Header as='h3' style={{ fontSize: '2em' }}>
+          Did We Tell You About Our Bananas?
+        </Header>
+        <p style={{ fontSize: '1.33em' }}>
+          Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but
+          it's really true. It took years of gene splicing and combinatory DNA research, but our
+          bananas can really dance.
+        </p>
+        <Button as='a' size='large'>
+          I'm Still Quite Interested
+        </Button>
       </Container>
-    );
-  }
-}
+    </Segment>
 
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchCart: () => dispatch(fetchCart())
-  }
-}
+  </ResponsiveContainer>
+)
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Home);
+
+export default (HomepageLayout);
+
