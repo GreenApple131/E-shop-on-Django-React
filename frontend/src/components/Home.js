@@ -2,6 +2,7 @@ import React, { Component, createRef } from "react"
 import PropTypes from "prop-types"
 import _ from 'lodash'
 import { createMedia } from '@artsy/fresnel'
+import { mediaURL } from '../constants';
 import {
   Button,
   Container,
@@ -20,6 +21,8 @@ import {
   Sticky,
   Visibility,
 } from "semantic-ui-react"
+
+const Background = mediaURL + '/background.jpg'
 
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
@@ -91,8 +94,10 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign='center'
-            style={{ minHeight: 700, padding: '1em 0em' }}
+            style={{ minHeight: 700, padding: '1em 0em',
+            width: "100%", height: "100%", backgroundImage: `url(${Background})`}}
             vertical
+            
           >
             <HomepageHeading />
           </Segment>
@@ -124,7 +129,7 @@ class MobileContainer extends Component {
         <Segment
             inverted
             textAlign='center'
-            style={{ minHeight: 700, padding: '1em 0em' }}
+            style={{ minHeight: 700, padding: '1em 0em', backgroundImage: `url(${Background})` }}
             vertical
           >
             <HomepageHeading />

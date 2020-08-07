@@ -1,11 +1,13 @@
 // endpoints
-const localhost = "http://127.0.0.1:8000";
+const localhost = "http://127.0.0.1:8000"
 
-const apiURL = "/api";
+const apiURL = "/api"
 
-export const endpoint = `${localhost}${apiURL}`;
+export const endpoint = `${localhost}${apiURL}`
 
-export const productListURL = `${endpoint}/product-list/`;
-export const addToCartURL = `${endpoint}/add-to-cart/`;
-export const orderSummaryURL = `${endpoint}/order-summary/`;
-export const checkoutURL = `${endpoint}/checkout/`;
+export const mediaURL = `${localhost}/media/`
+
+export const productListURL = `${endpoint}/product-list/`
+export const addToCartURL = `${endpoint}/add-to-cart/`
+export const orderSummaryURL = `${endpoint}/order-summary/`
+export const checkoutURL = `${endpoint}/checkout/`
