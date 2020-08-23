@@ -1,8 +1,9 @@
 import React, { Component, createRef } from "react"
+import '../App.css'
 import PropTypes from "prop-types"
 import _ from 'lodash'
 import { createMedia } from '@artsy/fresnel'
-import { mediaURL } from '../constants';
+import { mediaURL } from '../constants'
 import {
   Button,
   Container,
@@ -21,8 +22,13 @@ import {
   Sticky,
   Visibility,
 } from "semantic-ui-react"
+// slider
+import AwesomeSlider from 'react-awesome-slider'
+import './elements/sliderStyles.css'
 
-const Background = mediaURL + '/background.jpg'
+const Background = mediaURL + 'background.jpg'
+const Background2 = mediaURL + 'background2.jpg'
+const Background3 = mediaURL + 'background3.jpg'
 
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
@@ -31,6 +37,7 @@ const { MediaContextProvider, Media } = createMedia({
     computer: 1024,
   },
 })
+
 
 /* Heads up!
  * HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled
@@ -45,7 +52,7 @@ const HomepageHeading = ({ mobile }) => (
       style={{
         fontSize: mobile ? '2em' : '4em',
         fontWeight: 'normal',
-        marginBottom: 0,
+        marginBottom: -700,
         marginTop: mobile ? '1.5em' : '3em',
       }}
     />
@@ -74,6 +81,7 @@ HomepageHeading.propTypes = {
  * Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
  * It can be more complicated, but you can create really flexible markup.
  */
+
 class DesktopContainer extends Component {
   state = {}
 
@@ -86,7 +94,7 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan='mobile'>
-        <Visibility
+        <Visibility 
           once={false}
           onBottomPassed={this.showFixedMenu}
           onBottomPassedReverse={this.hideFixedMenu}
@@ -94,11 +102,19 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign='center'
-            style={{ minHeight: 700, padding: '1em 0em',
-            width: "100%", height: "100%", backgroundImage: `url(${Background})`}}
+            style={{ maxHeight: 700, padding: '1em 0em',
+            }}
             vertical
-            
           >
+          
+            {/* <HomepageHeading /> */}
+            <AwesomeSlider 
+              animation="foldOutAnimation" 
+            >
+              <div data-src={ Background } />
+              <div data-src={ Background2 } />
+              <div data-src={ Background3 } />
+            </AwesomeSlider>
             <HomepageHeading />
           </Segment>
         </Visibility>
@@ -129,7 +145,12 @@ class MobileContainer extends Component {
         <Segment
             inverted
             textAlign='center'
-            style={{ minHeight: 700, padding: '1em 0em', backgroundImage: `url(${Background})` }}
+            style={{ minHeight: 700, padding: '1em 0em',
+              width: "100%", height: "100%", backgroundImage: `url(${Background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'noRepeat',
+            }}
             vertical
           >
             <HomepageHeading />
