@@ -19,12 +19,12 @@ import {
   Responsive,
   Segment,
   Sidebar,
-  Sticky,
   Visibility,
 } from "semantic-ui-react"
 // slider
-import AwesomeSlider from 'react-awesome-slider'
-import './elements/sliderStyles.css'
+import { Carousel } from 'react-responsive-carousel'
+import styles from 'react-responsive-carousel/lib/styles/carousel.min.css'
+
 
 const Background = mediaURL + 'background.jpg'
 const Background2 = mediaURL + 'background2.jpg'
@@ -102,20 +102,29 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign='center'
-            style={{ maxHeight: 700, padding: '1em 0em',
-            }}
+            style={{ maxHeight: 700, padding: '0em 0em',
+          }}
             vertical
           >
-          
-            {/* <HomepageHeading /> */}
-            <AwesomeSlider 
-              animation="foldOutAnimation" 
+            <Carousel styles
+              showStatus={false}
+              infiniteLoop={true}
+              emulateTouch={true}
             >
-              <div data-src={ Background } />
-              <div data-src={ Background2 } />
-              <div data-src={ Background3 } />
-            </AwesomeSlider>
-            <HomepageHeading />
+                  <div>
+                      <img src={ Background } />
+                      <p className="legend">Background 1</p>
+                  </div>
+                  <div>
+                      <img src={ Background2 } />
+                      <p className="legend">Background 2</p>
+                  </div>
+                  <div>
+                      <img src={ Background3 } />
+                      <p className="legend">Background 3</p>
+                  </div>
+              </Carousel>
+            {/* <HomepageHeading /> */}
           </Segment>
         </Visibility>
 
