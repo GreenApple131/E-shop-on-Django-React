@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=dmytro
+Group=www-data
+WorkingDirectory=/home/dmytro/Projects/django/eshop/eshop
+ExecStart=/home/dmytro/.local/bin/gunicorn \              # path can be found by typing "which gunicorn" in project venv 
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          eshop.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

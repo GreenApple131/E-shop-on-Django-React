@@ -214,7 +214,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 ''' Linux '''
 
-# source /home/dmytro/Projects/eshop/bin/activate
+# source /home/dmytro/Projects/django/eshop/bin/activate
 # python manage.py runserver
 
 # npm run-script build
