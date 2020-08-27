@@ -1,8 +1,8 @@
-import React from 'react';
-import { Button, Container, Header, Label, Menu, Table } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import { authAxios } from '../utils';
-import { orderSummaryURL } from '../constants';
+import React from 'react'
+import { Button, Container, Header, Label, Menu, Table } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { authAxios } from '../utils'
+import { orderSummaryURL } from '../constants'
 
 
 
