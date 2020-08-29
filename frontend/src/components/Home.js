@@ -1,4 +1,5 @@
 import React, { Component, createRef } from "react"
+import { Link } from 'react-router-dom'
 import '../App.css'
 import PropTypes from "prop-types"
 import _ from 'lodash'
@@ -12,18 +13,17 @@ import {
   Header,
   Icon,
   Image,
-  List,
-  Menu,
-  Rail,
-  Ref,
-  Responsive,
   Segment,
   Sidebar,
   Visibility,
 } from "semantic-ui-react"
 // slider
-import { Carousel } from 'react-responsive-carousel'
-import styles from 'react-responsive-carousel/lib/styles/carousel.min.css'
+// import { Carousel } from 'react-responsive-carousel'
+import Slider from 'react-animated-slider';
+import 'react-animated-slider/build/horizontal.css';
+import 'normalize.css/normalize.css';
+import './elements/sliderStyles.css'
+import './elements/slider-animations.css'
 
 
 const Background = mediaURL + 'background.jpg'
@@ -37,7 +37,6 @@ const { MediaContextProvider, Media } = createMedia({
     computer: 1024,
   },
 })
-
 
 /* Heads up!
  * HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled
@@ -92,6 +91,39 @@ class DesktopContainer extends Component {
     const { children } = this.props
     const { fixed } = this.state
 
+    const content = [
+      {
+        title: 'ONLINE SHOP',
+        description:
+        'BUY ONLINE : WWW.ESHOP.COM',
+        button: 'Buy now!',
+        redirectLink: 'products',
+        image: Background,
+        // user: 'Luan Gjokaj',
+        // userProfile: 'https://i.imgur.com/JSW6mEk.png'
+      },
+      {
+        title: 'OUR VISION AND GOAL',
+        description:
+        'Our believes in a Malaysian future where IT…',
+        button: 'Discover',
+        redirectLink: 'login',
+        image: Background2,
+        // user: 'Erich Behrens',
+        // userProfile: 'https://i.imgur.com/0Clfnu7.png'
+      },
+      {
+        title: 'BUSINESS ACTIVITIES',
+        description:
+        'Due to the rapid change of the Information Technology industry,…',
+        button: 'Read More',
+        redirectLink: 'signup',    // link to redirect page
+        image: Background3,
+        // user: 'Bruno Vizovskyy',
+        // userProfile: 'https://i.imgur.com/4KeKvtH.png'
+      }
+    ];
+
     return (
       <Media greaterThan='mobile'>
         <Visibility 
@@ -106,24 +138,24 @@ class DesktopContainer extends Component {
           }}
             vertical
           >
-            <Carousel styles
-              showStatus={false}
-              infiniteLoop={true}
-              emulateTouch={true}
-            >
-                  <div>
-                      <img src={ Background } />
-                      <p className="legend">Background 1</p>
+            <Slider className="slider-wrapper">
+              {content.map((item, index) => (
+                <div
+                key={index}
+                className="slider-content"
+                // style={{ background: `url('${item.image}') no-repeat center center` }}
+                style={{ background: `url(${item.image})`}}
+                >
+                  <div className="inner" style={{height:'auto', width:'100%'}}>
+                    <h1>{item.title}</h1>
+                    <p>{item.description}</p>
+                    <Link to={item.redirectLink}>
+                      <button >{item.button}</button>
+                    </Link>
                   </div>
-                  <div>
-                      <img src={ Background2 } />
-                      <p className="legend">Background 2</p>
-                  </div>
-                  <div>
-                      <img src={ Background3 } />
-                      <p className="legend">Background 3</p>
-                  </div>
-              </Carousel>
+                </div>
+              ))}
+            </Slider>
             {/* <HomepageHeading /> */}
           </Segment>
         </Visibility>
