@@ -112,11 +112,17 @@ class CouponForm extends Component {
     this.setState({ code: e.target.value });
   }
 
+  handleSubmit = e => {
+    const { code } = this.state;
+    this.props.handleAddCoupon(e, code);
+    this.setState({ code: "" });
+  }
+
   render() {
     const { code } = this.state;
     return (
       <React.Fragment>
-        <Form onSubmit={this.props.handleAddCoupon}>
+        <Form onSubmit={this.handleSubmit}>
           <Form.Field>
             <label>Coupon code</label>
             <input placeholder="Enter a coupon.." 
@@ -124,7 +130,7 @@ class CouponForm extends Component {
                    onChange={this.handleChange}
             />
           </Form.Field>
-          <Button type="coupon-submit">Submit</Button>
+          <Button type="submit">Submit</Button>
         </Form>
       </React.Fragment>
     );
@@ -163,22 +169,21 @@ class CheckoutForm extends Component {
       });
   };
 
-  handleAddCoupon = e => {
+  handleAddCoupon = (e, code) => {
     e.preventDefault();
     this.setState({ loading: true });
-    const {code} = this.state;
     authAxios
       .post(addCouponURL, { code })
-      .then((res) => {
+      .then(res => {
         this.setState({ loading: false });
         this.handleFetchOrder();         // refreching price after submit a right coupon
       })
-      .catch((err) => {
+      .catch(err => {
         this.setState({ error: err, loading: false });
       });
   };
 
-  handleSubmit = (event) => {
+  submit = (event) => {
     // Block native form submission.
     event.preventDefault();
     this.setState({ loading: true });
@@ -238,7 +243,8 @@ class CheckoutForm extends Component {
 
             <OrderPreview data={data} />
             <Divider />
-            
+            <CouponForm handleAddCoupon={(e, code) => this.handleAddCoupon(e, code)}/>
+            <Divider />
             
 
             <Header htmlFor="card-element">
@@ -247,7 +253,7 @@ class CheckoutForm extends Component {
             <CardSection />
             <Button
               primary
-              onClick={this.handleSubmit}
+              onClick={this.submit}
               // type="submit"
               loading={loading}
               disabled={loading} // cant submit twise !
@@ -260,8 +266,7 @@ class CheckoutForm extends Component {
           </div>
         </Form>
         <Divider />
-        <CouponForm handleAddCoupon={e => this.handleAddCoupon(e)}/>
-        <Divider />
+        
       </React.Fragment>
     );
   }
@@ -279,10 +284,8 @@ const Checkout = () => (
     <div>
       <h1>Complete your order</h1>
       <Elements stripe={stripePromise}>
-        
         <CheckoutForm />
-        <Divider />
-        
+        <Divider />      
       </Elements>
     </div>
   </Container>
