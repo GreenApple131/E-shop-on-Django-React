@@ -1,8 +1,7 @@
-import React, { Component, createRef } from "react"
+import React, { Component } from "react"
 import { Link } from 'react-router-dom'
 import '../App.css'
 import PropTypes from "prop-types"
-import _ from 'lodash'
 import { createMedia } from '@artsy/fresnel'
 import { mediaURL } from '../constants'
 import {
@@ -19,9 +18,9 @@ import {
 } from "semantic-ui-react"
 // slider
 // import { Carousel } from 'react-responsive-carousel'
-import Slider from 'react-animated-slider';
-import 'react-animated-slider/build/horizontal.css';
-import 'normalize.css/normalize.css';
+import Slider from 'react-animated-slider'
+import 'react-animated-slider/build/horizontal.css'
+// import 'normalize.css/normalize.css'
 import './elements/sliderStyles.css'
 import './elements/slider-animations.css'
 

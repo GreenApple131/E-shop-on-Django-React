@@ -1,18 +1,15 @@
 import React from "react"
 import { createMedia } from '@artsy/fresnel'
 import {
-  Button,
   Container,
   Divider,
   Dropdown,
   Grid,
   Header,
-  Icon,
   Image,
   List,
   Menu,
   Segment,
-  Sidebar,
   Visibility
 } from "semantic-ui-react"
 import { Link, withRouter } from "react-router-dom"
@@ -21,7 +18,7 @@ import { logout, logoutReload } from "../store/actions/auth"
 import { fetchCart } from '../store/actions/cart'
 
 
-const { MediaContextProvider, Media } = createMedia({
+const { Media } = createMedia({
   breakpoints: {
     mobile: 0,
     tablet: 768,

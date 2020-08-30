@@ -1,21 +1,30 @@
-import React, { Component } from "react";
-import {Link, withRouter } from 'react-router-dom';
+import React, { Component } from "react"
+// import {withRouter } from 'react-router-dom'
 import {
   Button,
+  Checkbox,
   Container,
+  Divider,
+  Dimmer,
   Form,
   Header,
+  Icon,
+  Image,
+  Item,
   Label,
-  Menu,
+  Loader,
   Message,
+  Segment,
   Table,
-} from "semantic-ui-react";
-import { authAxios } from "../utils";
-import { checkoutURL } from "../constants";
+} from "semantic-ui-react"
+import { checkoutURL, orderSummaryURL, addCouponURL } from "../constants"
+import { localhost } from "../constants"
+import { authAxios } from "../utils"
 
-import { Elements, CardElement, useStripe } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { injectStripe, StripeProvider } from "react-stripe-elements";
+import { Elements, CardElement } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
+import { Redirect } from "react-router-dom"
+// import { injectStripe } from "react-stripe-elements"
 
 // Custom styling can be passed to options when creating an Element.
 const CARD_ELEMENT_OPTIONS = {
@@ -43,83 +52,217 @@ function CardSection() {
       <CardElement options={CARD_ELEMENT_OPTIONS} />
     </label>
   );
-};
+}
 
+const OrderPreview = (props) => {
+    const { data } = props;
+    return (
+      <React.Fragment>
+        {data && (
+          <React.Fragment>
+            <Item.Group relaxed>
+              {data.order_items.map((orderItem, i) => {
+                console.log(orderItem);
+                i += 1;
+                return (
+                  <Item key={orderItem.id}>
+                    <Item.Image
+                      size="tiny"
+                      src={`${localhost}${orderItem.item_obj.image}`}
+                    />
+
+                    <Item.Content verticalAlign="middle">
+                      <Item.Header as="a">
+                        {orderItem.quantity} x {orderItem.item_obj.title}
+                      </Item.Header>
+                      <Item.Extra>
+                        <Label>${orderItem.final_price}</Label>
+                      </Item.Extra>
+                    </Item.Content>
+                  </Item>
+                );
+              })}
+
+              <Item.Group>
+                <Item>
+                  <Item.Content>
+                    <Item.Header>Order Total: ${data.total}
+                      {data.coupon && (
+                        <Label color='green' style={{marginLeft: "10px"}}>
+                          Current coupon: {data.coupon.code} for ${data.coupon.amount}
+                        </Label> 
+                      )}
+                    </Item.Header>
+                  </Item.Content>
+                </Item>
+              </Item.Group>
+            </Item.Group>
+          </React.Fragment>
+        )}
+      </React.Fragment>
+    );
+}
+
+class CouponForm extends Component {
+  state = {
+    code: '',
+  };
+
+  handleChange = e => {
+    this.setState({ code: e.target.value });
+  }
+
+  render() {
+    const { code } = this.state;
+    return (
+      <React.Fragment>
+        <Form onSubmit={this.props.handleAddCoupon}>
+          <Form.Field>
+            <label>Coupon code</label>
+            <input placeholder="Enter a coupon.." 
+                   value={code} 
+                   onChange={this.handleChange}
+            />
+          </Form.Field>
+          <Button type="coupon-submit">Submit</Button>
+        </Form>
+      </React.Fragment>
+    );
+  }
+}
 
 class CheckoutForm extends Component {
   state = {
+    data: null,
     loading: false,
     error: null,
     success: false,
   };
 
+  componentDidMount() {
+    this.handleFetchOrder();
+  }
+
+  handleFetchOrder = () => {
+    this.setState({ loading: true });
+    authAxios
+      .get(orderSummaryURL)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ data: res.data, loading: false });
+      })
+      .catch((err) => {
+        if (err.response.status === 404) {
+          this.setState({
+            error: "You currently do not have an order",
+            loading: false,
+          });
+        } else {
+          this.setState({ error: err, loading: false });
+        }
+      });
+  };
+
+  handleAddCoupon = e => {
+    e.preventDefault();
+    this.setState({ loading: true });
+    const {code} = this.state;
+    authAxios
+      .post(addCouponURL, { code })
+      .then((res) => {
+        this.setState({ loading: false });
+        this.handleFetchOrder();         // refreching price after submit a right coupon
+      })
+      .catch((err) => {
+        this.setState({ error: err, loading: false });
+      });
+  };
+
   handleSubmit = (event) => {
     // Block native form submission.
     event.preventDefault();
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
-
-    // if (this.props.stripe) {
-      this.props.stripe.createToken().then(result => {
-        if (result.error) {
-          this.setState({ error: result.error.message, loading: false });
-        } else {
-          this.setState({ error: null });
-          authAxios
-            .post(checkoutURL, { stripeToken: result.token.id })
-            .then(res => {
-              this.setState({ loading: false, success: true });
-            })
-            .catch(err => {
-              this.setState({ loading: false, error: err });
-            });
-        }
-      });
-    // } else {
-      // console.log("Stripe is not loaded");
-    // }
+    if (this.props.stripe) {               // need to fix stripe
+    this.props.stripe.createToken().then((result) => {
+      if (result.error) {
+        this.setState({ error: result.error.message, loading: false });
+      } else {
+        this.setState({ error: null });
+        authAxios
+          .post(checkoutURL, { stripeToken: result.token.id })
+          .then((res) => {
+            this.setState({ loading: false, success: true });
+          })
+          .catch((err) => {
+            this.setState({ loading: false, error: err });
+          });
+      }
+    });
+    } else {                              //
+    console.log("Stripe is not loaded");  //
+    }                                     //
   };
 
-
-
   render() {
-    const { error, loading, success } = this.state;
+    const { data, error, loading, success } = this.state;
 
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <div className="form-row">
-          {error && (
-            <Message negative>
-              <Message.Header>Your payment was unsuccessfull</Message.Header>
-              <p>{JSON.stringify(error)}</p>
-            </Message>
-          )}
-          {success && (
-            <Message positive>
-              <Message.Header>Your payment was successfull</Message.Header>
-              <p>
-                Go to your <b>profile</b> to see the delivery status.
-              </p>
-            </Message>
-          )}
-          <label htmlFor="card-element">
-            Would You like to complete the purchase?
-          </label>
-          <CardSection />
-          <Button
-            primary
-            onClick={this.handleSubmit}
-            // type="submit"
-            loading={loading}
-            disabled={loading} // cant submit twise !
-            // disabled={!this.props.stripe}
+      <React.Fragment>
+        <Form onSubmit={this.handleSubmit}>
+          <div className="form-row">
+            {error && (
+              <Message
+                error
+                header="There was an error"
+                content={JSON.stringify(error)}
+              />
+            )}
+            {loading && (
+              <Segment>
+                <Dimmer active inverted>
+                  <Loader inverted>Loading</Loader>
+                </Dimmer>
 
-            style={{ marginTop: "10px" }}
-          >
-            Submit
-          </Button>
-        </div>
-      </Form>
+                <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+              </Segment>
+            )}
+            {success && (
+              <Message positive>
+                <Message.Header>Your payment was successfull</Message.Header>
+                <p>
+                  Go to your <b>profile</b> to see the delivery status.
+                </p>
+              </Message>
+            )}
+
+            <OrderPreview data={data} />
+            <Divider />
+            
+            
+
+            <Header htmlFor="card-element">
+              Would You like to complete the purchase?
+            </Header>
+            <CardSection />
+            <Button
+              primary
+              onClick={this.handleSubmit}
+              // type="submit"
+              loading={loading}
+              disabled={loading} // cant submit twise !
+              // disabled={!this.props.stripe}
+
+              style={{ marginTop: "10px" }}
+            >
+              Submit
+            </Button>
+          </div>
+        </Form>
+        <Divider />
+        <CouponForm handleAddCoupon={e => this.handleAddCoupon(e)}/>
+        <Divider />
+      </React.Fragment>
     );
   }
 }
@@ -127,18 +270,21 @@ class CheckoutForm extends Component {
 const stripePromise = loadStripe(
   "pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx"
 );
-const stripeApi = 'pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx'
+// const stripeApi = 'pk_test_51H1x1XK0Ldnw408vCnlxLh9TE6mVqne7mdVIEVNEjNwjq7DQykAoahTgxxKxewywBRtFR5LzWuVf144nmfNJnEGL00ERtZWTKx'
 
-const InjectedForm = withRouter(injectStripe(CheckoutForm));
+// const InjectedForm = withRouter(injectStripe(CheckoutForm));
 
 const Checkout = () => (
   <Container text>
-      <div>
-        <h1>Complete your order</h1>
-        <Elements stripe={stripePromise}>
-          <CheckoutForm />
-        </Elements>
-      </div>
+    <div>
+      <h1>Complete your order</h1>
+      <Elements stripe={stripePromise}>
+        
+        <CheckoutForm />
+        <Divider />
+        
+      </Elements>
+    </div>
   </Container>
 );
 

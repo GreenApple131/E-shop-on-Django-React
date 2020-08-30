@@ -3,10 +3,11 @@ from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse
-from django.contrib import messages
+from django.http import Http404
 
 
 
@@ -72,7 +73,8 @@ class OrderDetailView(RetrieveAPIView):
             order = Order.objects.get(user=self.request.user, ordered=False)
             return order
         except ObjectDoesNotExist:
-            return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
+            raise Http404("You do not have an active order")
+            # return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
 
 
 # stripe part
@@ -176,3 +178,16 @@ class PaymentView(APIView):
 
         return Response({"message": "Invalid data received"}, status=HTTP_400_BAD_REQUEST)
 # end stripe
+
+
+class AddCouponView(APIView):
+    def post(self, request, *args, **qwargs):
+        code = request.data.get('code', None)   # get 'code' OR None !!!!
+        if code is None:
+            return Response({"message": "Invalid data received"}, status=HTTP_400_BAD_REQUEST)
+        else:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            coupon = get_object_or_404(Coupon, code=code)
+            order.coupon = coupon
+            order.save()
+            return Response(status=HTTP_200_OK)
