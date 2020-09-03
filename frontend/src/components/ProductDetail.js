@@ -1,71 +1,68 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import axios from 'axios'
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import axios from "axios";
 import {
   Button,
+  Card,
   Container,
   Dimmer,
+  Grid,
+  Header,
   Icon,
-  Image,
   Item,
+  Image,
   Label,
   Loader,
   Message,
-  Segment
-} from 'semantic-ui-react'
-import { productDetailURL, addToCartURL } from '../constants'
-import { authAxios } from '../utils'
-import { fetchCart } from '../store/actions/cart'
-
+  Segment,
+} from "semantic-ui-react";
+import { localhost, productDetailURL, addToCartURL } from "../constants";
+import { authAxios } from "../utils";
+import { fetchCart } from "../store/actions/cart";
 
 class ProductDetail extends Component {
-
   state = {
     loading: false,
     error: null,
     data: [],
-  }
-
+  };
 
   componentDidMount() {
     this.handleFetchItem();
   }
 
   handleFetchItem = () => {
-    const { match: { params } } = this.props;
+    const {
+      match: { params },
+    } = this.props;
     this.setState({ loading: true });
     this.props.fetchCart(); // update the cart count
     axios
       .get(productDetailURL(params.productID))
-      .then(res => {
+      .then((res) => {
         console.log(res.data);
         this.setState({ data: res.data, loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ error: err, loading: false });
-      })
-  }
+      });
+  };
 
-
-
-  handleAddToCart = slug => {
+  handleAddToCart = (slug) => {
     this.setState({ loading: true });
 
     authAxios
       .post(addToCartURL, { slug })
-      .then(res => {
-
+      .then((res) => {
         this.props.fetchCart(); // update the cart count
 
         this.setState({ loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ error: err, loading: false });
-      })
-  }
-
-
+      });
+  };
 
   render() {
     const { data, error, loading } = this.state;
@@ -75,7 +72,7 @@ class ProductDetail extends Component {
         {error && ( // if error then do smth after &&
           <Message
             error
-            header='There was some errors with your submission'
+            header="There was some errors with your submission"
             content={JSON.stringify(error)}
           />
         )}
@@ -85,49 +82,91 @@ class ProductDetail extends Component {
               <Loader inverted>Loading</Loader>
             </Dimmer>
 
-            <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         )}
-        <div className="container">
-          <h2 className="center">Our items</h2>
-        </div>
-        <Item.Group divided>
-
-          <Item key={item.id}>
-            <Item.Image src={item.image} />
-            <Item.Content>
-              <Item.Header as='a'>{item.title}</Item.Header>
-              <Item.Meta>
-                <span className='cinema'>{item.category}</span>
-              </Item.Meta>
-              <Item.Description>{item.description}</Item.Description>
-              <Item.Extra>
-                <Button primary floated='right' icon labelPosition='right' onClick={() => this.handleAddToCart(item.slug)}>
-                  Add to cart
-                  <Icon name='cart plus' />
-                </Button>
-                {item.discount_price &&
-                  <Label color={item.label === "primary" ? "blue" : item.label === "secondary" ? "green" : "olive"}>
-                    {item.label}
-                  </Label>}
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-
-        </Item.Group>
+        <Grid columns={2} divided style={{ marginTop: "5px", marginBottom: "10px"}}>
+          <Grid.Row>
+            <Grid.Column>
+              <Card
+                fluid
+                image={item.image}
+                header={item.title}
+                meta={
+                  <React.Fragment>
+                    {item.category}
+                    {item.discount_price && ( // always show, not just when there is a discount
+                      <Label
+                        color={
+                          item.label === "primary"
+                            ? "blue"
+                            : item.label === "secondary"
+                            ? "green"
+                            : "olive"
+                        }
+                      >
+                        {item.label}
+                      </Label>
+                    )}
+                  </React.Fragment>
+                }
+                description={item.description}
+                extra={
+                  <React.Fragment>
+                    <Button
+                      fluid
+                      color="google plus"
+                      floated="right"
+                      icon
+                      labelPosition="right"
+                      onClick={() => this.handleAddToCart(item.slug)}
+                    >
+                      Add to cart
+                      <Icon name="cart plus" />
+                    </Button>
+                  </React.Fragment>
+                }
+              />
+            </Grid.Column>
+            <Grid.Column>
+              <Header as="h2">Try different variations</Header>
+              {data.variations &&
+                data.variations.map((v) => {
+                  return (
+                    <React.Fragment>
+                      <Header as="h3">{v.name}</Header>
+                      <Item.Group divided key={v.id}>
+                        {v.item_variations.map((iv) => {
+                          return (
+                            <Item key={iv.id}>
+                              {iv.attachment && (
+                                <Item.Image
+                                  size="tiny"
+                                  src={`${localhost}${iv.attachment}`}
+                                />
+                              )}
+                              <Item.Content verticalAlign="middle">
+                                {iv.value}
+                              </Item.Content>
+                            </Item>
+                          );
+                        })}
+                      </Item.Group>
+                    </React.Fragment>
+                  );
+                })}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </Container>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch(fetchCart())
-  }
-}
+    fetchCart: () => dispatch(fetchCart()),
+  };
+};
 
-export default withRouter(
-  connect(
-    null,
-    mapDispatchToProps
-  )(ProductDetail));
+export default withRouter(connect(null, mapDispatchToProps)(ProductDetail));

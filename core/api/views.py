@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from core.models import Item, OrderItem, Order, BillingAddress, Payment, Coupon, Refund
-from .serializers import ItemSerializer, OrderSerializer
+from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
 
 
 import stripe
@@ -34,7 +34,7 @@ class ItemListView(ListAPIView):
 
 class ItemDetailView(RetrieveAPIView):
     permission_classes = (AllowAny, )
-    serializer_class = ItemSerializer
+    serializer_class = ItemDetailSerializer
     queryset = Item.objects.all()
 
 
