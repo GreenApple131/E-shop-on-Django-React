@@ -1,77 +1,71 @@
-import React, { Component } from 'react'
-import axios from 'axios';
-import { connect } from 'react-redux';
-import { 
-  Button, 
-  Container, 
-  Dimmer, 
-  Icon, 
-  Image, 
-  Item, 
-  Label, 
-  Loader, 
-  Message, 
-  Segment 
-} from 'semantic-ui-react';
-import { productListURL, addToCartURL } from '../constants';
-import { authAxios } from '../utils';
-import { fetchCart } from '../store/actions/cart';
-
+import React, { Component } from "react";
+import axios from "axios";
+import { connect } from "react-redux";
+import {
+  Button,
+  Card,
+  Container,
+  Dimmer,
+  Grid,
+  Icon,
+  Image,
+  Item,
+  Label,
+  Loader,
+  Message,
+  Segment,
+} from "semantic-ui-react";
+import { productListURL, addToCartURL } from "../constants";
+import { authAxios } from "../utils";
+import { fetchCart } from "../store/actions/cart";
 
 class Home extends Component {
-
   state = {
     loading: false,
     error: null,
     data: [],
-  }
-
+  };
 
   async componentDidMount() {
     this.setState({ loading: true });
 
     this.props.fetchCart(); // update the cart count
-    
-    const res = await axios.get(productListURL)
-    .then(res => {
-      console.log(res.data);
-      this.setState({ data: res.data, loading: false });
-    })
-    .catch(err => {
-      this.setState({ error: err, loading: false });
-    })
-    
+
+    const res = await axios
+      .get(productListURL)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ data: res.data, loading: false });
+      })
+      .catch((err) => {
+        this.setState({ error: err, loading: false });
+      });
   }
 
-  
-
-  handleAddToCart = slug => {
+  handleAddToCart = (slug) => {
     this.setState({ loading: true });
-    
+
     authAxios
       .post(addToCartURL, { slug })
-      .then(res => {
-
+      .then((res) => {
         this.props.fetchCart(); // update the cart count
 
         this.setState({ loading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({ error: err, loading: false });
-      })
-  }
-
-
+      });
+  };
 
   render() {
     const { data, error, loading } = this.state;
-    
+
     return (
-      <Container>
+      <Container style={{marginTop: "10px", marginBottom: "10px"}}>
         {error && ( // if error then do smth after &&
           <Message
             error
-            header='There was some errors with your submission'
+            header="There was some errors with your submission"
             content={JSON.stringify(error)}
           />
         )}
@@ -81,55 +75,74 @@ class Home extends Component {
               <Loader inverted>Loading</Loader>
             </Dimmer>
 
-            <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
+            <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         )}
         <div className="container">
           <h2 className="center">Our items</h2>
         </div>
-        <Item.Group divided>
-          {this.state.data.map(item => {
+        <Grid doubling columns={5} style={{marginTop: "10px", marginBottom: "10px"}}>
+          {this.state.data.map((item) => {
             return (
-              <Item key={item.id}>
-                <Item.Image src={item.image} />
-                <Item.Content>
-                  <Item.Header 
-                    as='a' 
-                    onClick={() => this.props.history.push(`/products/${item.id}`)}
-                  >
-                    {item.title}
-                  </Item.Header>
-                  <Item.Meta>
-                    <span className='cinema'>{item.category}</span>
-                  </Item.Meta>
-                  <Item.Description>{item.description}</Item.Description>
-                  <Item.Extra>
-                    <Button primary floated='right' icon labelPosition='right' onClick={() => this.handleAddToCart(item.slug)}>
+              <Grid.Column key={item.id}>
+                <Card>
+                  <Image 
+                    src={item.image} 
+                    wrapped ui={false}
+                    as="a"
+                    onClick={() =>
+                      this.props.history.push(`/products/${item.id}`)
+                    } 
+                  />
+                  <Card.Content>
+                    <Item.Header
+                      as="a"
+                      onClick={() =>
+                        this.props.history.push(`/products/${item.id}`)
+                      }
+                    >
+                      {item.title}
+                    </Item.Header>
+                    <Card.Meta>
+                      <span className="cinema">{item.category}</span>
+                    </Card.Meta>
+                    <Card.Description>{item.description}</Card.Description>
+                  </Card.Content>
+                  <Card.Content textAlign="left" extra>
+                    {/* <Button primary floated='right' icon labelPosition='right' onClick={() => this.handleAddToCart(item.slug)}>
                       Add to cart
                       <Icon name='cart plus' />
-                    </Button>
-                    {item.discount_price && 
-                      <Label color={item.label === "primary" ? "blue": item.label === "secondary" ? "green": "olive"}>
+                    </Button> */}
+                    <Label color='black'>${item.price}</Label>
+                    {item.discount_price && (
+                      <Label
+                        color={
+                          item.label === "primary"
+                            ? "blue"
+                            : item.label === "secondary"
+                            ? "green"
+                            : "olive"
+                        }
+                      >
                         {item.label}
-                      </Label>}
-                  </Item.Extra>
-                </Item.Content>
-              </Item>
-            )
+                        
+                      </Label>
+                    )}
+                  </Card.Content>
+                </Card>
+              </Grid.Column>
+            );
           })}
-        </Item.Group>
+        </Grid>
       </Container>
     );
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    fetchCart: () => dispatch(fetchCart())
-  }
-}
+    fetchCart: () => dispatch(fetchCart()),
+  };
+};
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Home);
+export default connect(null, mapDispatchToProps)(Home);

@@ -49,7 +49,7 @@ class OrderSummary extends React.Component {
     const { data, error, loading } = this.state;
     console.log(data);
     return (
-      <Container>
+      <Container style={{marginTop: "10px", marginBottom: "10px"}}>
         <Header>Order Summary</Header>
         {error && (
           <Message
@@ -80,21 +80,21 @@ class OrderSummary extends React.Component {
             </Table.Header>
 
             <Table.Body>
-              {data.order_items.map((order_item, i) => {
+              {data.order_items.map((orderItem, i) => {
 								i+=1
                 return (
-                  <Table.Row key={order_item.id}>
+                  <Table.Row key={orderItem.id}>
                     <React.Fragment>
                       <Table.Cell>{i}</Table.Cell>
-                      <Table.Cell>{order_item.item}</Table.Cell>
-                      <Table.Cell>${order_item.item_obj.price}</Table.Cell>
-                      <Table.Cell>{order_item.item_obj.quantity}</Table.Cell>
-                      {order_item.item_obj.discount_price && (
+                      <Table.Cell>{orderItem.item.title}</Table.Cell>
+                      <Table.Cell>${orderItem.item.price}</Table.Cell>
+                      <Table.Cell>{orderItem.quantity}</Table.Cell>
+                      {orderItem.item.discount_price && (
                         <Label color="green" ribbon>
                           ON DISCOUNT
                         </Label>
                       )}
-                      ${order_item.final_price}
+                      ${orderItem.final_price}
                     </React.Fragment>
                   </Table.Row>
                 );

@@ -133,9 +133,9 @@ class ProductDetail extends Component {
               {data.variations &&
                 data.variations.map((v) => {
                   return (
-                    <React.Fragment>
+                    <React.Fragment key={v.id}>
                       <Header as="h3">{v.name}</Header>
-                      <Item.Group divided key={v.id}>
+                      <Item.Group divided >
                         {v.item_variations.map((iv) => {
                           return (
                             <Item key={iv.id}>

@@ -4,12 +4,23 @@ from django.shortcuts import reverse
 
 
 CATEGORY_CHOICES = (
-	('S', 'Shirt'),
+	('Co', 'Coats'),
+	('Ja', 'Jackets'),
+	('S', 'Shirts'),
+	('Ts', 'T-shirts'),
 	('Sw', 'Sport wear'),
-	('Ow', 'Outwear'),
+	('Sh', 'Shoes'),
+	('Hat', 'Hats'),
+	('Ow', 'Outwear')
+)
+
+CATEGORY_TYPES = (
+	('M', 'Men'),
+	('W', 'Women')
 )
 
 LABEL_CHOICES = (
+	('O', 'ordinary'),
 	('P', 'primary'),
 	('S', 'secondary'),
 	('D', 'danger'),
@@ -31,7 +42,9 @@ class Item(models.Model):
 	price = models.FloatField()
 	discount_price = models.FloatField(blank=True, null=True)
 	category = models.CharField(
-	    choices=CATEGORY_CHOICES, max_length=2, default="S")
+	    choices=CATEGORY_CHOICES, max_length=3, blank=False)
+	category_type = models.CharField(
+		choices=CATEGORY_TYPES, max_length=1, default='M', blank=False)
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
 	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
 	description = models.TextField(
@@ -88,6 +101,7 @@ class OrderItem(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 	ordered = models.BooleanField(default=False)
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)
+	item_variations = models.ManyToManyField(ItemVariation)
 	quantity = models.IntegerField(default=1)
 
 	def __str__(self):
