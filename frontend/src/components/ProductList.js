@@ -104,30 +104,40 @@ class Home extends Component {
                       {item.title}
                     </Item.Header>
                     <Card.Meta>
-                      <span className="cinema">{item.category}</span>
+                      {item.category}
+                      {item.discount_price && ( // always show, not just when there is a discount
+                        <Label
+                          color={
+                            item.label === "primary"
+                              ? "blue"
+                              : item.label === "secondary"
+                              ? "green"
+                              : "olive"
+                          }
+                        >
+                          {item.label}
+                        </Label>
+                      )}
                     </Card.Meta>
                     <Card.Description>{item.description}</Card.Description>
                   </Card.Content>
-                  <Card.Content textAlign="left" extra>
-                    {/* <Button primary floated='right' icon labelPosition='right' onClick={() => this.handleAddToCart(item.slug)}>
-                      Add to cart
-                      <Icon name='cart plus' />
-                    </Button> */}
-                    <Label color='black'>${item.price}</Label>
-                    {item.discount_price && (
-                      <Label
-                        color={
-                          item.label === "primary"
-                            ? "blue"
-                            : item.label === "secondary"
-                            ? "green"
-                            : "olive"
-                        }
-                      >
-                        {item.label}
-                        
-                      </Label>
-                    )}
+                  <Card.Content extra>
+                    <React.Fragment>
+                      {item.discount_price && (
+                        <Button color='black' floated="left"><small><strike>${item.price}</strike></small> ${item.discount_price}</Button>
+                      )}
+                      {!item.discount_price && (
+                        <Button color='black' floated="left" >${item.price}</Button>
+                      )}
+                      <Button
+                        color="black"
+                        floated="right"
+                        icon
+                        onClick={() => this.handleAddToCart(item.slug)}
+                      > Buy
+                        <Icon name="cart plus" />
+                      </Button>
+                    </React.Fragment>
                   </Card.Content>
                 </Card>
               </Grid.Column>
