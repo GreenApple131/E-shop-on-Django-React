@@ -88,7 +88,7 @@ class Home extends Component {
                 <Card>
                   <Image 
                     src={item.image} 
-                    wrapped ui={false}
+                    wrapped ui={true}
                     as="a"
                     onClick={() =>
                       this.props.history.push(`/products/${item.id}`)
@@ -130,12 +130,15 @@ class Home extends Component {
                         <Button color='black' floated="left" >${item.price}</Button>
                       )}
                       <Button
+                        animated='vertical'
                         color="black"
                         floated="right"
-                        icon
                         onClick={() => this.handleAddToCart(item.slug)}
-                      > Buy
-                        <Icon name="cart plus" />
+                      >
+                        <Button.Content hidden>Buy</Button.Content>
+                        <Button.Content visible>
+                          <Icon name="cart plus" />
+                        </Button.Content>
                       </Button>
                     </React.Fragment>
                   </Card.Content>

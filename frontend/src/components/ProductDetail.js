@@ -102,10 +102,77 @@ class ProductDetail extends Component {
         >
           <Grid.Row>
             <Grid.Column>
-              <Card
+            <Card fluid>
+              <Card.Content>
+                <Header textAlign='center' as='h1'>{item.title}</Header>
+                <Image src={item.image} wrapped ui={true} />
+                <Card.Meta>
+                  <React.Fragment>
+                    {item.category}
+                    {item.discount_price && ( // always show, not just when there is a discount
+                      <Label
+                        color={
+                          item.label === "primary"
+                            ? "blue"
+                            : item.label === "secondary"
+                            ? "green"
+                            : "olive"
+                        }
+                      >
+                        {item.label}
+                      </Label>
+                    )}
+                  </React.Fragment>
+                </Card.Meta>
+                <Card.Description>
+                  <Header as='b' textAlign='center'>Select Size:</Header>
+                  <br />
+                  <Segment>
+                    <Button.Group >
+                      <Button color='black'>XS</Button>
+                      <Button >S</Button>
+                      <Button >M</Button>
+                      <Button >L</Button>
+                      <Button >XL</Button>
+                      <Button >XXL</Button>
+                    </Button.Group>
+                  </Segment>
+                </Card.Description>
+              </Card.Content>
+              <Divider />
+              <Card.Content extra>
+                    <React.Fragment>
+                      {item.discount_price && (
+                        <Button color='black' floated="left"><small><strike>${item.price}</strike></small> ${item.discount_price}</Button>
+                      )}
+                      {!item.discount_price && (
+                        <Button color='black' floated="left" >${item.price}</Button>
+                      )}
+                      <Button
+                        animated='vertical'
+                        color="black"
+                        floated="right"
+                        onClick={this.handleToggleForm}
+                      >
+                        <Button.Content hidden>
+                          <Icon name="cart plus" />
+                        </Button.Content>
+                        <Button.Content visible>
+                          Add to cart
+                        </Button.Content>
+                      </Button>
+                    </React.Fragment>
+                  </Card.Content>
+            </Card>
+              {/* <Card
                 fluid
                 image={item.image}
-                header={item.title}
+                header={
+                  <Header textAlign='center' as="h1">
+                    {item.title}
+                    <Divider />
+                  </Header>
+                }
                 meta={
                   <React.Fragment>
                     {item.category}
@@ -140,7 +207,7 @@ class ProductDetail extends Component {
                     </Button>
                   </React.Fragment>
                 }
-              />
+              /> */}
               {formVisible && (
                 <React.Fragment>
                   <Divider />
@@ -154,8 +221,10 @@ class ProductDetail extends Component {
               )}
             </Grid.Column>
             <Grid.Column>
-              <Header as="h2">Try different variations</Header>
-              {data.variations &&
+              <Header as="h2">Description</Header>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pulvinar auctor urna vitae tincidunt. Nam ut vestibulum dolor, sit amet lobortis orci. Curabitur sollicitudin nisl sed feugiat vulputate. Vivamus eu vehicula leo, eleifend porta nunc. Sed nec turpis sit amet purus tincidunt bibendum vel vel ligula. Nulla consequat eu neque ac consequat. In tristique condimentum erat. Duis eu sapien viverra, finibus ex sed, egestas libero.</p>
+              <p>Nullam lorem nisi, fringilla ac rhoncus viverra, accumsan eget tellus. Praesent elementum purus eget est molestie hendrerit. Aenean ac scelerisque nibh. Donec lobortis eros in ante condimentum euismod et eu metus. Proin consectetur id odio ut blandit. Cras vestibulum sagittis sapien non lobortis. Fusce rutrum nulla est, vel scelerisque purus bibendum vel. Vestibulum a odio finibus, tempor massa id, accumsan libero. Ut venenatis vel lorem ut fermentum. Aenean aliquam dolor pellentesque, pretium magna at, luctus velit. Pellentesque id consequat justo. Sed nec ligula in libero ultricies bibendum quis sit amet libero.</p>
+              {/* {data.variations &&
                 data.variations.map((v) => {
                   return (
                     <React.Fragment key={v.id}>
@@ -179,7 +248,7 @@ class ProductDetail extends Component {
                       </Item.Group>
                     </React.Fragment>
                   );
-                })}
+                })} */}
             </Grid.Column>
           </Grid.Row>
         </Grid>
