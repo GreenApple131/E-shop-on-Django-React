@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.shortcuts import reverse
+from multiselectfield import MultiSelectField
 
 
 CATEGORY_CHOICES = (
@@ -19,11 +20,22 @@ CATEGORY_TYPES = (
 	('W', 'Women')
 )
 
+SIZE_CHOICES = (
+	('XS', 'XS'),
+	('S', 'S'),
+	('M', 'M'),
+	('L', 'L'),
+	('XL', 'XL'),
+	('XXL', 'XXL')
+)
+
+
+
 LABEL_CHOICES = (
 	('O', 'ordinary'),
 	('P', 'primary'),
 	('S', 'secondary'),
-	('D', 'danger'),
+	('D', 'danger')
 )
 
 
@@ -35,6 +47,13 @@ class UserProfile(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+
+class Sizes(models.Model):
+	size = models.CharField(max_length=30, blank=True)
+	
+	def __str__(self):
+		return self.size
 
 
 class Item(models.Model):
@@ -49,6 +68,7 @@ class Item(models.Model):
 	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
 	description = models.TextField(
 	    max_length=5000, default="This is a test description. Write something about this product.")
+	size = models.ManyToManyField(Sizes)
 	image = models.ImageField()
 
 	def __str__(self):

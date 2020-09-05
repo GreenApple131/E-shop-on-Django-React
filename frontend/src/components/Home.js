@@ -7,11 +7,8 @@ import { mediaURL } from '../constants'
 import {
   Button,
   Container,
-  Divider,
-  Grid,
   Header,
   Icon,
-  Image,
   Segment,
   Sidebar,
   Visibility,

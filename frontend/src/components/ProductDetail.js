@@ -7,7 +7,9 @@ import {
   Card,
   Container,
   Dimmer,
+  Divider,
   Grid,
+  Form,
   Header,
   Icon,
   Item,
@@ -25,11 +27,19 @@ class ProductDetail extends Component {
   state = {
     loading: false,
     error: null,
+    formVisible: false,
     data: [],
   };
 
   componentDidMount() {
     this.handleFetchItem();
+  }
+
+  handleToggleForm = () => {
+    const {formVisible} = this.state;
+    this.setState({
+      formVisible: !formVisible
+    })
   }
 
   handleFetchItem = () => {
@@ -65,7 +75,7 @@ class ProductDetail extends Component {
   };
 
   render() {
-    const { data, error, loading } = this.state;
+    const { data, error, formVisible, loading } = this.state;
     const item = data;
     return (
       <Container>
@@ -85,7 +95,11 @@ class ProductDetail extends Component {
             <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         )}
-        <Grid columns={2} divided style={{ marginTop: "5px", marginBottom: "10px"}}>
+        <Grid
+          columns={2}
+          divided
+          style={{ marginTop: "5px", marginBottom: "10px" }}
+        >
           <Grid.Row>
             <Grid.Column>
               <Card
@@ -119,7 +133,7 @@ class ProductDetail extends Component {
                       floated="right"
                       icon
                       labelPosition="right"
-                      onClick={() => this.handleAddToCart(item.slug)}
+                      onClick={this.handleToggleForm}
                     >
                       Add to cart
                       <Icon name="cart plus" />
@@ -127,6 +141,17 @@ class ProductDetail extends Component {
                   </React.Fragment>
                 }
               />
+              {formVisible && (
+                <React.Fragment>
+                  <Divider />
+                  <Form>
+                    <Form.Field />
+                    <Form.Button onClick={() => this.handleAddToCart(item.slug)}>
+                      Submit
+                    </Form.Button>
+                  </Form>
+                </React.Fragment>
+              )}
             </Grid.Column>
             <Grid.Column>
               <Header as="h2">Try different variations</Header>
@@ -135,7 +160,7 @@ class ProductDetail extends Component {
                   return (
                     <React.Fragment key={v.id}>
                       <Header as="h3">{v.name}</Header>
-                      <Item.Group divided >
+                      <Item.Group divided>
                         {v.item_variations.map((iv) => {
                           return (
                             <Item key={iv.id}>

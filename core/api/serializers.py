@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Item, Order, OrderItem, Coupon, Variation, ItemVariation
+from core.models import Item, Order, OrderItem, Coupon, Sizes, Variation, ItemVariation
 
 
 class StringSerializer(serializers.StringRelatedField):
@@ -17,10 +17,19 @@ class CouponSerializer(serializers.ModelSerializer):
         )
 
 
+class ItemSizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sizes
+        fields = (
+            'id',
+            'size'
+        )
+
 
 class ItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
@@ -31,6 +40,7 @@ class ItemSerializer(serializers.ModelSerializer):
             'discount_price',
             'category',
             'category_type',
+            'size',
             'label',
             'slug',
             'description',
@@ -42,6 +52,9 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_label(self, obj):
         return obj.get_label_display()
+
+    def get_size(self, obj):
+        return ItemSizeSerializer(obj.size, many=True).data
 
 
 class VariationDetailSerializer(serializers.ModelSerializer):
@@ -150,6 +163,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
     variations = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
@@ -160,6 +174,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'discount_price',
             'category',
             'category_type',
+            'size',
             'label',
             'slug',
             'description',
@@ -175,3 +190,6 @@ class ItemDetailSerializer(serializers.ModelSerializer):
 
     def get_variations(self, obj):
         return VariationSerializer(obj.variation_set.all(), many=True).data
+    
+    def get_size(self, obj):
+        return ItemSizeSerializer(obj.size, many=True).data

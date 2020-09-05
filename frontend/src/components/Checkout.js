@@ -1,21 +1,18 @@
 import React, { Component } from "react"
-// import {withRouter } from 'react-router-dom'
+// import {withRouter, Redirect } from 'react-router-dom'
 import {
   Button,
-  Checkbox,
   Container,
   Divider,
   Dimmer,
   Form,
   Header,
-  Icon,
   Image,
   Item,
   Label,
   Loader,
   Message,
   Segment,
-  Table,
 } from "semantic-ui-react"
 import { checkoutURL, orderSummaryURL, addCouponURL } from "../constants"
 import { localhost } from "../constants"
@@ -23,7 +20,6 @@ import { authAxios } from "../utils"
 
 import { Elements, CardElement } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
-import { Redirect } from "react-router-dom"
 // import { injectStripe } from "react-stripe-elements"
 
 // Custom styling can be passed to options when creating an Element.
@@ -68,12 +64,12 @@ const OrderPreview = (props) => {
                   <Item key={orderItem.id}>
                     <Item.Image
                       size="tiny"
-                      src={`${localhost}${orderItem.item_obj.image}`}
+                      src={`${localhost}${orderItem.item.image}`}
                     />
 
                     <Item.Content verticalAlign="middle">
                       <Item.Header as="a">
-                        {orderItem.quantity} x {orderItem.item_obj.title}
+                        {orderItem.quantity} x {orderItem.item.title}
                       </Item.Header>
                       <Item.Extra>
                         <Label>${orderItem.final_price}</Label>
