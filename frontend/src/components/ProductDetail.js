@@ -8,6 +8,7 @@ import {
   Container,
   Dimmer,
   Divider,
+  Dropdown,
   Grid,
   Form,
   Header,
@@ -17,6 +18,7 @@ import {
   Label,
   Loader,
   Message,
+  Radio,
   Segment,
 } from "semantic-ui-react";
 import { localhost, productDetailURL, addToCartURL } from "../constants";
@@ -29,6 +31,7 @@ class ProductDetail extends Component {
     error: null,
     formVisible: false,
     data: [],
+    selectedOptions: []
   };
 
   componentDidMount() {
@@ -36,11 +39,19 @@ class ProductDetail extends Component {
   }
 
   handleToggleForm = () => {
-    const {formVisible} = this.state;
+    const { formVisible } = this.state;
     this.setState({
-      formVisible: !formVisible
-    })
-  }
+      formVisible: !formVisible,
+    });
+  };
+
+  handleChangeColor = () => {
+    // for change color selected size button
+    const { black } = this.state;
+    this.setState({
+      black: !black,
+    });
+  };
 
   handleFetchItem = () => {
     const {
@@ -74,9 +85,15 @@ class ProductDetail extends Component {
       });
   };
 
+  handleChange = (e, {value}) => {
+    this.setState({ value });
+    console.log(value)
+  };
+
   render() {
-    const { data, error, formVisible, loading } = this.state;
+    const { data, error, formVisible, loading, value } = this.state;
     const item = data;
+
     return (
       <Container>
         {error && ( // if error then do smth after &&
@@ -102,68 +119,89 @@ class ProductDetail extends Component {
         >
           <Grid.Row>
             <Grid.Column>
-            <Card fluid>
-              <Card.Content>
-                <Header textAlign='center' as='h1'>{item.title}</Header>
-                <Image src={item.image} wrapped ui={true} />
-                <Card.Meta>
-                  <React.Fragment>
-                    {item.category}
-                    {item.discount_price && ( // always show, not just when there is a discount
-                      <Label
-                        color={
-                          item.label === "primary"
-                            ? "blue"
-                            : item.label === "secondary"
-                            ? "green"
-                            : "olive"
-                        }
-                      >
-                        {item.label}
-                      </Label>
-                    )}
-                  </React.Fragment>
-                </Card.Meta>
-                <Card.Description>
-                  <Header as='b' textAlign='center'>Select Size:</Header>
-                  <br />
-                  <Segment>
-                    <Button.Group >
-                      <Button color='black'>XS</Button>
-                      <Button >S</Button>
-                      <Button >M</Button>
-                      <Button >L</Button>
-                      <Button >XL</Button>
-                      <Button >XXL</Button>
-                    </Button.Group>
-                  </Segment>
-                </Card.Description>
-              </Card.Content>
-              <Divider />
-              <Card.Content extra>
+              <Card fluid>
+                <Card.Content>
+                  <Header textAlign="center" as="h1">
+                    {item.title}
+                  </Header>
+                  <Image src={item.image} wrapped ui={true} />
+                  <Card.Meta>
                     <React.Fragment>
-                      {item.discount_price && (
-                        <Button color='black' floated="left"><small><strike>${item.price}</strike></small> ${item.discount_price}</Button>
+                      {item.category}
+                      {item.discount_price && ( // always show, not just when there is a discount
+                        <Label
+                          color={
+                            item.label === "primary"
+                              ? "blue"
+                              : item.label === "secondary"
+                              ? "green"
+                              : "olive"
+                          }
+                        >
+                          {item.label}
+                        </Label>
                       )}
-                      {!item.discount_price && (
-                        <Button color='black' floated="left" >${item.price}</Button>
-                      )}
-                      <Button
-                        animated='vertical'
-                        color="black"
-                        floated="right"
-                        onClick={this.handleToggleForm}
-                      >
-                        <Button.Content hidden>
-                          <Icon name="cart plus" />
-                        </Button.Content>
-                        <Button.Content visible>
-                          Add to cart
-                        </Button.Content>
-                      </Button>
                     </React.Fragment>
-                  </Card.Content>
-            </Card>
+                  </Card.Meta>
+                  <br />
+                  <Card.Description>
+                    <Header as="b" textAlign="center">
+                      Select Size:
+                    </Header>
+                    <br />
+                    {item.size && ( // shows availiable sizes
+                      <Form onSubmit={() => this.handleAddToCart(item.slug)}>
+                        {/* {data.size.map(item => {
+                                  return {
+                                    key: item.id,
+                                    label: item.size,
+                                    value: item.size
+                                  }
+                                })} */}
+                            <Form.Group inline>
+                            <Form.Field
+                              control={Radio}
+                              label='One'
+                              value='1'
+                              checked={value === '1'}
+                              onChange={this.handleChange}
+                            />
+                            </Form.Group>
+                            <Button.Content visible>Add to cart</Button.Content>
+                      </Form>
+                    )}
+                  </Card.Description>
+                </Card.Content>
+                <Divider />
+                <Card.Content extra>
+                  <React.Fragment>
+                    {item.discount_price && (
+                      <Button color="black" floated="left">
+                        <small>
+                          <strike>${item.price}</strike>
+                        </small>{" "}
+                        ${item.discount_price}
+                      </Button>
+                    )}
+                    {!item.discount_price && (
+                      <Button color="black" floated="left">
+                        ${item.price}
+                      </Button>
+                    )}
+                    <Button
+                      animated="vertical"
+                      color="black"
+                      floated="right"
+                      onClick={this.handleToggleForm}
+                    >
+                      <Button.Content hidden>
+                        <Icon name="cart plus" />
+                      </Button.Content>
+                      <Button.Content visible>Add to cart</Button.Content>
+                    </Button>
+                  </React.Fragment>
+                </Card.Content>
+              </Card>
               {/* <Card
                 fluid
                 image={item.image}
@@ -213,7 +251,9 @@ class ProductDetail extends Component {
                   <Divider />
                   <Form>
                     <Form.Field />
-                    <Form.Button onClick={() => this.handleAddToCart(item.slug)}>
+                    <Form.Button
+                      onClick={() => this.handleAddToCart(item.slug)}
+                    >
                       Submit
                     </Form.Button>
                   </Form>
@@ -222,8 +262,28 @@ class ProductDetail extends Component {
             </Grid.Column>
             <Grid.Column>
               <Header as="h2">Description</Header>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pulvinar auctor urna vitae tincidunt. Nam ut vestibulum dolor, sit amet lobortis orci. Curabitur sollicitudin nisl sed feugiat vulputate. Vivamus eu vehicula leo, eleifend porta nunc. Sed nec turpis sit amet purus tincidunt bibendum vel vel ligula. Nulla consequat eu neque ac consequat. In tristique condimentum erat. Duis eu sapien viverra, finibus ex sed, egestas libero.</p>
-              <p>Nullam lorem nisi, fringilla ac rhoncus viverra, accumsan eget tellus. Praesent elementum purus eget est molestie hendrerit. Aenean ac scelerisque nibh. Donec lobortis eros in ante condimentum euismod et eu metus. Proin consectetur id odio ut blandit. Cras vestibulum sagittis sapien non lobortis. Fusce rutrum nulla est, vel scelerisque purus bibendum vel. Vestibulum a odio finibus, tempor massa id, accumsan libero. Ut venenatis vel lorem ut fermentum. Aenean aliquam dolor pellentesque, pretium magna at, luctus velit. Pellentesque id consequat justo. Sed nec ligula in libero ultricies bibendum quis sit amet libero.</p>
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
+                pulvinar auctor urna vitae tincidunt. Nam ut vestibulum dolor,
+                sit amet lobortis orci. Curabitur sollicitudin nisl sed feugiat
+                vulputate. Vivamus eu vehicula leo, eleifend porta nunc. Sed nec
+                turpis sit amet purus tincidunt bibendum vel vel ligula. Nulla
+                consequat eu neque ac consequat. In tristique condimentum erat.
+                Duis eu sapien viverra, finibus ex sed, egestas libero.
+              </p>
+              <p>
+                Nullam lorem nisi, fringilla ac rhoncus viverra, accumsan eget
+                tellus. Praesent elementum purus eget est molestie hendrerit.
+                Aenean ac scelerisque nibh. Donec lobortis eros in ante
+                condimentum euismod et eu metus. Proin consectetur id odio ut
+                blandit. Cras vestibulum sagittis sapien non lobortis. Fusce
+                rutrum nulla est, vel scelerisque purus bibendum vel. Vestibulum
+                a odio finibus, tempor massa id, accumsan libero. Ut venenatis
+                vel lorem ut fermentum. Aenean aliquam dolor pellentesque,
+                pretium magna at, luctus velit. Pellentesque id consequat justo.
+                Sed nec ligula in libero ultricies bibendum quis sit amet
+                libero.
+              </p>
               {/* {data.variations &&
                 data.variations.map((v) => {
                   return (
