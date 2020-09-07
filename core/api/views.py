@@ -10,20 +10,18 @@ from django.http.response import JsonResponse
 from django.http import Http404
 
 
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from core.models import Item, OrderItem, Order, BillingAddress, Payment, Coupon, Refund
+from core.models import Item, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
 
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
 
 
 class ItemListView(ListAPIView):
@@ -41,33 +39,59 @@ class ItemDetailView(RetrieveAPIView):
 class AddToCartView(APIView):
     def post(self, request, *args, **kwargs):
         slug = request.data.get('slug', None)
+        # приймаємо розмір, колір предмету по id, або порожній масив [], так як предмет може не мати вибіркових параметрів
+        variations = request.data.get('variations', [])
         if slug is None:
             return Response({"message": "Invalid request"}, status=HTTP_400_BAD_REQUEST)
+
+        item = get_object_or_404(Item, slug=slug)
+
+        # поки що реалізовано тільки по розмірах. треба додати інші фільтри
+        # після реалізації інших позицій для вибору можна буде розкоментувати ці три рядки нижче
+
+        # minimum_variation_count = item.objects.filter(item=item).count()
+        # if len(variations) < minimum_variation_count:
+        #     return Response({"message": "Please specify the required variations"}, status=HTTP_400_BAD_REQUEST)
+
+
+        order_item_qs = OrderItem.objects.filter(
+            item=item,
+            user=request.user,
+            ordered=False
+        )
+
+        for v in variations:  # [1, 4]
+            order_item_qs = order_item_qs.filter(
+                item_size__exact=v
+            )
+
+        if order_item_qs.exists():
+            order_item = order_item_qs.first()
+            order_item.quantity += 1
+            order_item.save()
         else:
-            item = get_object_or_404(Item, slug=slug)
-            order_item, created = OrderItem.objects.get_or_create(
+            order_item = OrderItem.objects.create(
                 item=item,
                 user=request.user,
-                ordered=False,
+                ordered=False
             )
-            order_qs = Order.objects.filter(user=request.user, ordered=False)
-            if order_qs.exists():
-                order = order_qs[0]
-                # check if the order item is in the order
-                if order.items.filter(item__slug=item.slug).exists():
-                    order_item.quantity += 1
-                    order_item.save()
-                    return Response(status=HTTP_200_OK)
-                else:
-                    order_item.quantity == 0
-                    order.items.add(order_item)
-                    return Response(status=HTTP_200_OK)
-            else:
-                ordered_date = timezone.now()
-                order = Order.objects.create(
-                    user=request.user, ordered_date=ordered_date)
+        order_item.item_size.add(*variations) # *variations додає за один раз усі можливі прийняті вибрані фільтри якщо їх багато. Надходять вони у вигляді масиву [3,6](якщо треба вибрати дві позиції(розмір, колір) по айдішниках)
+        order_item.save()
+
+        order_qs = Order.objects.filter(user=request.user, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            # check if the order item is in the order
+            print('order_item.quantity',order_item.quantity)
+            if not order.items.filter(item__id=order_item.id).exists():
                 order.items.add(order_item)
                 return Response(status=HTTP_200_OK)
+        else:
+            ordered_date = timezone.now()
+            order = Order.objects.create(
+                user=request.user, ordered_date=ordered_date)
+            order.items.add(order_item)
+            return Response(status=HTTP_200_OK)
 
 
 class OrderDetailView(RetrieveAPIView):
@@ -93,8 +117,6 @@ class PaymentView(APIView):
 
         stripe.api_key = "sk_test_51H1x1XK0Ldnw408vNVMO4DeIGzr5V6wb2cP0LXXgdVQJU6UeuajbDKqXMSSt5UuiuETcydLUclIIfjKIqn50c0s1001XzmU8J6"
 
-        
-
         if userprofile.stripe_customer_id != '' and userprofile.stripe_customer_id is not None:
             customer = stripe.Customer.retrieve(
                 userprofile.stripe_customer_id)
@@ -117,17 +139,17 @@ class PaymentView(APIView):
                 amount=amount,
                 currency="eur",
                 description="My First Test Charge (created for API docs)",
-                source=token, # obtained with Stripe.js
+                source=token,  # obtained with Stripe.js
             )
 
             # charge = stripe.Charge.create(
             #     amount=amount,  # cents
             #     currency="usd",
             #     # customer=userprofile.stripe_customer_id,
-            #     source=stripeToken, 
+            #     source=stripeToken,
             #     description='Good test'
             # )
- 
+
             # create the payment
             payment = Payment()
             payment.stripe_charge_id = charge['id']

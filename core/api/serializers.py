@@ -22,6 +22,7 @@ class ItemSizeSerializer(serializers.ModelSerializer):
         model = Sizes
         fields = (
             'id',
+            'name',
             'size'
         )
 
@@ -85,6 +86,7 @@ class ItemVariationDetailSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     item = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
     item_variations = serializers.SerializerMethodField()
     final_price = serializers.SerializerMethodField()
 
@@ -94,6 +96,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
             'id',
             'item',
             'item_variations',
+            'size',
             'quantity',
             'final_price'
         )
@@ -103,6 +106,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     def get_item_variations(self, obj):
         return ItemVariationDetailSerializer(obj.item_variations.all(), many=True).data
+
+    def get_size(self, obj):
+        return ItemSizeSerializer(obj.item_size, many=True).data
 
     def get_final_price(self, obj):
         return obj.get_final_price() # уже є ця функція в models

@@ -50,6 +50,7 @@ class UserProfile(models.Model):
 
 
 class Sizes(models.Model):
+	name = models.CharField(max_length=20, default='size')
 	size = models.CharField(max_length=30, blank=True)
 	
 	def __str__(self):
@@ -122,6 +123,7 @@ class OrderItem(models.Model):
 	ordered = models.BooleanField(default=False)
 	item = models.ForeignKey(Item, on_delete=models.CASCADE)
 	item_variations = models.ManyToManyField(ItemVariation)
+	item_size = models.ManyToManyField(Sizes)
 	quantity = models.IntegerField(default=1)
 
 	def __str__(self):

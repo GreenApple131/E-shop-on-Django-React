@@ -8,12 +8,10 @@ import {
   Container,
   Dimmer,
   Divider,
-  Dropdown,
   Grid,
   Form,
   Header,
   Icon,
-  Item,
   Image,
   Label,
   Loader,
@@ -31,7 +29,7 @@ class ProductDetail extends Component {
     error: null,
     formVisible: false,
     data: [],
-    selectedOptions: []
+    formData: {},
   };
 
   componentDidMount() {
@@ -51,7 +49,7 @@ class ProductDetail extends Component {
     this.setState({
       black: !black,
     });
-  };
+  }
 
   handleFetchItem = () => {
     const {
@@ -68,13 +66,24 @@ class ProductDetail extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
+  }
+
+  handleFormatData = formData => {
+    // convert {colour: 1, size: 2} to [1,2] - they're all variations
+    return Object.keys(formData).map(key => {
+      return formData[key];
+    });
   };
 
   handleAddToCart = (slug) => {
-    this.setState({ loading: true });
+    this.setState({ loading: true })
+    const { formData } = this.state
+    const variations = this.handleFormatData(formData)
+
+    console.log(variations)
 
     authAxios
-      .post(addToCartURL, { slug })
+      .post(addToCartURL, { slug, variations })
       .then((res) => {
         this.props.fetchCart(); // update the cart count
 
@@ -83,15 +92,21 @@ class ProductDetail extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-  };
+  }
 
-  handleChange = (e, {value}) => {
+  handleChange = (e, { name, value }) => {
+    // функція вже готова для приймання різних типів одягу (розмір, колір і т.д.). Лишилось реалізувати підтримку інштх типів в моделях Django і допилити у формі відображення
     this.setState({ value });
-    console.log(value)
+    const { formData } = this.state;
+    const updatedFormData = {
+      ...formData,
+      [name]: value,
+    };
+    this.setState({ formData: updatedFormData });
   };
 
   render() {
-    const { data, error, formVisible, loading, value } = this.state;
+    const { data, error, loading, formData, value } = this.state;
     const item = data;
 
     return (
@@ -149,116 +164,60 @@ class ProductDetail extends Component {
                       Select Size:
                     </Header>
                     <br />
+                    <br />
                     {item.size && ( // shows availiable sizes
                       <Form onSubmit={() => this.handleAddToCart(item.slug)}>
-                        {/* {data.size.map(item => {
-                                  return {
-                                    key: item.id,
-                                    label: item.size,
-                                    value: item.size
-                                  }
-                                })} */}
-                            <Form.Group inline>
-                            <Form.Field
-                              control={Radio}
-                              label='One'
-                              value='1'
-                              checked={value === '1'}
-                              onChange={this.handleChange}
-                            />
-                            </Form.Group>
-                            <Button.Content visible>Add to cart</Button.Content>
+                        <Form.Group required inline>
+                          {item.size.map((s) => {
+                            return (
+                              <Form.Field
+                                key={s.id}
+                                control={Radio}
+                                label={s.size}
+                                name={s.name}
+                                value={s.id}
+
+                                checked={value === s.id}
+                                onChange={this.handleChange}
+                              />
+                            );
+                          })}
+                        </Form.Group>
+                        <Divider />
+                        <React.Fragment>
+                          {item.discount_price && (
+                            <Button color="black" floated="left">
+                              <small>
+                                <strike>${item.price}</strike>
+                              </small>{" "}
+                              ${item.discount_price}
+                            </Button>
+                          )}
+                          {!item.discount_price && (
+                            <Label color="black" floated="left">
+                              ${item.price}
+                            </Label>
+                          )}
+                          <Button
+                            animated="vertical"
+                            color="black"
+                            floated="right"
+                            type="submit"
+                          >
+                            <Button.Content hidden>
+                              <Icon name="cart plus" />
+                            </Button.Content>
+                            <Button.Content type="submit" visible>
+                              Add to cart
+                            </Button.Content>
+                          </Button>
+                        </React.Fragment>
                       </Form>
                     )}
                   </Card.Description>
                 </Card.Content>
                 <Divider />
-                <Card.Content extra>
-                  <React.Fragment>
-                    {item.discount_price && (
-                      <Button color="black" floated="left">
-                        <small>
-                          <strike>${item.price}</strike>
-                        </small>{" "}
-                        ${item.discount_price}
-                      </Button>
-                    )}
-                    {!item.discount_price && (
-                      <Button color="black" floated="left">
-                        ${item.price}
-                      </Button>
-                    )}
-                    <Button
-                      animated="vertical"
-                      color="black"
-                      floated="right"
-                      onClick={this.handleToggleForm}
-                    >
-                      <Button.Content hidden>
-                        <Icon name="cart plus" />
-                      </Button.Content>
-                      <Button.Content visible>Add to cart</Button.Content>
-                    </Button>
-                  </React.Fragment>
-                </Card.Content>
               </Card>
-              {/* <Card
-                fluid
-                image={item.image}
-                header={
-                  <Header textAlign='center' as="h1">
-                    {item.title}
-                    <Divider />
-                  </Header>
-                }
-                meta={
-                  <React.Fragment>
-                    {item.category}
-                    {item.discount_price && ( // always show, not just when there is a discount
-                      <Label
-                        color={
-                          item.label === "primary"
-                            ? "blue"
-                            : item.label === "secondary"
-                            ? "green"
-                            : "olive"
-                        }
-                      >
-                        {item.label}
-                      </Label>
-                    )}
-                  </React.Fragment>
-                }
-                description={item.description}
-                extra={
-                  <React.Fragment>
-                    <Button
-                      fluid
-                      color="google plus"
-                      floated="right"
-                      icon
-                      labelPosition="right"
-                      onClick={this.handleToggleForm}
-                    >
-                      Add to cart
-                      <Icon name="cart plus" />
-                    </Button>
-                  </React.Fragment>
-                }
-              /> */}
-              {formVisible && (
-                <React.Fragment>
-                  <Divider />
-                  <Form>
-                    <Form.Field />
-                    <Form.Button
-                      onClick={() => this.handleAddToCart(item.slug)}
-                    >
-                      Submit
-                    </Form.Button>
-                  </Form>
-                </React.Fragment>
-              )}
             </Grid.Column>
             <Grid.Column>
               <Header as="h2">Description</Header>
