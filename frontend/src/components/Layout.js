@@ -1,5 +1,5 @@
-import React from "react"
-import { createMedia } from '@artsy/fresnel'
+import React from "react";
+import { createMedia } from "@artsy/fresnel";
 import {
   Container,
   Divider,
@@ -10,13 +10,12 @@ import {
   List,
   Menu,
   Segment,
-  Visibility
-} from "semantic-ui-react"
-import { Link, withRouter } from "react-router-dom"
-import { connect } from "react-redux"
-import { logout, logoutReload } from "../store/actions/auth"
-import { fetchCart } from '../store/actions/cart'
-
+  Visibility,
+} from "semantic-ui-react";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { logout, logoutReload } from "../store/actions/auth";
+import { fetchCart } from "../store/actions/cart";
 
 const { Media } = createMedia({
   breakpoints: {
@@ -24,67 +23,79 @@ const { Media } = createMedia({
     tablet: 768,
     computer: 1024,
   },
-})
+});
 
 class CustomLayout extends React.Component {
-
   componentDidMount() {
     this.props.fetchCart();
   }
 
-  hideFixedMenu = () => this.setState({ fixed: false })
-  showFixedMenu = () => this.setState({ fixed: true })
+  hideFixedMenu = () => this.setState({ fixed: false });
+  showFixedMenu = () => this.setState({ fixed: true });
 
   render() {
     const { authenticated, cart, loading } = this.props;
     return (
       <div>
-        <Media greaterThan='mobile'>
+        <Media greaterThan="mobile">
           <Visibility
             once={false}
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-
-              <Menu inverted>
-                <Container>
-                  <Link to="/">
-                    <Menu.Item header>Home</Menu.Item>
-                  </Link>
-                  <Link to="/products">
-                    <Menu.Item header>Products</Menu.Item>
-                  </Link>
-                  <Menu.Menu position='right'>
+            <Menu inverted>
+              <Container>
+                <Link to="/">
+                  <Menu.Item header>Home</Menu.Item>
+                </Link>
+                <Link to="/products">
+                  <Menu.Item header>Products</Menu.Item>
+                </Link>
+                <Menu.Menu position="right">
                   {authenticated ? (
-                    
                     <React.Fragment>
-                    <Dropdown
-                      icon='cart'
-                      loading={loading}
-                      text={`${cart !== null ? cart.order_items.length : 0}`}
-                      pointing 
-                      className='link item'
-                    >
-                      <Dropdown.Menu>
-                        {cart && cart.order_items.map(order_item => {
-                          return (
-                            <Dropdown.Item key={order_item.id}>
-                              {order_item.quantity} x {order_item.item.title}
-                            </Dropdown.Item>
-                          )
-                        })}
-                        {cart && cart.order_items.length < 1 ? ( <Dropdown.Item>No items in your cart</Dropdown.Item> ) :null }
-                        <Dropdown.Divider />
-                        <Dropdown.Item 
-                          icon='arrow right' 
-                          text='Chechout'
-                          onClick={() => this.props.history.push('/order-summary')} 
-                        />
-                      </Dropdown.Menu>
-                    </Dropdown>
-                    <Menu.Item header onClick={() => {this.props.logout(); this.props.logoutReload() }}>
-                      Logout
-                    </Menu.Item>
+                      <Link to="/profile">
+                        <Menu.Item>Profile</Menu.Item>
+                      </Link>
+                      <Dropdown
+                        icon="cart"
+                        loading={loading}
+                        text={`${cart !== null ? cart.order_items.length : 0}`}
+                        pointing
+                        className="link item"
+                      >
+                        <Dropdown.Menu>
+                          {cart &&
+                            cart.order_items.map((order_item) => {
+                              return (
+                                <Dropdown.Item key={order_item.id}>
+                                  {order_item.quantity} x{" "}
+                                  {order_item.item.title}
+                                </Dropdown.Item>
+                              );
+                            })}
+                          {cart && cart.order_items.length < 1 ? (
+                            <Dropdown.Item>No items in your cart</Dropdown.Item>
+                          ) : null}
+                          <Dropdown.Divider />
+                          <Dropdown.Item
+                            icon="arrow right"
+                            text="Chechout"
+                            onClick={() =>
+                              this.props.history.push("/order-summary")
+                            }
+                          />
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      <Menu.Item
+                        header
+                        onClick={() => {
+                          this.props.logout();
+                          this.props.logoutReload();
+                        }}
+                      >
+                        Logout
+                      </Menu.Item>
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
@@ -96,9 +107,9 @@ class CustomLayout extends React.Component {
                       </Link>
                     </React.Fragment>
                   )}
-                  </Menu.Menu>
-                </Container>
-              </Menu>
+                </Menu.Menu>
+              </Container>
+            </Menu>
           </Visibility>
 
           {this.props.children}
@@ -135,12 +146,13 @@ class CustomLayout extends React.Component {
                 </List>
               </Grid.Column>
               <Grid.Column width={7}>
-              <Header as='h4' inverted>
-                Footer Header
-              </Header>
-              <p>
-                Extra space for a call to action inside the footer that could help re-engage users.
-              </p>
+                <Header as="h4" inverted>
+                  Footer Header
+                </Header>
+                <p>
+                  Extra space for a call to action inside the footer that could
+                  help re-engage users.
+                </p>
               </Grid.Column>
             </Grid>
 
@@ -167,25 +179,22 @@ class CustomLayout extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     authenticated: state.auth.token !== null,
     cart: state.cart.shoppingCart,
-    loading: state.cart.loading
+    loading: state.cart.loading,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     logoutReload: () => dispatch(logoutReload()),
-    fetchCart: () => dispatch(fetchCart())
+    fetchCart: () => dispatch(fetchCart()),
   };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CustomLayout)
+  connect(mapStateToProps, mapDispatchToProps)(CustomLayout)
 );

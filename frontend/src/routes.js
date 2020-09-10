@@ -9,6 +9,7 @@ import ProductList from "./components/ProductList"
 import ProductDetail from "./components/ProductDetail"
 import OrderSummary from "./components/OrderSummary"
 import Checkout from "./components/Checkout"
+import Profile from "./components/Profile"
 
 const BaseRouter = () => (
   <Hoc>
@@ -16,6 +17,7 @@ const BaseRouter = () => (
     <Route path="/products/:productID" component={ProductDetail} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
+    <Route path="/profile" component={Profile} />
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
     <Route exact path="/" component={HomepageLayout} />
