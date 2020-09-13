@@ -1,22 +1,17 @@
-import React, { Component } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
+import React, { Component } from "react"
 import {
   Button,
-  Card,
-  Container,
+  Checkbox,
+  Divider,
   Grid,
+  Header,
   Icon,
   Image,
-  Header,
-  Item,
-  Label,
-  Loader,
   Menu,
-  Message,
-  Divider,
+  Sidebar,
   Segment,
-} from "semantic-ui-react";
+} from "semantic-ui-react"
+
 
 class Profile extends Component {
   state = { activeItem: "billing address" };
@@ -31,7 +26,7 @@ class Profile extends Component {
         <Grid container columns={2} divided>
           <Grid.Row>
             <Grid.Column width={6}>
-              <Menu inverted pointing vertical>
+              <Menu inverted vertical>
                 <Menu.Item
                   name="billing address"
                   active={activeItem === "billing address"}

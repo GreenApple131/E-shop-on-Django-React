@@ -1,9 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   Button,
   Container,
   Dimmer,
   Header,
+  Icon,
   Image,
   Label,
   Loader,
@@ -11,9 +13,13 @@ import {
   Segment,
   Table,
 } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { authAxios } from "../utils";
-import { orderSummaryURL } from "../constants";
+import {
+  addToCartURL,
+  orderSummaryURL,
+  orderItemDeleteURL,
+} from "../constants";
 
 class OrderSummary extends React.Component {
   state = {
@@ -45,19 +51,70 @@ class OrderSummary extends React.Component {
       });
   };
 
-  renderVariations = orderItem => {
+  renderVariations = (orderItem) => {
     let text = "";
-    orderItem.size.forEach(iv => {
+    orderItem.size.forEach((iv) => {
       text += `${iv.name}: ${iv.size}, `;
     });
     return text;
   };
 
+  handleFormatData = (size) => {
+    // парситься size, тому що поки що в моделі реалізовано тільки розмір. Колір можна додати в майбутньому
+    // convert [{id: 1}, {id: 2}] to [1,2] - they're all variations
+    return Object.keys(size).map((key) => {
+      return size[key].id;
+    });
+  };
+
+  handleAddToCart = (slug, size) => {
+    // парситься size, тому що поки що в моделі реалізовано тільки розмір. Колір можна додати в майбутньому
+    this.setState({ loading: true });
+    const variations = this.handleFormatData(size);
+
+    authAxios
+      .post(addToCartURL, { slug, variations })
+      .then((res) => {
+        this.handleFetchOrder(); // update the cart count
+
+        this.setState({ loading: false });
+      })
+      .catch((err) => {
+        this.setState({ error: err, loading: false });
+      });
+  };
+
+  handleRemoveQuantityFromCart = (quantity, itemID) => {
+    if (quantity > 1) {
+      // call decrease quantity of item
+    } else {
+      this.handleRemoveItem(itemID);
+    }
+  };
+
+  handleRemoveItem = (itemID) => {
+    authAxios
+      .delete(orderItemDeleteURL(itemID))
+      .then((res) => {
+        // callback
+        this.handleFetchOrder();
+      })
+      .catch((err) => {
+        this.setState({ error: err });
+      });
+  };
+
   render() {
     const { data, error, loading } = this.state;
     console.log(data);
+
+    const { isAuthenticated } = this.props;
+    if (!isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
+
     return (
-      <Container style={{marginTop: "10px", marginBottom: "10px"}}>
+      <Container style={{ marginTop: "10px", marginBottom: "10px" }}>
         <Header>Order Summary</Header>
         {error && (
           <Message
@@ -89,23 +146,53 @@ class OrderSummary extends React.Component {
 
             <Table.Body>
               {data.order_items.map((orderItem, i) => {
-								i+=1
+                i += 1;
                 return (
                   <Table.Row key={orderItem.id}>
                     <React.Fragment>
                       <Table.Cell>{i}</Table.Cell>
                       <Table.Cell>
-                        {orderItem.item.title} - {" "}
+                        {orderItem.item.title} -{" "}
                         {this.renderVariations(orderItem)}
                       </Table.Cell>
                       <Table.Cell>${orderItem.item.price}</Table.Cell>
-                      <Table.Cell>{orderItem.quantity}</Table.Cell>
-                      {orderItem.item.discount_price && (
-                        <Label color="green" ribbon>
-                          ON DISCOUNT
-                        </Label>
-                      )}
-                      ${orderItem.final_price}
+                      <Table.Cell textAlign="center">
+                        <Icon
+                          name="minus"
+                          style={{ float: "left", cursor: "pointer" }}
+                          onClick={() =>
+                            this.handleRemoveQuantityFromCart(
+                              orderItem.quantity,
+                              orderItem.id
+                            )
+                          }
+                        />
+                        {orderItem.quantity}
+                        <Icon
+                          name="plus"
+                          style={{ float: "right", cursor: "pointer" }}
+                          onClick={() =>
+                            this.handleAddToCart(
+                              orderItem.item.slug,
+                              orderItem.size
+                            )
+                          }
+                        />
+                      </Table.Cell>
+                      <Table.Cell>
+                        {orderItem.item.discount_price && (
+                          <Label color="green" ribbon>
+                            ON DISCOUNT
+                          </Label>
+                        )}
+                        ${orderItem.final_price}
+                        <Icon
+                          name="trash"
+                          color="red"
+                          style={{ float: "right", cursor: "pointer" }}
+                          onClick={() => this.handleRemoveItem(orderItem.id)}
+                        />
+                      </Table.Cell>
                     </React.Fragment>
                   </Table.Row>
                 );
@@ -138,4 +225,12 @@ class OrderSummary extends React.Component {
   }
 }
 
-export default OrderSummary;
+
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.auth.token !== null
+  };
+};
+
+
+export default connect(mapStateToProps)(OrderSummary);

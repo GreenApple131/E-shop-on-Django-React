@@ -10,7 +10,7 @@ from django.http.response import JsonResponse
 from django.http import Http404
 
 
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -36,6 +36,11 @@ class ItemDetailView(RetrieveAPIView):
     queryset = Item.objects.all()
 
 
+class OrderItemDeleteView(DestroyAPIView):
+    permission_classes = (IsAuthenticated, )
+    queryset = OrderItem.objects.all()
+
+
 class AddToCartView(APIView):
     def post(self, request, *args, **kwargs):
         slug = request.data.get('slug', None)
@@ -52,7 +57,6 @@ class AddToCartView(APIView):
         # minimum_variation_count = item.objects.filter(item=item).count()
         # if len(variations) < minimum_variation_count:
         #     return Response({"message": "Please specify the required variations"}, status=HTTP_400_BAD_REQUEST)
-
 
         order_item_qs = OrderItem.objects.filter(
             item=item,
@@ -75,14 +79,15 @@ class AddToCartView(APIView):
                 user=request.user,
                 ordered=False
             )
-        order_item.item_size.add(*variations) # *variations додає за один раз усі можливі прийняті вибрані фільтри якщо їх багато. Надходять вони у вигляді масиву [3,6](якщо треба вибрати дві позиції(розмір, колір) по айдішниках)
+        # *variations додає за один раз усі можливі прийняті вибрані фільтри якщо їх багато. Надходять вони у вигляді масиву [3,6](якщо треба вибрати дві позиції(розмір, колір) по айдішниках)
+        order_item.item_size.add(*variations)
         order_item.save()
 
         order_qs = Order.objects.filter(user=request.user, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
             # check if the order item is in the order
-            print('order_item.quantity',order_item.quantity)
+            print('order_item.quantity', order_item.quantity)
             if not order.items.filter(item__id=order_item.id).exists():
                 order.items.add(order_item)
                 return Response(status=HTTP_200_OK)

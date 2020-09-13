@@ -14,3 +14,5 @@ export const orderSummaryURL = `${endpoint}/order-summary/`
 export const checkoutURL = `${endpoint}/checkout/`
 export const addCouponURL = `${endpoint}/add-coupon/`
 
+export const orderItemDeleteURL = id => `${endpoint}/order-items/${id}/delete/`
+
