@@ -19,6 +19,7 @@ import {
   addToCartURL,
   orderSummaryURL,
   orderItemDeleteURL,
+  orderItemUpdateQuantityURL,
 } from "../constants";
 
 class OrderSummary extends React.Component {
@@ -84,12 +85,16 @@ class OrderSummary extends React.Component {
       });
   };
 
-  handleRemoveQuantityFromCart = (quantity, itemID) => {
-    if (quantity > 1) {
-      // call decrease quantity of item
-    } else {
-      this.handleRemoveItem(itemID);
-    }
+  handleRemoveQuantityFromCart = (slug) => {
+    authAxios
+      .post(orderItemUpdateQuantityURL, { slug })
+      .then((res) => {
+        // callback
+        this.handleFetchOrder();
+      })
+      .catch((err) => {
+        this.setState({ error: err });
+      });
   };
 
   handleRemoveItem = (itemID) => {
@@ -161,10 +166,7 @@ class OrderSummary extends React.Component {
                           name="minus"
                           style={{ float: "left", cursor: "pointer" }}
                           onClick={() =>
-                            this.handleRemoveQuantityFromCart(
-                              orderItem.quantity,
-                              orderItem.id
-                            )
+                            this.handleRemoveQuantityFromCart(orderItem.item.slug)
                           }
                         />
                         {orderItem.quantity}
@@ -225,12 +227,10 @@ class OrderSummary extends React.Component {
   }
 }
 
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
   };
 };
-
 
 export default connect(mapStateToProps)(OrderSummary);

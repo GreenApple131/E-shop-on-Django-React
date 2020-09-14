@@ -6,7 +6,8 @@ from .views import (
     PaymentView,
     AddCouponView,
     ItemDetailView,
-    OrderItemDeleteView
+    OrderItemDeleteView,
+    OrderQuantityUpdateView
 )
 
 urlpatterns = [
@@ -18,5 +19,7 @@ urlpatterns = [
     path('add-coupon/', AddCouponView.as_view(), name='add-coupon'),
     path('order-items/<pk>/delete/',
          OrderItemDeleteView.as_view(), name='order-item-delete'),
+    path('order-item/update-quantity/',
+         OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
          
 ]
