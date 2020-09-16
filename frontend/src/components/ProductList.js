@@ -19,7 +19,7 @@ import { productListURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 
-class Home extends Component {
+class ProductList extends Component {
   state = {
     loading: false,
     error: null,
@@ -85,9 +85,10 @@ class Home extends Component {
           {this.state.data.map((item) => {
             return (
               <Grid.Column key={item.id}>
-                <Card>
+                <Card style={{width: '300px', height: '400px'}}>
                   <Image 
                     src={item.image} 
+                    style={{width: '300px', height: '250px'}}
                     wrapped ui={true}
                     as="a"
                     onClick={() =>
@@ -101,23 +102,17 @@ class Home extends Component {
                         this.props.history.push(`/products/${item.id}`)
                       }
                     >
-                      {item.title}
+                      {item.title} {"  "}
+                      {item.discount_price && ( // always show, not just when there is a discount
+                        <Label
+                          color='violet'
+                        >
+                          discount
+                        </Label>
+                      )}
                     </Item.Header>
                     <Card.Meta>
                       {item.category}
-                      {item.discount_price && ( // always show, not just when there is a discount
-                        <Label
-                          color={
-                            item.label === "primary"
-                              ? "blue"
-                              : item.label === "secondary"
-                              ? "green"
-                              : "olive"
-                          }
-                        >
-                          {item.label}
-                        </Label>
-                      )}
                     </Card.Meta>
                     <Card.Description>{item.description}</Card.Description>
                   </Card.Content>
@@ -158,4 +153,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(null, mapDispatchToProps)(ProductList);

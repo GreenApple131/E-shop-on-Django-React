@@ -1,4 +1,6 @@
 import React from "react";
+import _ from "lodash";
+import faker from "faker";
 import { createMedia } from "@artsy/fresnel";
 import {
   Container,
@@ -9,6 +11,7 @@ import {
   Image,
   List,
   Menu,
+  Search,
   Segment,
   Visibility,
 } from "semantic-ui-react";
@@ -25,7 +28,37 @@ const { Media } = createMedia({
   },
 });
 
+const source = _.times(5, () => ({
+  title: faker.company.companyName(),
+  description: faker.company.catchPhrase(),
+  image: faker.internet.avatar(),
+  price: faker.finance.amount(0, 100, 2, "$"),
+}));
+
+const initialState = { isLoading: false, results: [], value: "" };
+
 class CustomLayout extends React.Component {
+  state = initialState;
+
+  handleResultSelect = (e, { result }) =>
+    this.setState({ value: result.title });
+
+  handleSearchChange = (e, { value }) => {
+    this.setState({ isLoading: true, value });
+
+    setTimeout(() => {
+      if (this.state.value.length < 1) return this.setState(initialState);
+
+      const re = new RegExp(_.escapeRegExp(this.state.value), "i");
+      const isMatch = (result) => re.test(result.title);
+
+      this.setState({
+        isLoading: false,
+        results: _.filter(source, isMatch),
+      });
+    }, 300);
+  };
+
   componentDidMount() {
     this.props.fetchCart();
   }
@@ -34,9 +67,10 @@ class CustomLayout extends React.Component {
   showFixedMenu = () => this.setState({ fixed: true });
 
   render() {
+    const { isLoading, value, results } = this.state;
     const { authenticated, cart, loading } = this.props;
     return (
-      <div>
+      <React.Fragment>
         <Media greaterThan="mobile">
           <Visibility
             once={false}
@@ -45,17 +79,48 @@ class CustomLayout extends React.Component {
           >
             <Menu inverted>
               <Container>
-                <Link to="/">
-                  <Menu.Item header>Home</Menu.Item>
-                </Link>
-                <Link to="/products">
-                  <Menu.Item header>Products</Menu.Item>
-                </Link>
+                <Grid>
+                  <Grid.Column width={6}>
+                    <Link to="/">
+                      <Menu.Item pointing header>
+                        Home
+                      </Menu.Item>
+                    </Link>
+                  </Grid.Column>
+                  <Grid.Column width={10}>
+                    <Menu.Item>
+                      <Search
+                        size="mini"
+                        input={{ fluid: true }}
+                        loading={isLoading}
+                        onResultSelect={this.handleResultSelect}
+                        onSearchChange={_.debounce(
+                          this.handleSearchChange,
+                          500,
+                          {
+                            leading: true,
+                          }
+                        )}
+                        placeholder="Search what do you want..."
+                        results={results}
+                        value={value}
+                        style={{
+                          marginTop: "-10px",
+                          marginBottom: "-10px",
+                          marginRight: "10px",
+                          width: "200px",
+                        }}
+                      />
+                    </Menu.Item>
+                  </Grid.Column>
+                </Grid>
+                
+                
                 <Menu.Menu position="right">
                   {authenticated ? (
                     <React.Fragment>
                       <Link to="/profile">
-                        <Menu.Item>Profile</Menu.Item>
+                        <Menu.Item pointing>Profile</Menu.Item>
                       </Link>
                       <Dropdown
                         icon="cart"
@@ -99,12 +164,12 @@ class CustomLayout extends React.Component {
                     </React.Fragment>
                   ) : (
                     <React.Fragment>
-                      <Link to="/login">
-                        <Menu.Item header>Login</Menu.Item>
-                      </Link>
-                      <Link to="/signup">
-                        <Menu.Item header>Signup</Menu.Item>
-                      </Link>
+                      <Menu.Item header>
+                        <Link to="/login">Login</Link>
+                      </Menu.Item>
+                      <Menu.Item header>
+                        <Link to="/signup">Signup</Link>
+                      </Menu.Item>
                     </React.Fragment>
                   )}
                 </Menu.Menu>
@@ -174,7 +239,7 @@ class CustomLayout extends React.Component {
             </List>
           </Container>
         </Segment>
-      </div>
+      </React.Fragment>
     );
   }
 }

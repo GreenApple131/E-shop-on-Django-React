@@ -13,7 +13,7 @@ import Profile from "./components/Profile"
 
 const BaseRouter = () => (
   <Hoc>
-    <Route exact path="/products" component={ProductList} />
+    {/* <Route exact path="/products" component={ProductList} /> */}
     <Route path="/products/:productID" component={ProductDetail} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />

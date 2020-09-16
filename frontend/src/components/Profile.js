@@ -1,15 +1,9 @@
 import React, { Component } from "react"
 import {
-  Button,
-  Checkbox,
   Divider,
   Grid,
   Header,
-  Icon,
-  Image,
   Menu,
-  Sidebar,
-  Segment,
 } from "semantic-ui-react"
 
 
@@ -22,11 +16,11 @@ class Profile extends Component {
     const { activeItem } = this.state;
 
     return (
-      <React.Fragment container>
+      <React.Fragment>
         <Grid container columns={2} divided>
           <Grid.Row>
             <Grid.Column width={6}>
-              <Menu inverted vertical>
+              <Menu vertical>
                 <Menu.Item
                   name="billing address"
                   active={activeItem === "billing address"}
