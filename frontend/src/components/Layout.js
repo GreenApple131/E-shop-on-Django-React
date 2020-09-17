@@ -77,51 +77,41 @@ class CustomLayout extends React.Component {
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Menu inverted>
-              <Container>
-                <Grid>
-                  <Grid.Column width={6}>
-                    <Link to="/">
-                      <Menu.Item pointing header>
-                        Home
-                      </Menu.Item>
-                    </Link>
-                  </Grid.Column>
-                  <Grid.Column width={10}>
-                    <Menu.Item>
-                      <Search
-                        size="mini"
-                        input={{ fluid: true }}
-                        loading={isLoading}
-                        onResultSelect={this.handleResultSelect}
-                        onSearchChange={_.debounce(
-                          this.handleSearchChange,
-                          500,
-                          {
-                            leading: true,
-                          }
-                        )}
-                        placeholder="Search what do you want..."
-                        results={results}
-                        value={value}
-                        style={{
-                          marginTop: "-10px",
-                          marginBottom: "-10px",
-                          marginRight: "10px",
-                          width: "200px",
-                        }}
-                      />
-                    </Menu.Item>
-                  </Grid.Column>
-                </Grid>
-                
-                
-                <Menu.Menu position="right">
-                  {authenticated ? (
-                    <React.Fragment>
+            <Menu fixed="top" inverted borderless>
+              <Grid columns={5} container columns='5'>
+                <Grid.Column width={2}>
+                  <Menu.Item header>
+                    <Link to="/">Home</Link>
+                  </Menu.Item>
+                </Grid.Column>
+                <Grid.Column width={8}>
+                  <Search
+                    size="mini"
+                    input={{ fluid: true }}
+                    loading={isLoading}
+                    onResultSelect={this.handleResultSelect}
+                    onSearchChange={_.debounce(this.handleSearchChange, 500, {
+                      leading: true,
+                    })}
+                    placeholder="Search what do you want..."
+                    results={results}
+                    value={value}
+                    style={{
+                      marginTop: "7px",
+                      // marginBottom: "-10px",
+                      // marginRight: "10px",
+                      width: "auto",
+                    }}
+                  />
+                </Grid.Column>
+                {authenticated ? (
+                  <React.Fragment>
+                    <Grid.Column width={2}>
                       <Link to="/profile">
                         <Menu.Item pointing>Profile</Menu.Item>
                       </Link>
+                    </Grid.Column>
+                    <Grid.Column width={2}>
                       <Dropdown
                         icon="cart"
                         loading={loading}
@@ -152,6 +142,8 @@ class CustomLayout extends React.Component {
                           />
                         </Dropdown.Menu>
                       </Dropdown>
+                    </Grid.Column>
+                    <Grid.Column width={2}>
                       <Menu.Item
                         header
                         onClick={() => {
@@ -161,20 +153,127 @@ class CustomLayout extends React.Component {
                       >
                         Logout
                       </Menu.Item>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
+                    </Grid.Column>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <Grid.Column width={2}>
                       <Menu.Item header>
                         <Link to="/login">Login</Link>
                       </Menu.Item>
+                    </Grid.Column>
+
+                    <Grid.Column width={2}>
                       <Menu.Item header>
                         <Link to="/signup">Signup</Link>
                       </Menu.Item>
-                    </React.Fragment>
-                  )}
-                </Menu.Menu>
-              </Container>
+                    </Grid.Column>
+                  </React.Fragment>
+                )}
+              </Grid>
             </Menu>
+
+            {/* <Menu fixed="top" inverted>
+              <Container>
+                <Grid>
+                  <Grid.Column width={6}>
+                    <Link to="/">
+                      <Menu.Item pointing header>
+                        Home
+                      </Menu.Item>
+                    </Link>
+                  </Grid.Column>
+                  <Grid.Column width={10}>
+                    <Menu.Item>
+                      <Search
+                        size="mini"
+                        input={{ fluid: true }}
+                        loading={isLoading}
+                        onResultSelect={this.handleResultSelect}
+                        onSearchChange={_.debounce(
+                          this.handleSearchChange,
+                          500,
+                          {
+                            leading: true,
+                          }
+                        )}
+                        placeholder="Search what do you want..."
+                        results={results}
+                        value={value}
+                        style={{
+                          marginTop: "-7px",
+                          marginBottom: "-10px",
+                          marginRight: "10px",
+                          width: "200px",
+                        }}
+                      />
+                    </Menu.Item>
+
+                    {authenticated ? (
+                          <Link to="/profile">
+                            <Menu.Item pointing>Profile</Menu.Item>
+                          </Link>
+                          <Dropdown
+                            icon="cart"
+                            loading={loading}
+                            text={`${
+                              cart !== null ? cart.order_items.length : 0
+                            }`}
+                            pointing
+                            className="link item"
+                          >
+                            <Dropdown.Menu>
+                              {cart &&
+                                cart.order_items.map((order_item) => {
+                                  return (
+                                    <Dropdown.Item key={order_item.id}>
+                                      {order_item.quantity} x{" "}
+                                      {order_item.item.title}
+                                    </Dropdown.Item>
+                                  );
+                                })}
+                              {cart && cart.order_items.length < 1 ? (
+                                <Dropdown.Item>
+                                  No items in your cart
+                                </Dropdown.Item>
+                              ) : null}
+                              <Dropdown.Divider />
+                              <Dropdown.Item
+                                icon="arrow right"
+                                text="Chechout"
+                                onClick={() =>
+                                  this.props.history.push("/order-summary")
+                                }
+                              />
+                            </Dropdown.Menu>
+                          </Dropdown>
+                          <Menu.Item
+                            header
+                            onClick={() => {
+                              this.props.logout();
+                              this.props.logoutReload();
+                            }}
+                          >
+                            Logout
+                          </Menu.Item>
+                        </React.Fragment>
+                      </Grid.Column>
+                    ) : (
+                      <Grid.Column width={4}>
+                        <React.Fragment>
+                          <Menu.Item header>
+                            <Link to="/login">Login</Link>
+                          </Menu.Item>
+                          <Menu.Item header>
+                            <Link to="/signup">Signup</Link>
+                          </Menu.Item>
+                        </React.Fragment>
+                      </Grid.Column>
+                    )}
+                  </Grid.Column>
+                </Grid>
+              </Container>
+            </Menu> */}
           </Visibility>
 
           {this.props.children}

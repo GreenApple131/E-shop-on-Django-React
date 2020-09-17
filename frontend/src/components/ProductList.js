@@ -7,6 +7,7 @@ import {
   Container,
   Dimmer,
   Grid,
+  Header,
   Icon,
   Image,
   Item,
@@ -122,7 +123,7 @@ class ProductList extends Component {
                         <Button color='black' floated="left"><small><strike>${item.price}</strike></small> ${item.discount_price}</Button>
                       )}
                       {!item.discount_price && (
-                        <Button color='black' floated="left" >${item.price}</Button>
+                        <small>${item.price}</small>
                       )}
                       <Button
                         animated='vertical'

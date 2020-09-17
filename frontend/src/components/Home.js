@@ -272,17 +272,24 @@ class DesktopContainer extends Component {
                     <Card.Content extra>
                       <React.Fragment>
                         {item.discount_price && (
-                          <Button color="black" floated="left">
+                          <Header floated="left" color='violet' style={{ marginTop: "10px" }}>
                             <small>
-                              <strike>${item.price}</strike>
+                              <strike>
+                                <span>${item.price}</span>
+                              </strike>
                             </small>{" "}
                             ${item.discount_price}
-                          </Button>
+                          </Header>
                         )}
                         {!item.discount_price && (
-                          <Button color="black" floated="left">
+                          <Header
+                            color="black"
+                            floated="left"
+                            size="medium"
+                            style={{ marginTop: "7px" }}
+                          >
                             ${item.price}
-                          </Button>
+                          </Header>
                         )}
                         <Button
                           animated="vertical"
