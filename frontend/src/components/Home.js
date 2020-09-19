@@ -9,6 +9,7 @@ import {
   Card,
   Container,
   Dimmer,
+  Divider,
   Grid,
   Header,
   Icon,
@@ -24,8 +25,8 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
+import { SearchFilter } from './Layout'
 import "../App.css";
-import ProductList from "./ProductList";
 
 // slider
 // import { Carousel } from 'react-responsive-carousel'
@@ -227,7 +228,12 @@ class DesktopContainer extends Component {
           <div className="container">
             <h2 className="center">Popular items</h2>
           </div>
-          <Grid
+          <Divider />
+
+          <SearchFilter />
+
+{/*  */}
+          {/* <Grid
             doubling
             columns={5}
             style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -308,7 +314,7 @@ class DesktopContainer extends Component {
                 </Grid.Column>
               );
             })}
-          </Grid>
+          </Grid> */}
         </Container>
 
         {children}

@@ -1,22 +1,30 @@
-import React from "react";
+import React, { Component, useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { connect } from "react-redux";
+import { Link, withRouter } from "react-router-dom";
+import axios from "axios";
 import _ from "lodash";
 import faker from "faker";
 import { createMedia } from "@artsy/fresnel";
 import {
+  Button,
+  Card,
   Container,
   Divider,
   Dropdown,
   Grid,
   Header,
   Image,
+  Icon,
+  Item,
+  Label,
   List,
   Menu,
   Search,
   Segment,
   Visibility,
 } from "semantic-ui-react";
-import { Link, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
+import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
 
@@ -78,13 +86,16 @@ class CustomLayout extends React.Component {
             onBottomPassedReverse={this.hideFixedMenu}
           >
             <Menu fixed="top" inverted borderless>
-              <Grid columns={5} container columns='5'>
+              <Grid columns={5} container columns="5">
                 <Grid.Column width={2}>
                   <Menu.Item header>
                     <Link to="/">Home</Link>
                   </Menu.Item>
                 </Grid.Column>
                 <Grid.Column width={8}>
+                  <Menu.Item header>{/* <SearchFilter /> */}</Menu.Item>
+                </Grid.Column>
+                {/* <Grid.Column width={8}>
                   <Search
                     size="mini"
                     input={{ fluid: true }}
@@ -103,7 +114,7 @@ class CustomLayout extends React.Component {
                       width: "auto",
                     }}
                   />
-                </Grid.Column>
+                </Grid.Column> */}
                 {authenticated ? (
                   <React.Fragment>
                     <Grid.Column width={2}>
@@ -172,108 +183,6 @@ class CustomLayout extends React.Component {
                 )}
               </Grid>
             </Menu>
-
-            {/* <Menu fixed="top" inverted>
-              <Container>
-                <Grid>
-                  <Grid.Column width={6}>
-                    <Link to="/">
-                      <Menu.Item pointing header>
-                        Home
-                      </Menu.Item>
-                    </Link>
-                  </Grid.Column>
-                  <Grid.Column width={10}>
-                    <Menu.Item>
-                      <Search
-                        size="mini"
-                        input={{ fluid: true }}
-                        loading={isLoading}
-                        onResultSelect={this.handleResultSelect}
-                        onSearchChange={_.debounce(
-                          this.handleSearchChange,
-                          500,
-                          {
-                            leading: true,
-                          }
-                        )}
-                        placeholder="Search what do you want..."
-                        results={results}
-                        value={value}
-                        style={{
-                          marginTop: "-7px",
-                          marginBottom: "-10px",
-                          marginRight: "10px",
-                          width: "200px",
-                        }}
-                      />
-                    </Menu.Item>
-
-                    {authenticated ? (
-                          <Link to="/profile">
-                            <Menu.Item pointing>Profile</Menu.Item>
-                          </Link>
-                          <Dropdown
-                            icon="cart"
-                            loading={loading}
-                            text={`${
-                              cart !== null ? cart.order_items.length : 0
-                            }`}
-                            pointing
-                            className="link item"
-                          >
-                            <Dropdown.Menu>
-                              {cart &&
-                                cart.order_items.map((order_item) => {
-                                  return (
-                                    <Dropdown.Item key={order_item.id}>
-                                      {order_item.quantity} x{" "}
-                                      {order_item.item.title}
-                                    </Dropdown.Item>
-                                  );
-                                })}
-                              {cart && cart.order_items.length < 1 ? (
-                                <Dropdown.Item>
-                                  No items in your cart
-                                </Dropdown.Item>
-                              ) : null}
-                              <Dropdown.Divider />
-                              <Dropdown.Item
-                                icon="arrow right"
-                                text="Chechout"
-                                onClick={() =>
-                                  this.props.history.push("/order-summary")
-                                }
-                              />
-                            </Dropdown.Menu>
-                          </Dropdown>
-                          <Menu.Item
-                            header
-                            onClick={() => {
-                              this.props.logout();
-                              this.props.logoutReload();
-                            }}
-                          >
-                            Logout
-                          </Menu.Item>
-                        </React.Fragment>
-                      </Grid.Column>
-                    ) : (
-                      <Grid.Column width={4}>
-                        <React.Fragment>
-                          <Menu.Item header>
-                            <Link to="/login">Login</Link>
-                          </Menu.Item>
-                          <Menu.Item header>
-                            <Link to="/signup">Signup</Link>
-                          </Menu.Item>
-                        </React.Fragment>
-                      </Grid.Column>
-                    )}
-                  </Grid.Column>
-                </Grid>
-              </Container>
-            </Menu> */}
           </Visibility>
 
           {this.props.children}
@@ -341,6 +250,81 @@ class CustomLayout extends React.Component {
       </React.Fragment>
     );
   }
+}
+
+URL = "https://10degrees.uk/wp-json/wp/v2/posts"; // URL variable stores JSON url || API taken from 10 Degrees WordPress Agency
+
+export class SearchFilter extends React.Component {
+	state = {
+		post: [],
+		allPosts: []
+	};
+
+	componentDidMount() {
+		axios
+			.get(URL, {
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				}
+			})
+			.then(({ data }) => {
+				this.setState({
+					post: data,
+					allPosts: data // array data from JSON stored in these
+				});
+			})
+			.catch(err => {});
+	}
+
+	_onKeyUp = e => {
+		// filter post list by title using onKeyUp function
+		const post = this.state.allPosts.filter(item =>
+			item.title.rendered.toLowerCase().includes(e.target.value.toLowerCase())
+		);
+		this.setState({ post });
+	};
+
+	render() {
+		return (
+			<div className="container">
+				<div className="search-outer">
+					<form
+						role="search"
+						method="get"
+						id="searchform"
+						className="searchform"
+						action=""
+					>
+						{/* input field activates onKeyUp function on state change */}
+						<input
+							type="search"
+							onChange={this._onKeyUp}
+							name="s"
+							id="s"
+							placeholder="Search"
+						/>
+						<button type="submit" id="searchsubmit">
+							<i className="fa fa-search" aria-hidden="true" />
+						</button>
+					</form>
+				</div>
+				<ul className="data-list">
+					{/* post items mapped in a list linked to onKeyUp function */}
+					{this.state.post.map((item, index) => (
+						<li className={"block-" + index}>
+							<a className="title" href={item.link}>
+								<h3>{item.title.rendered}</h3>
+							</a>
+							<a className="link" href={item.link}>
+							 
+							</a>
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+	}
 }
 
 const mapStateToProps = (state) => {
