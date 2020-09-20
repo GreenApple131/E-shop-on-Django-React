@@ -25,7 +25,7 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
-import { SearchFilter } from './Layout'
+import SearchFilter, {SearchFilterResults} from "./SearchFilter";
 import "../App.css";
 
 // slider
@@ -225,14 +225,13 @@ class DesktopContainer extends Component {
               <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
             </Segment>
           )}
-          <div className="container">
-            <h2 className="center">Popular items</h2>
-          </div>
+          <Header as='h1' textAlign='center'>Popular Items</Header>
           <Divider />
 
           <SearchFilter />
+          {/* <SearchFilterResults /> */}
 
-{/*  */}
+          {/*  */}
           {/* <Grid
             doubling
             columns={5}
