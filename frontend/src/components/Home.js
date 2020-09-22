@@ -25,7 +25,7 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
-import SearchFilter, {SearchFilterResults} from "./SearchFilter";
+import SearchFilter, {SearchFilterResults} from "./SearchResult";
 import "../App.css";
 
 // slider
@@ -215,7 +215,10 @@ class DesktopContainer extends Component {
               header="There was some errors with your submission"
               content={JSON.stringify(error)}
             />
-          )}
+            )}
+            <Header as='h1' textAlign='center'>Popular Items</Header>
+            <Divider />
+            {/* <SearchFilter /> */}
           {loading && ( // if loading then do smth after &&
             <Segment>
               <Dimmer active inverted>
@@ -225,14 +228,11 @@ class DesktopContainer extends Component {
               <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
             </Segment>
           )}
-          <Header as='h1' textAlign='center'>Popular Items</Header>
-          <Divider />
 
-          <SearchFilter />
-          {/* <SearchFilterResults /> */}
+          {/* <SearchFilterResults value={this.props.value} /> */}
 
           {/*  */}
-          {/* <Grid
+          <Grid
             doubling
             columns={5}
             style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -313,7 +313,7 @@ class DesktopContainer extends Component {
                 </Grid.Column>
               );
             })}
-          </Grid> */}
+          </Grid>
         </Container>
 
         {children}

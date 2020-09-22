@@ -110,7 +110,7 @@ class ProductDetail extends Component {
     const item = data;
 
     return (
-      <Container>
+      <Container style={{marginTop: '50px'}}>
         {error && ( // if error then do smth after &&
           <Message
             error
@@ -220,7 +220,7 @@ class ProductDetail extends Component {
               </Card>
             </Grid.Column>
             <Grid.Column>
-              <Header as="h2">Description</Header>
+              <Header as="h3">Description</Header>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
                 pulvinar auctor urna vitae tincidunt. Nam ut vestibulum dolor,

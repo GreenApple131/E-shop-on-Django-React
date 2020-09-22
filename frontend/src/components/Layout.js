@@ -37,20 +37,67 @@ const { Media } = createMedia({
   },
 });
 
-const source = _.times(5, () => ({
-  title: faker.company.companyName(),
-  description: faker.company.catchPhrase(),
-  image: faker.internet.avatar(),
-  price: faker.finance.amount(0, 100, 2, "$"),
-}));
+
+const getResults = () => ({
+title: this.data.title,
+price: this.data.price,
+image: this.data.image,
+category: this.data.category
+})
+
+const source = _.range(0, 1).reduce((memo) => {
+  const name = this.state.data.category;
+
+  // eslint-disable-next-line no-param-reassign
+  memo[name] = {
+    name,
+    results: getResults(),
+  };
+
+  return memo;
+}, {});
 
 const initialState = { isLoading: false, results: [], value: "" };
 
 class CustomLayout extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: "" };
+
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handlePressEnter = this.handlePressEnter.bind(this);
+  }
+
   state = initialState;
 
-  handleResultSelect = (e, { result }) =>
+  async componentDidMount() {
+    this.setState({ loading: true });
+
+    // this.props.fetchCart(); // update the cart count
+
+    const res = await axios
+      .get(productListURL)
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ data: res.data, loading: false });
+      })
+      .catch((err) => {
+        this.setState({ error: err, loading: false });
+      });
+  }
+
+  // Search bar
+  handlePressEnter(e) {
+    this.setState({ value: e.target.value });
+    if (e.keyCode == 13) {
+      this.props.history.push(`/search/result/${e.target.value}`);
+    }
+  }
+
+  handleResultSelect = (e, { result }) => {
     this.setState({ value: result.title });
+    this.props.history.push(`/products/${result.title}`);
+  };
 
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value });
@@ -61,12 +108,24 @@ class CustomLayout extends React.Component {
       const re = new RegExp(_.escapeRegExp(this.state.value), "i");
       const isMatch = (result) => re.test(result.title);
 
+      const filteredResults = _.reduce(
+        source,
+        (memo, data, name) => {
+          const results = _.filter(data.results, isMatch);
+          if (results.length) memo[name] = { name, results }; // eslint-disable-line no-param-reassign
+
+          return memo;
+        },
+        {}
+      );
+
       this.setState({
         isLoading: false,
-        results: _.filter(source, isMatch),
+        results: filteredResults,
       });
     }, 300);
   };
+  // end Search bar
 
   componentDidMount() {
     this.props.fetchCart();
@@ -78,6 +137,7 @@ class CustomLayout extends React.Component {
   render() {
     const { isLoading, value, results } = this.state;
     const { authenticated, cart, loading } = this.props;
+
     return (
       <React.Fragment>
         <Media greaterThan="mobile">
@@ -87,24 +147,28 @@ class CustomLayout extends React.Component {
             onBottomPassedReverse={this.hideFixedMenu}
           >
             <Menu fixed="top" inverted borderless>
-              <Grid columns={5} container columns="5">
-                <Grid.Column width={2}>
-                  <Menu.Item header>
-                    <Link to="/">Home</Link>
-                  </Menu.Item>
+              <Grid container columns="5">
+                <Grid.Column width="2">
+                  <Link to="/">
+                    <Menu.Item header pointing>
+                      Home
+                    </Menu.Item>
+                  </Link>
                 </Grid.Column>
-                <Grid.Column width={8}>
-                  <Menu.Item header>
-                    {/* <SearchFilter /> */}
-                  </Menu.Item>
-                </Grid.Column>
-                {/* <Grid.Column width={8}>
-                  <Input
+                <Grid.Column width="10">
+                  <Search
                     size="mini"
-                    fluid
-                    onChange={this.handleChange}
-                    placeholder="Search what do you want..."
+                    category
+                    input={{ fluid: "true" }}
+                    loading={isLoading}
+                    onKeyDown={this.handlePressEnter}
+                    onResultSelect={this.handleResultSelect}
+                    onSearchChange={_.debounce(this.handleSearchChange, 500, {
+                      leading: true,
+                    })}
+                    results={results}
                     value={value}
+                    placeholder="Search what do you want..."
                     style={{
                       name: "search",
                       circular: true,
@@ -115,15 +179,15 @@ class CustomLayout extends React.Component {
                       width: "auto",
                     }}
                   />
-                </Grid.Column> */}
+                </Grid.Column>
                 {authenticated ? (
                   <React.Fragment>
-                    <Grid.Column width={2}>
+                    <Grid.Column width="2">
                       <Link to="/profile">
                         <Menu.Item pointing>Profile</Menu.Item>
                       </Link>
                     </Grid.Column>
-                    <Grid.Column width={2}>
+                    <Grid.Column width="1">
                       <Dropdown
                         icon="cart"
                         loading={loading}
@@ -155,7 +219,7 @@ class CustomLayout extends React.Component {
                         </Dropdown.Menu>
                       </Dropdown>
                     </Grid.Column>
-                    <Grid.Column width={2}>
+                    <Grid.Column width="1">
                       <Menu.Item
                         header
                         onClick={() => {
