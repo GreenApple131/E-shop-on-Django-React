@@ -37,21 +37,18 @@ const { Media } = createMedia({
   },
 });
 
-
-const getResults = () => ({
-title: this.data.title,
-price: this.data.price,
-image: this.data.image,
-category: this.data.category
-})
-
 const source = _.range(0, 1).reduce((memo) => {
-  const name = this.state.data.category;
+  const name = "title";
 
   // eslint-disable-next-line no-param-reassign
   memo[name] = {
     name,
-    results: getResults(),
+    results: _.times(1, () => ({
+      title: "Jacket",
+      description: "description",
+      // image: faker.internet.avatar(),
+      price: "$30",
+    })),
   };
 
   return memo;
@@ -110,8 +107,8 @@ class CustomLayout extends React.Component {
 
       const filteredResults = _.reduce(
         source,
-        (memo, data, name) => {
-          const results = _.filter(data.results, isMatch);
+        (memo, f_data, name) => {
+          const results = _.filter(f_data.results, isMatch);
           if (results.length) memo[name] = { name, results }; // eslint-disable-line no-param-reassign
 
           return memo;

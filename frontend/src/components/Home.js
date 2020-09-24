@@ -25,7 +25,7 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
-import SearchFilter, {SearchFilterResults} from "./SearchResult";
+import SearchFilter, { SearchFilterResults } from "./SearchResult";
 import "../App.css";
 
 // slider
@@ -170,41 +170,43 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan="mobile">
-        <Visibility
-          once={false}
-          onBottomPassed={this.showFixedMenu}
-          onBottomPassedReverse={this.hideFixedMenu}
-        >
-          <Segment
-            inverted
-            textAlign="center"
-            style={{ maxHeight: 700, padding: "0em 0em" }}
-            vertical
+        <Container>
+          <Visibility
+            once={false}
+            onBottomPassed={this.showFixedMenu}
+            onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Slider className="slider-wrapper">
-              {content.map((item, index) => (
-                <div
-                  key={index}
-                  className="slider-content"
-                  // style={{ background: `url('${item.image}') no-repeat center center` }}
-                  style={{ background: `url(${item.image})` }}
-                >
+            <Segment
+              inverted
+              textAlign="center"
+              style={{ maxHeight: 700, padding: "0em 0em" }}
+              vertical
+            >
+              <Slider className="slider-wrapper">
+                {content.map((item, index) => (
                   <div
-                    className="inner"
-                    style={{ height: "auto", width: "100%" }}
+                    key={index}
+                    className="slider-content"
+                    // style={{ background: `url('${item.image}') no-repeat center center` }}
+                    style={{ background: `url(${item.image})` }}
                   >
-                    <h1>{item.title}</h1>
-                    <p>{item.description}</p>
-                    <Link to={item.redirectLink}>
-                      <button>{item.button}</button>
-                    </Link>
+                    <div
+                      className="inner"
+                      style={{ height: "auto", width: "100%" }}
+                    >
+                      <h1>{item.title}</h1>
+                      <p>{item.description}</p>
+                      <Link to={item.redirectLink}>
+                        <button>{item.button}</button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </Slider>
-            {/* <HomepageHeading /> */}
-          </Segment>
-        </Visibility>
+                ))}
+              </Slider>
+              {/* <HomepageHeading /> */}
+            </Segment>
+          </Visibility>
+        </Container>
 
         {/* <ProductList /> */}
 
@@ -215,10 +217,12 @@ class DesktopContainer extends Component {
               header="There was some errors with your submission"
               content={JSON.stringify(error)}
             />
-            )}
-            <Header as='h1' textAlign='center'>Popular Items</Header>
-            <Divider />
-            {/* <SearchFilter /> */}
+          )}
+          <Header as="h1" textAlign="center">
+            Popular Items
+          </Header>
+          <Divider />
+          {/* <SearchFilter /> */}
           {loading && ( // if loading then do smth after &&
             <Segment>
               <Dimmer active inverted>
@@ -277,7 +281,11 @@ class DesktopContainer extends Component {
                     <Card.Content extra>
                       <React.Fragment>
                         {item.discount_price && (
-                          <Header floated="left" color='violet' style={{ marginTop: "10px" }}>
+                          <Header
+                            floated="left"
+                            color="violet"
+                            style={{ marginTop: "10px" }}
+                          >
                             <small>
                               <strike>
                                 <span>${item.price}</span>
