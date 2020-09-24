@@ -1,7 +1,8 @@
 import React, { Component, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import faker from "faker";
+import { Link, withRouter, useHistory } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import {
@@ -12,14 +13,106 @@ import {
   Grid,
   Header,
   Image,
-  Input,
   Icon,
   Item,
   Label,
-  List,
+  Search,
 } from "semantic-ui-react";
 import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
+
+const initialState = { isLoading: false, results: [], value: "" };
+
+function exampleReducer(state, action) {
+  switch (action.type) {
+    case "CLEAN_QUERY":
+      return initialState;
+    case "START_SEARCH":
+      return { ...state, loading: true, value: action.query };
+    case "FINISH_SEARCH":
+      return { ...state, loading: false, results: action.results };
+    case "UPDATE_SELECTION":
+      return { ...state, value: action.selection };
+
+    default:
+      throw new Error();
+  }
+}
+
+export function SearchBar() {
+  const [state, dispatch] = React.useReducer(exampleReducer, initialState);
+  const { loading, results, value } = state;
+  const history = useHistory();
+
+  const timeoutRef = React.useRef();
+
+  const handlePressEnter = (e) => {
+    if (e.keyCode == 13) {
+      history.push(`/search/result/${e.target.value}`);
+    }
+  };
+
+  const handleResultSelect = (e, { result }) => {
+    history.push(`/products/${result.title}`);
+  };
+
+  const handleSearchChange = React.useCallback((e, data) => {
+    clearTimeout(timeoutRef.current);
+    dispatch({ type: "START_SEARCH", query: data.value });
+
+    timeoutRef.current = setTimeout(() => {
+      if (data.value.length === 0) {
+        dispatch({ type: "CLEAN_QUERY" });
+        return;
+      }
+
+      const source = [
+        {
+          title: "Jacket",
+          description: "Nice Jacket",
+          image: faker.internet.avatar(),
+          price: "$30",
+        },
+      ];
+
+      const re = new RegExp(_.escapeRegExp(data.value), "i");
+      const isMatch = (result) => re.test(result.title);
+
+      dispatch({
+        type: "FINISH_SEARCH",
+        results: _.filter(source, isMatch),
+      });
+    }, 300);
+  }, []);
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  return (
+    <Grid.Column width="10">
+      <Search
+        loading={loading}
+        input={{ fluid: "true" }}
+        onKeyDown={handlePressEnter}
+        onResultSelect={handleResultSelect}
+        onSearchChange={handleSearchChange}
+        results={results}
+        value={value}
+        size="mini"
+        placeholder="Search what do you want..."
+        style={{
+          name: "search",
+          circular: true,
+          link: true,
+          marginTop: "7px",
+          width: "auto",
+        }}
+      />
+    </Grid.Column>
+  );
+}
 
 class SearchResult extends Component {
   state = {
@@ -51,22 +144,21 @@ class SearchResult extends Component {
   render() {
     const { data, searchValue } = this.state;
     return (
-      <Container style={{marginTop: '70px'}}>
-        <Header as='h2'>Search result of ***</Header>
-        
+      <Container style={{ marginTop: "70px" }}>
+        <Header as="h2">Search result of ***</Header>
 
         {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
-        <SearchFilterResults searchValue='scarf' />
+        <SearchFilterResults searchValue="scarf" />
       </Container>
     );
   }
 }
 
 export class SearchFilterResults extends Component {
-  state={
+  state = {
     data: [],
-  }
-  
+  };
+
   async componentDidMount() {
     this.setState({ loading: true });
 

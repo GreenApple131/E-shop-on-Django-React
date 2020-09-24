@@ -1,10 +1,9 @@
 import React, { Component, useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link, withRouter, useHistory } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
-import faker from "faker";
 import { createMedia } from "@artsy/fresnel";
 import {
   Button,
@@ -28,6 +27,7 @@ import {
 import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
+import { SearchBar } from './SearchResult'
 
 const { Media } = createMedia({
   breakpoints: {
@@ -37,38 +37,17 @@ const { Media } = createMedia({
   },
 });
 
-const source = _.range(0, 1).reduce((memo) => {
-  const name = "title";
-
-  // eslint-disable-next-line no-param-reassign
-  memo[name] = {
-    name,
-    results: _.times(1, () => ({
-      title: "Jacket",
-      description: "description",
-      // image: faker.internet.avatar(),
-      price: "$30",
-    })),
-  };
-
-  return memo;
-}, {});
-
-const initialState = { isLoading: false, results: [], value: "" };
 
 class CustomLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = { value: "" };
-
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.handlePressEnter = this.handlePressEnter.bind(this);
   }
 
-  state = initialState;
 
   async componentDidMount() {
     this.setState({ loading: true });
+    this.props.fetchCart();
 
     // this.props.fetchCart(); // update the cart count
 
@@ -81,51 +60,6 @@ class CustomLayout extends React.Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-  }
-
-  // Search bar
-  handlePressEnter(e) {
-    this.setState({ value: e.target.value });
-    if (e.keyCode == 13) {
-      this.props.history.push(`/search/result/${e.target.value}`);
-    }
-  }
-
-  handleResultSelect = (e, { result }) => {
-    this.setState({ value: result.title });
-    this.props.history.push(`/products/${result.title}`);
-  };
-
-  handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, value });
-
-    setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(initialState);
-
-      const re = new RegExp(_.escapeRegExp(this.state.value), "i");
-      const isMatch = (result) => re.test(result.title);
-
-      const filteredResults = _.reduce(
-        source,
-        (memo, f_data, name) => {
-          const results = _.filter(f_data.results, isMatch);
-          if (results.length) memo[name] = { name, results }; // eslint-disable-line no-param-reassign
-
-          return memo;
-        },
-        {}
-      );
-
-      this.setState({
-        isLoading: false,
-        results: filteredResults,
-      });
-    }, 300);
-  };
-  // end Search bar
-
-  componentDidMount() {
-    this.props.fetchCart();
   }
 
   hideFixedMenu = () => this.setState({ fixed: false });
@@ -152,31 +86,7 @@ class CustomLayout extends React.Component {
                     </Menu.Item>
                   </Link>
                 </Grid.Column>
-                <Grid.Column width="10">
-                  <Search
-                    size="mini"
-                    category
-                    input={{ fluid: "true" }}
-                    loading={isLoading}
-                    onKeyDown={this.handlePressEnter}
-                    onResultSelect={this.handleResultSelect}
-                    onSearchChange={_.debounce(this.handleSearchChange, 500, {
-                      leading: true,
-                    })}
-                    results={results}
-                    value={value}
-                    placeholder="Search what do you want..."
-                    style={{
-                      name: "search",
-                      circular: true,
-                      link: true,
-                      marginTop: "7px",
-                      // marginBottom: "-10px",
-                      // marginRight: "10px",
-                      width: "auto",
-                    }}
-                  />
-                </Grid.Column>
+                <SearchBar />
                 {authenticated ? (
                   <React.Fragment>
                     <Grid.Column width="2">
