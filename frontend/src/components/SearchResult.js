@@ -21,7 +21,7 @@ import {
 import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
 
-const initialState = { isLoading: false, results: [], value: "" };
+const initialState = { isLoading: false, results: [], value: "", searchValue: "" };
 
 function exampleReducer(state, action) {
   switch (action.type) {
@@ -30,7 +30,7 @@ function exampleReducer(state, action) {
     case "START_SEARCH":
       return { ...state, loading: true, value: action.query };
     case "FINISH_SEARCH":
-      return { ...state, loading: false, results: action.results };
+      return { ...state, loading: false, results: action.results, searchValue: action.results };
     case "UPDATE_SELECTION":
       return { ...state, value: action.selection };
 
@@ -41,14 +41,17 @@ function exampleReducer(state, action) {
 
 export function SearchBar() {
   const [state, dispatch] = React.useReducer(exampleReducer, initialState);
-  const { loading, results, value } = state;
+  const { loading, results, value, searchValue } = state;
   const history = useHistory();
 
   const timeoutRef = React.useRef();
 
   const handlePressEnter = (e) => {
     if (e.keyCode == 13) {
-      history.push(`/search/result/${e.target.value}`);
+      history.push({
+        pathname: `/search/result/${e.target.value}`,
+        state: { searchValue: e.target.value }
+      });
     }
   };
 
@@ -81,6 +84,7 @@ export function SearchBar() {
       dispatch({
         type: "FINISH_SEARCH",
         results: _.filter(source, isMatch),
+        searchValue: data.value
       });
     }, 300);
   }, []);
@@ -117,7 +121,7 @@ export function SearchBar() {
 class SearchResult extends Component {
   state = {
     data: [],
-    searchValue: "",
+    searchValue: ''
   };
 
   async componentDidMount() {
@@ -137,7 +141,7 @@ class SearchResult extends Component {
   }
 
   handleChangeSearch = (event) => {
-    const { searchValue } = event.target;
+    const { searchValue } = this.props.location.state;
     this.setState({ searchValue });
   };
 
@@ -145,10 +149,10 @@ class SearchResult extends Component {
     const { data, searchValue } = this.state;
     return (
       <Container style={{ marginTop: "70px" }}>
-        <Header as="h2">Search result of ***</Header>
+        <Header as="h2">Search result of {this.props.location.state.searchValue}</Header>
 
         {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
-        <SearchFilterResults searchValue="scarf" />
+        <SearchFilterResults searchValue={this.props.location.state.searchValue} />
       </Container>
     );
   }

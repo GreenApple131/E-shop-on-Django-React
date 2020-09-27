@@ -66,7 +66,7 @@ class Item(models.Model):
 	category_type = models.CharField(
 		choices=CATEGORY_TYPES, max_length=1, default='M', blank=False)
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
-	slug = models.SlugField(max_length=200, unique=True, default="test-product-1")
+	slug = models.SlugField(max_length=200, unique=True) # auto generate slug into admin using @@@@prepopulated_fields={'slug': ('title',)}@@@@
 	description = models.TextField(
 	    max_length=5000, default="This is a test description. Write something about this product.")
 	size = models.ManyToManyField(Sizes)

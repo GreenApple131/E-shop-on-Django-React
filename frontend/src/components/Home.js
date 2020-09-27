@@ -178,7 +178,7 @@ class DesktopContainer extends Component {
           >
             <Segment
               inverted
-              textAlign="center"
+              textAlign='center'
               style={{ maxHeight: 700, padding: "0em 0em" }}
               vertical
             >
