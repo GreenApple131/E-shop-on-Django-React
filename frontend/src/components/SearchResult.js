@@ -1,8 +1,13 @@
-import React, { Component, useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import { connect } from "react-redux";
+import React, {
+  Component,
+  useReducer,
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import faker from "faker";
-import { Link, withRouter, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import {
@@ -21,16 +26,42 @@ import {
 import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
 
-const initialState = { isLoading: false, results: [], value: "", searchValue: "" };
+function productsListInSearch() {
+  
+  return {
+    // title: product_data.title,
+    // description: product_data.description,
+    // image: product_data.image,
+    // price: product_data.price,
+    title: "Jacket",
+    description: "Nice Jacket",
+    image: faker.internet.avatar(),
+    price: "$30",
+  };
+}
 
-function exampleReducer(state, action) {
+const initialState = {
+  data: [],
+  isLoading: false,
+  error: null,
+  results: [],
+  value: "",
+  searchValue: ""
+};
+
+function reducer(state, action) {
   switch (action.type) {
     case "CLEAN_QUERY":
       return initialState;
     case "START_SEARCH":
       return { ...state, loading: true, value: action.query };
     case "FINISH_SEARCH":
-      return { ...state, loading: false, results: action.results, searchValue: action.results };
+      return {
+        ...state,
+        loading: false,
+        results: action.results,
+        // searchValue: action.results,
+      };
     case "UPDATE_SELECTION":
       return { ...state, value: action.selection };
 
@@ -39,18 +70,42 @@ function exampleReducer(state, action) {
   }
 }
 
+function getSearchItems() {
+  const [list, setData] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    axios
+      .get(productListURL)
+      .then(function(response) {
+        setData(response.data);
+      })
+      .catch(function(error) {
+        if (!productListURL) {
+          setError(null);
+        } else {
+          setError(error);
+        }
+      });
+  }, [productListURL]);
+  return { list, error };
+}
+
+
 export function SearchBar() {
-  const [state, dispatch] = React.useReducer(exampleReducer, initialState);
-  const { loading, results, value, searchValue } = state;
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { loading, results, value, error } = state;
   const history = useHistory();
+
+  
 
   const timeoutRef = React.useRef();
 
   const handlePressEnter = (e) => {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       history.push({
         pathname: `/search/result/${e.target.value}`,
-        state: { searchValue: e.target.value }
+        state: { searchValue: e.target.value },
+        // access to state - this.props.location.state.*******
       });
     }
   };
@@ -59,9 +114,23 @@ export function SearchBar() {
     history.push(`/products/${result.title}`);
   };
 
-  const handleSearchChange = React.useCallback((e, data) => {
+  const { list } = getSearchItems();
+  console.log('list', list)
+  // const propelySortItems = (list) => {
+  //   return Object.keys(list).map((key) => {
+  //     return {
+  //       title: list.key.title,
+  //       description: key.description,
+  //       price: key.price
+  //     };
+  //   });
+  // }
+  // console.log('list.title', propelySortItems(list))
+
+  const handleSearchChange = useCallback((e, data) => {
     clearTimeout(timeoutRef.current);
     dispatch({ type: "START_SEARCH", query: data.value });
+
 
     timeoutRef.current = setTimeout(() => {
       if (data.value.length === 0) {
@@ -69,14 +138,9 @@ export function SearchBar() {
         return;
       }
 
-      const source = [
-        {
-          title: "Jacket",
-          description: "Nice Jacket",
-          image: faker.internet.avatar(),
-          price: "$30",
-        },
-      ];
+      
+
+      const source = [];
 
       const re = new RegExp(_.escapeRegExp(data.value), "i");
       const isMatch = (result) => re.test(result.title);
@@ -84,10 +148,11 @@ export function SearchBar() {
       dispatch({
         type: "FINISH_SEARCH",
         results: _.filter(source, isMatch),
-        searchValue: data.value
+        searchValue: data.value,
       });
     }, 300);
   }, []);
+
   React.useEffect(() => {
     return () => {
       clearTimeout(timeoutRef.current);
@@ -110,7 +175,7 @@ export function SearchBar() {
           name: "search",
           circular: true,
           link: true,
-          marginTop: "7px",
+          marginTop: "5px",
           width: "auto",
         }}
       />
@@ -121,7 +186,7 @@ export function SearchBar() {
 class SearchResult extends Component {
   state = {
     data: [],
-    searchValue: ''
+    searchValue: "",
   };
 
   async componentDidMount() {
@@ -146,13 +211,16 @@ class SearchResult extends Component {
   };
 
   render() {
-    const { data, searchValue } = this.state;
     return (
       <Container style={{ marginTop: "70px" }}>
-        <Header as="h2">Search result of {this.props.location.state.searchValue}</Header>
+        <Header as="h2">
+          Search result of "{this.props.location.state.searchValue}"
+        </Header>
 
         {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
-        <SearchFilterResults searchValue={this.props.location.state.searchValue} />
+        <SearchFilterResults
+          searchValue={this.props.location.state.searchValue}
+        />
       </Container>
     );
   }

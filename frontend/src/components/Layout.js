@@ -1,26 +1,17 @@
-import React, { Component, useState, useEffect } from "react";
-import ReactDOM from "react-dom";
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter, useHistory } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
-import _ from "lodash";
 import { createMedia } from "@artsy/fresnel";
 import {
-  Button,
-  Card,
   Container,
   Divider,
   Dropdown,
   Grid,
   Header,
-  Icon,
   Image,
-  Input,
-  Item,
-  Label,
   List,
   Menu,
-  Search,
   Segment,
   Visibility,
 } from "semantic-ui-react";
@@ -38,7 +29,7 @@ const { Media } = createMedia({
 });
 
 
-class CustomLayout extends React.Component {
+class CustomLayout extends Component {
   constructor(props) {
     super(props);
     this.state = { value: "" };
@@ -66,7 +57,6 @@ class CustomLayout extends React.Component {
   showFixedMenu = () => this.setState({ fixed: true });
 
   render() {
-    const { isLoading, value, results } = this.state;
     const { authenticated, cart, loading } = this.props;
 
     return (

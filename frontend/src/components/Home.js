@@ -170,7 +170,7 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan="mobile">
-        <Container>
+        {/* <Container> */}
           <Visibility
             once={false}
             onBottomPassed={this.showFixedMenu}
@@ -206,7 +206,7 @@ class DesktopContainer extends Component {
               {/* <HomepageHeading /> */}
             </Segment>
           </Visibility>
-        </Container>
+        {/* </Container> */}
 
         {/* <ProductList /> */}
 
