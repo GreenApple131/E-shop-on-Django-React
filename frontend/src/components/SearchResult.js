@@ -70,7 +70,7 @@ function reducer(state, action) {
   }
 }
 
-export function SearchBar() {
+export function SearchBar(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [list, setList] = useState(null);
   const { loading, results, value } = state;
@@ -89,60 +89,55 @@ export function SearchBar() {
   };
 
   const handleResultSelect = (e, { result }) => {
-    history.push(`/products/${result.title}`);
+    history.push(`/products/${result.id}`);
   };
 
-  // const { list, error } = useHttpListCall(productListURL);
-  useEffect(() => {
-    axios
-      .get(productListURL)
-      .then(function (list) {
-        // setList(list.data);
-        setList(list = Object.keys(list.data).map((key) => {
-          return {
-            title: list.data[key].title,
-            description: list.data[key].description,
-            price: list.data[key].price,
-          };
-        }));
-        console.log("list", list);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-  }, []);
-
-  
-  console.log("list before search", list);
   const handleSearchChange = useCallback((e, data) => {
     clearTimeout(timeoutRef.current);
     dispatch({ type: "START_SEARCH", query: data.value });
-    
-    timeoutRef.current = setTimeout((list) => {
+
+    timeoutRef.current = setTimeout(() => {
       if (data.value.length === 0) {
         dispatch({ type: "CLEAN_QUERY" });
         return;
       }
-      
-      console.log("list outside", list);
 
-      const source = [list];
+      axios
+        .get(productListURL)
+        .then(function (list) {
+          setList(
+            (list = Object.keys(list.data).map((key) => {
+              // перетворення для source у вигляд масиву списків, щоб могло нормально відображати результат пошуку [{…}, {…}, {…}]
+              return {
+                title: list.data[key].title,
+                description: list.data[key].description,
+                price: '$'+list.data[key].price,
+                id: list.data[key].id,
+                image: list.data[key].image,
+              };
+            }))
+          );
 
-      console.log("source", list);
+          const source = list;
 
-      const re = new RegExp(_.escapeRegExp(data.value), "i");
-      const isMatch = (result) => re.test(result.title);
+          console.log("source", source);
 
-      dispatch({
-        type: "FINISH_SEARCH",
-        results: _.filter(source, isMatch),
-        searchValue: data.value,
-      });
+          const re = new RegExp(_.escapeRegExp(data.value), "i");
+          const isMatch = (result) => re.test(result.title);
+
+          dispatch({
+            type: "FINISH_SEARCH",
+            results: _.filter(source, isMatch),
+            searchValue: data.value,
+          });
+        })
+        .catch(function (error) {
+          console.log("error", error);
+        });
     }, 300);
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       clearTimeout(timeoutRef.current);
     };
@@ -158,14 +153,15 @@ export function SearchBar() {
         onSearchChange={handleSearchChange}
         results={results}
         value={value}
-        size="mini"
+        size='small'
         placeholder="Search what do you want..."
+        fluid
         style={{
           name: "search",
           circular: true,
           link: true,
           marginTop: "5px",
-          width: "auto",
+          width: '10',
         }}
       />
     </Grid.Column>
