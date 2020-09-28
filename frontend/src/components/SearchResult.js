@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useState,
+  useFetch,
   useRef,
 } from "react";
 import faker from "faker";
@@ -27,7 +28,6 @@ import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
 
 function productsListInSearch() {
-  
   return {
     // title: product_data.title,
     // description: product_data.description,
@@ -46,7 +46,7 @@ const initialState = {
   error: null,
   results: [],
   value: "",
-  searchValue: ""
+  searchValue: "",
 };
 
 function reducer(state, action) {
@@ -70,33 +70,11 @@ function reducer(state, action) {
   }
 }
 
-function getSearchItems() {
-  const [list, setData] = useState(null);
-  const [error, setError] = useState(null);
-  useEffect(() => {
-    axios
-      .get(productListURL)
-      .then(function(response) {
-        setData(response.data);
-      })
-      .catch(function(error) {
-        if (!productListURL) {
-          setError(null);
-        } else {
-          setError(error);
-        }
-      });
-  }, [productListURL]);
-  return { list, error };
-}
-
-
 export function SearchBar() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { loading, results, value, error } = state;
+  const [list, setList] = useState(null);
+  const { loading, results, value } = state;
   const history = useHistory();
-
-  
 
   const timeoutRef = React.useRef();
 
@@ -114,33 +92,44 @@ export function SearchBar() {
     history.push(`/products/${result.title}`);
   };
 
-  const { list } = getSearchItems();
-  console.log('list', list)
-  // const propelySortItems = (list) => {
-  //   return Object.keys(list).map((key) => {
-  //     return {
-  //       title: list.key.title,
-  //       description: key.description,
-  //       price: key.price
-  //     };
-  //   });
-  // }
-  // console.log('list.title', propelySortItems(list))
+  // const { list, error } = useHttpListCall(productListURL);
+  useEffect(() => {
+    axios
+      .get(productListURL)
+      .then(function (list) {
+        // setList(list.data);
+        setList(list = Object.keys(list.data).map((key) => {
+          return {
+            title: list.data[key].title,
+            description: list.data[key].description,
+            price: list.data[key].price,
+          };
+        }));
+        console.log("list", list);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
+  }, []);
+
+  
+  console.log("list before search", list);
   const handleSearchChange = useCallback((e, data) => {
     clearTimeout(timeoutRef.current);
     dispatch({ type: "START_SEARCH", query: data.value });
-
-
-    timeoutRef.current = setTimeout(() => {
+    
+    timeoutRef.current = setTimeout((list) => {
       if (data.value.length === 0) {
         dispatch({ type: "CLEAN_QUERY" });
         return;
       }
-
       
+      console.log("list outside", list);
 
-      const source = [];
+      const source = [list];
+
+      console.log("source", list);
 
       const re = new RegExp(_.escapeRegExp(data.value), "i");
       const isMatch = (result) => re.test(result.title);
