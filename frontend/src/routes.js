@@ -15,13 +15,14 @@ import SearchResult from "./components/SearchResult"
 const BaseRouter = () => (
   <Hoc>
     <Route exact path="/" component={HomepageLayout} />
-    <Route path="/products/:productID" component={ProductDetail} />
+    <Route path="/products/:productSlug" component={ProductDetail} />
     <Route path="/search/result/:searchRequest" component={SearchResult} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
     <Route path="/profile" component={Profile} />
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
+
   </Hoc>
 );
 

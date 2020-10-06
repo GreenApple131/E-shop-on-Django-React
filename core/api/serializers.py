@@ -173,6 +173,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
+        lookup_field = 'slug'
         fields = (
             'id',
             'title',
@@ -187,6 +188,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'image',
             'variations'
         )
+        
 
     def get_category(self, obj):
         return obj.get_category_display()

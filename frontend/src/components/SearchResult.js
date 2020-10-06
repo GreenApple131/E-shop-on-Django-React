@@ -4,10 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useState,
-  useFetch,
-  useRef,
 } from "react";
-import faker from "faker";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
@@ -15,7 +12,6 @@ import {
   Button,
   Card,
   Container,
-  Divider,
   Grid,
   Header,
   Image,
@@ -27,18 +23,6 @@ import {
 import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
 
-function productsListInSearch() {
-  return {
-    // title: product_data.title,
-    // description: product_data.description,
-    // image: product_data.image,
-    // price: product_data.price,
-    title: "Jacket",
-    description: "Nice Jacket",
-    image: faker.internet.avatar(),
-    price: "$30",
-  };
-}
 
 const initialState = {
   data: [],
@@ -144,10 +128,10 @@ export function SearchBar(props) {
   }, []);
 
   return (
-    <Grid.Column width="10">
+    <Grid.Column width="9">
       <Search
         loading={loading}
-        input={{ fluid: "true" }}
+        input={{ fluid: true }}
         onKeyDown={handlePressEnter}
         onResultSelect={handleResultSelect}
         onSearchChange={handleSearchChange}

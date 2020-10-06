@@ -34,6 +34,8 @@ class ItemDetailView(RetrieveAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemDetailSerializer
     queryset = Item.objects.all()
+    lookup_field = 'slug'
+    
 
 
 class OrderQuantityUpdateView(APIView):

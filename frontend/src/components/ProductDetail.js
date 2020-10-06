@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
 import {
   Button,
+  Breadcrumb,
   Card,
   Container,
   Dimmer,
@@ -49,7 +50,7 @@ class ProductDetail extends Component {
     this.setState({
       black: !black,
     });
-  }
+  };
 
   handleFetchItem = () => {
     const {
@@ -58,7 +59,7 @@ class ProductDetail extends Component {
     this.setState({ loading: true });
     this.props.fetchCart(); // update the cart count
     axios
-      .get(productDetailURL(params.productID))
+      .get(productDetailURL(params.productSlug))
       .then((res) => {
         console.log(res.data);
         this.setState({ data: res.data, loading: false });
@@ -66,21 +67,21 @@ class ProductDetail extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-  }
+  };
 
-  handleFormatData = formData => {
+  handleFormatData = (formData) => {
     // convert {colour: 1, size: 2} to [1,2] - they're all variations
-    return Object.keys(formData).map(key => {
+    return Object.keys(formData).map((key) => {
       return formData[key];
     });
   };
 
   handleAddToCart = (slug) => {
-    this.setState({ loading: true })
-    const { formData } = this.state
-    const variations = this.handleFormatData(formData)
+    this.setState({ loading: true });
+    const { formData } = this.state;
+    const variations = this.handleFormatData(formData);
 
-    console.log(variations)
+    console.log(variations);
 
     authAxios
       .post(addToCartURL, { slug, variations })
@@ -92,7 +93,7 @@ class ProductDetail extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-  }
+  };
 
   handleChange = (e, { name, value }) => {
     // функція вже готова для приймання різних типів одягу (розмір, колір і т.д.). Лишилось реалізувати підтримку інштх типів в моделях Django і допилити у формі відображення
@@ -109,8 +110,33 @@ class ProductDetail extends Component {
     const { data, error, loading, formData, value } = this.state;
     const item = data;
 
+    const BreadcrumbExampleSection = () => (
+      <Breadcrumb>
+        <Breadcrumb.Section link>
+          <Link to="/">Home</Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider icon="right chevron" />
+        {item.category_type === "M" ? (
+          <Breadcrumb.Section link>
+            <Link to={"/men"}>Men's</Link>
+          </Breadcrumb.Section>
+        ) : (
+          <Breadcrumb.Section link>
+            <Link to={"/women"}>Women's</Link>
+          </Breadcrumb.Section>
+        )}
+        <Breadcrumb.Divider icon="right chevron" />
+        <Breadcrumb.Section link>
+          <Link to={`/${item.category_type}/${item.category}`.toLowerCase()}>{item.category}</Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider icon="right chevron" />
+        <Breadcrumb.Section active>{item.title}</Breadcrumb.Section>
+      </Breadcrumb>
+    );
+
     return (
-      <Container style={{marginTop: '50px'}}>
+      <Container style={{ marginTop: "50px" }}>
+        <BreadcrumbExampleSection />
         {error && ( // if error then do smth after &&
           <Message
             error
@@ -171,13 +197,12 @@ class ProductDetail extends Component {
                           {item.size.map((s) => {
                             return (
                               <Form.Field
-                                key={s.id}
+                                key={s.slug}
                                 control={Radio}
                                 label={s.size}
                                 name={s.name}
-                                value={s.id}
-
-                                checked={value === s.id}
+                                value={s.slug}
+                                checked={value === s.slug}
                                 onChange={this.handleChange}
                               />
                             );
@@ -194,7 +219,7 @@ class ProductDetail extends Component {
                             </Button>
                           )}
                           {!item.discount_price && (
-                            <Label color="black" floated="left">
+                            <Label color="black" floated="left" size="big">
                               ${item.price}
                             </Label>
                           )}

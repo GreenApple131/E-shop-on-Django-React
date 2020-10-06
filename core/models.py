@@ -16,8 +16,8 @@ CATEGORY_CHOICES = (
 )
 
 CATEGORY_TYPES = (
-	('M', 'Men'),
-	('W', 'Women')
+	('Men', 'Men'),
+	('Women', 'Women')
 )
 
 SIZE_CHOICES = (
@@ -64,7 +64,7 @@ class Item(models.Model):
 	category = models.CharField(
 	    choices=CATEGORY_CHOICES, max_length=3, blank=False)
 	category_type = models.CharField(
-		choices=CATEGORY_TYPES, max_length=1, default='M', blank=False)
+		choices=CATEGORY_TYPES, max_length=5, blank=False)
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
 	slug = models.SlugField(max_length=200, unique=True) # auto generate slug into admin using @@@@prepopulated_fields={'slug': ('title',)}@@@@
 	description = models.TextField(
@@ -227,7 +227,8 @@ class Refund(models.Model):
 	email = models.EmailField()
 
 	def __str__(self):
-		return f"{self.pk}"
+		return f"{self.pk}" 
+		# pk (the default lookup field in DRF)
 
 
 def userprofile_receiver(sender, instance, created, *args, **kwargs):

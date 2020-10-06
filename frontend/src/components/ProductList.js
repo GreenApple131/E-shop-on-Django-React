@@ -7,7 +7,6 @@ import {
   Container,
   Dimmer,
   Grid,
-  Header,
   Icon,
   Image,
   Item,
@@ -59,7 +58,7 @@ class ProductList extends Component {
   };
 
   render() {
-    const { data, error, loading } = this.state;
+    const { error, loading } = this.state;
 
     return (
       <Container style={{marginTop: "10px", marginBottom: "10px"}}>

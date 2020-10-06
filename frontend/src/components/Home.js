@@ -25,7 +25,7 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
-import SearchFilter, { SearchFilterResults } from "./SearchResult";
+import Categories from "./Categories";
 import "../App.css";
 
 // slider
@@ -134,7 +134,7 @@ class DesktopContainer extends Component {
 
   render() {
     const { children } = this.props;
-    const { fixed, data, error, loading } = this.state;
+    const { data, error, loading } = this.state;
 
     const content = [
       {
@@ -170,7 +170,7 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan="mobile">
-        {/* <Container> */}
+        <Container>
           <Visibility
             once={false}
             onBottomPassed={this.showFixedMenu}
@@ -205,8 +205,9 @@ class DesktopContainer extends Component {
               </Slider>
               {/* <HomepageHeading /> */}
             </Segment>
+          <Categories />
           </Visibility>
-        {/* </Container> */}
+        </Container>
 
         {/* <ProductList /> */}
 
@@ -241,7 +242,7 @@ class DesktopContainer extends Component {
             columns={5}
             style={{ marginTop: "10px", marginBottom: "10px" }}
           >
-            {this.state.data.map((item) => {
+            {data.map((item) => {
               return (
                 <Grid.Column key={item.id}>
                   <Card style={{ width: "300px", height: "420px" }}>
@@ -258,14 +259,14 @@ class DesktopContainer extends Component {
                       ui={true}
                       as="a"
                       onClick={() =>
-                        this.props.history.push(`/products/${item.id}`)
+                        this.props.history.push(`/products/${item.slug}`)
                       }
                     />
                     <Card.Content>
                       <Item.Header
                         as="a"
                         onClick={() =>
-                          this.props.history.push(`/products/${item.id}`)
+                          this.props.history.push(`/products/${item.slug}`)
                         }
                       >
                         {item.title}
@@ -390,7 +391,6 @@ ResponsiveContainer.propTypes = {
   children: PropTypes.node,
 };
 
-const HomepageLayout = () => <ResponsiveContainer></ResponsiveContainer>;
 
 const mapDispatchToProps = (dispatch) => {
   return {

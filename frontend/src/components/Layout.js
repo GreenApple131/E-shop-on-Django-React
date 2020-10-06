@@ -71,7 +71,7 @@ class CustomLayout extends Component {
               <Grid container columns="5">
                 <Grid.Column width="2">
                   <Link to="/">
-                    <Menu.Item header pointing>
+                    <Menu.Item header>
                       Home
                     </Menu.Item>
                   </Link>
@@ -81,7 +81,7 @@ class CustomLayout extends Component {
                   <React.Fragment>
                     <Grid.Column width="2">
                       <Link to="/profile">
-                        <Menu.Item pointing>Profile</Menu.Item>
+                        <Menu.Item>Profile</Menu.Item>
                       </Link>
                     </Grid.Column>
                     <Grid.Column width="1">
@@ -89,7 +89,6 @@ class CustomLayout extends Component {
                         icon="cart"
                         loading={loading}
                         text={`${cart !== null ? cart.order_items.length : 0}`}
-                        pointing
                         className="link item"
                       >
                         <Dropdown.Menu>
@@ -116,7 +115,7 @@ class CustomLayout extends Component {
                         </Dropdown.Menu>
                       </Dropdown>
                     </Grid.Column>
-                    <Grid.Column width="1">
+                    <Grid.Column width="2">
                       <Menu.Item
                         header
                         onClick={() => {
