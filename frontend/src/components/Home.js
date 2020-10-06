@@ -170,44 +170,50 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan="mobile">
-        <Container>
           <Visibility
             once={false}
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Segment
-              inverted
-              textAlign='center'
-              style={{ maxHeight: 700, padding: "0em 0em" }}
-              vertical
-            >
-              <Slider className="slider-wrapper">
-                {content.map((item, index) => (
-                  <div
-                    key={index}
-                    className="slider-content"
-                    // style={{ background: `url('${item.image}') no-repeat center center` }}
-                    style={{ background: `url(${item.image})` }}
+            <Grid columns={2}>
+              <Grid.Column width='4'>
+                <Categories />
+              </Grid.Column>
+              <Grid.Column width='12'>
+                <Container>
+                  <Segment
+                    inverted
+                    textAlign="center"
+                    style={{ maxHeight: 700, padding: "0em 0em" }}
+                    vertical
                   >
-                    <div
-                      className="inner"
-                      style={{ height: "auto", width: "100%" }}
-                    >
-                      <h1>{item.title}</h1>
-                      <p>{item.description}</p>
-                      <Link to={item.redirectLink}>
-                        <button>{item.button}</button>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </Slider>
-              {/* <HomepageHeading /> */}
-            </Segment>
-          <Categories />
+                    <Slider className="slider-wrapper">
+                      {content.map((item, index) => (
+                        <div
+                          key={index}
+                          className="slider-content"
+                          // style={{ background: `url('${item.image}') no-repeat center center` }}
+                          style={{ background: `url(${item.image})` }}
+                        >
+                          <div
+                            className="inner"
+                            style={{ height: "auto", width: "100%" }}
+                          >
+                            <h1>{item.title}</h1>
+                            <p>{item.description}</p>
+                            <Link to={item.redirectLink}>
+                              <button>{item.button}</button>
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </Slider>
+                    {/* <HomepageHeading /> */}
+                  </Segment>
+                </Container>
+              </Grid.Column>
+            </Grid>
           </Visibility>
-        </Container>
 
         {/* <ProductList /> */}
 
@@ -390,7 +396,6 @@ const ResponsiveContainer = ({ children }) => (
 ResponsiveContainer.propTypes = {
   children: PropTypes.node,
 };
-
 
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -18,7 +18,7 @@ import {
 import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
-import { SearchBar } from './SearchResult'
+import { SearchBar } from "./SearchResult";
 
 const { Media } = createMedia({
   breakpoints: {
@@ -28,13 +28,11 @@ const { Media } = createMedia({
   },
 });
 
-
 class CustomLayout extends Component {
   constructor(props) {
     super(props);
     this.state = { value: "" };
   }
-
 
   async componentDidMount() {
     this.setState({ loading: true });
@@ -67,13 +65,11 @@ class CustomLayout extends Component {
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Menu fixed="top" inverted borderless>
+            <Menu fixed="top" inverted pointing borderless style={{height: '45px'}}>
               <Grid container columns="5">
                 <Grid.Column width="2">
                   <Link to="/">
-                    <Menu.Item header>
-                      Home
-                    </Menu.Item>
+                    <Menu.Item header>Home</Menu.Item>
                   </Link>
                 </Grid.Column>
                 <SearchBar />
@@ -117,7 +113,6 @@ class CustomLayout extends Component {
                     </Grid.Column>
                     <Grid.Column width="2">
                       <Menu.Item
-                        header
                         onClick={() => {
                           this.props.logout();
                           this.props.logoutReload();
@@ -129,14 +124,14 @@ class CustomLayout extends Component {
                   </React.Fragment>
                 ) : (
                   <React.Fragment>
-                    <Grid.Column width={2}>
-                      <Menu.Item header>
+                    <Grid.Column width="2">
+                      <Menu.Item>
                         <Link to="/login">Login</Link>
                       </Menu.Item>
                     </Grid.Column>
 
-                    <Grid.Column width={2}>
-                      <Menu.Item header>
+                    <Grid.Column width="2">
+                      <Menu.Item>
                         <Link to="/signup">Signup</Link>
                       </Menu.Item>
                     </Grid.Column>

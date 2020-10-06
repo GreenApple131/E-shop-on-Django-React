@@ -1,15 +1,94 @@
-import React from "react";
-import {
-  Button
-} from "semantic-ui-react";
+import React, { useState } from "react";
+import { Menu } from "semantic-ui-react";
 import { Link, Redirect } from "react-router-dom";
 
+export default class Categories extends React.Component {
+  state = {};
+  handleItemClick = (e, { name }) => this.setState({ activeItem: name });
 
+  render() {
+    const { activeItem } = this.state;
 
-export default function Categories() {
     return (
-        <React.Fragment>
-            Categories
-        </React.Fragment>
-    )
+      <Menu vertical style={{marginTop: "60px"}}>
+        <Menu.Item>
+          <Menu.Header>Products</Menu.Header>
+
+          <Menu.Menu>
+            <Menu.Item
+              name="enterprise"
+              active={activeItem === "enterprise"}
+              onClick={this.handleItemClick}
+            />
+            <Menu.Item
+              name="consumer"
+              active={activeItem === "consumer"}
+              onClick={this.handleItemClick}
+            />
+          </Menu.Menu>
+        </Menu.Item>
+
+        <Menu.Item>
+          <Menu.Header>CMS Solutions</Menu.Header>
+
+          <Menu.Menu>
+            <Menu.Item
+              name="rails"
+              active={activeItem === "rails"}
+              onClick={this.handleItemClick}
+            />
+            <Menu.Item
+              name="python"
+              active={activeItem === "python"}
+              onClick={this.handleItemClick}
+            />
+            <Menu.Item
+              name="php"
+              active={activeItem === "php"}
+              onClick={this.handleItemClick}
+            />
+          </Menu.Menu>
+        </Menu.Item>
+
+        <Menu.Item>
+          <Menu.Header>Hosting</Menu.Header>
+
+          <Menu.Menu>
+            <Menu.Item
+              name="shared"
+              active={activeItem === "shared"}
+              onClick={this.handleItemClick}
+            />
+            <Menu.Item
+              name="dedicated"
+              active={activeItem === "dedicated"}
+              onClick={this.handleItemClick}
+            />
+          </Menu.Menu>
+        </Menu.Item>
+
+        <Menu.Item>
+          <Menu.Header>Support</Menu.Header>
+
+          <Menu.Menu>
+            <Menu.Item
+              name="email"
+              active={activeItem === "email"}
+              onClick={this.handleItemClick}
+            >
+              E-mail Support
+            </Menu.Item>
+
+            <Menu.Item
+              name="faq"
+              active={activeItem === "faq"}
+              onClick={this.handleItemClick}
+            >
+              FAQs
+            </Menu.Item>
+          </Menu.Menu>
+        </Menu.Item>
+      </Menu>
+    );
+  }
 }
