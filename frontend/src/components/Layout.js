@@ -19,6 +19,7 @@ import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
 import { SearchBar } from "./SearchResult";
+import Categories from "./Categories";
 
 const { Media } = createMedia({
   breakpoints: {
@@ -31,7 +32,7 @@ const { Media } = createMedia({
 class CustomLayout extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: "" };
+    this.state = { value: "", data: [] };
   }
 
   async componentDidMount() {
@@ -56,6 +57,7 @@ class CustomLayout extends Component {
 
   render() {
     const { authenticated, cart, loading } = this.props;
+    const { data } = this.state;
 
     return (
       <React.Fragment>
@@ -65,12 +67,48 @@ class CustomLayout extends Component {
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Menu fixed="top" inverted pointing borderless style={{height: '45px'}}>
-              <Grid container columns="5">
+            <Menu
+              fixed="top"
+              inverted
+              pointing
+              borderless
+              style={{ height: "45px" }}
+            >
+              <Grid container columns="6">
                 <Grid.Column width="2">
                   <Link to="/">
                     <Menu.Item header>Home</Menu.Item>
                   </Link>
+                </Grid.Column>
+                <Grid.Column width="2">
+                  <Dropdown
+                    // icon="cart"
+                    loading={loading}
+                    text="Categories"
+                    className="link item"
+                  >
+                    <Dropdown.Menu>
+                      {data.map(
+                        (item) =>
+                          item.category_type === "Men" && (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() =>
+                                this.props.history.push(
+                                  {
+                                    pathname: `/${item.category}`.toLowerCase(),
+                                    state: { categoryChoose: item.category.toLowerCase() },
+                                    // access to state - this.props.location.state.*******
+                                  }
+                                )
+                              }
+                            >
+                              {item.category}
+                            </Dropdown.Item>
+                          )
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </Grid.Column>
                 <SearchBar />
                 {authenticated ? (

@@ -73,7 +73,7 @@ export function SearchBar(props) {
   };
 
   const handleResultSelect = (e, { result }) => {
-    history.push(`/products/${result.id}`);
+    history.push(`/products/${result.slug}`);
   };
 
   const handleSearchChange = useCallback((e, data) => {
@@ -128,7 +128,7 @@ export function SearchBar(props) {
   }, []);
 
   return (
-    <Grid.Column width="9">
+    <Grid.Column width="7">
       <Search
         loading={loading}
         input={{ fluid: true }}
@@ -245,14 +245,14 @@ export class SearchFilterResults extends Component {
                       ui={true}
                       as="a"
                       onClick={() =>
-                        this.props.history.push(`/products/${item.id}`)
+                        this.props.history.push(`/products/${item.slug}`)
                       }
                     />
                     <Card.Content>
                       <Item.Header
                         as="a"
                         onClick={() =>
-                          this.props.history.push(`/products/${item.id}`)
+                          this.props.history.push(`/products/${item.slug}`)
                         }
                       >
                         {item.title}

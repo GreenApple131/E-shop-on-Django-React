@@ -25,7 +25,6 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
-import Categories from "./Categories";
 import "../App.css";
 
 // slider
@@ -170,50 +169,43 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan="mobile">
-          <Visibility
-            once={false}
-            onBottomPassed={this.showFixedMenu}
-            onBottomPassedReverse={this.hideFixedMenu}
+        <Visibility
+          once={false}
+          onBottomPassed={this.showFixedMenu}
+          onBottomPassedReverse={this.hideFixedMenu}
+        >
+          {/* <Container> */}
+          <Segment
+            inverted
+            textAlign="center"
+            style={{ maxHeight: 700, padding: "0em 0em" }}
+            vertical
           >
-            <Grid columns={2}>
-              <Grid.Column width='4'>
-                <Categories />
-              </Grid.Column>
-              <Grid.Column width='12'>
-                <Container>
-                  <Segment
-                    inverted
-                    textAlign="center"
-                    style={{ maxHeight: 700, padding: "0em 0em" }}
-                    vertical
+            <Slider className="slider-wrapper">
+              {content.map((item, index) => (
+                <div
+                  key={index}
+                  className="slider-content"
+                  // style={{ background: `url('${item.image}') no-repeat center center` }}
+                  style={{ background: `url(${item.image})` }}
+                >
+                  <div
+                    className="inner"
+                    style={{ height: "auto", width: "100%" }}
                   >
-                    <Slider className="slider-wrapper">
-                      {content.map((item, index) => (
-                        <div
-                          key={index}
-                          className="slider-content"
-                          // style={{ background: `url('${item.image}') no-repeat center center` }}
-                          style={{ background: `url(${item.image})` }}
-                        >
-                          <div
-                            className="inner"
-                            style={{ height: "auto", width: "100%" }}
-                          >
-                            <h1>{item.title}</h1>
-                            <p>{item.description}</p>
-                            <Link to={item.redirectLink}>
-                              <button>{item.button}</button>
-                            </Link>
-                          </div>
-                        </div>
-                      ))}
-                    </Slider>
-                    {/* <HomepageHeading /> */}
-                  </Segment>
-                </Container>
-              </Grid.Column>
-            </Grid>
-          </Visibility>
+                    <h1>{item.title}</h1>
+                    <p>{item.description}</p>
+                    <Link to={item.redirectLink}>
+                      <button>{item.button}</button>
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+            {/* <HomepageHeading /> */}
+          </Segment>
+          {/* </Container> */}
+        </Visibility>
 
         {/* <ProductList /> */}
 

@@ -92,14 +92,14 @@ class ProductList extends Component {
                     wrapped ui={true}
                     as="a"
                     onClick={() =>
-                      this.props.history.push(`/products/${item.id}`)
+                      this.props.history.push(`/products/${item.slug}`)
                     } 
                   />
                   <Card.Content>
                     <Item.Header
                       as="a"
                       onClick={() =>
-                        this.props.history.push(`/products/${item.id}`)
+                        this.props.history.push(`/products/${item.slug}`)
                       }
                     >
                       {item.title} {"  "}
