@@ -15,6 +15,14 @@ import {
   Segment,
   Visibility,
 } from "semantic-ui-react";
+import {
+  Navbar,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Button,
+} from "react-bootstrap";
 import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
@@ -67,7 +75,111 @@ class CustomLayout extends Component {
             onBottomPassed={this.showFixedMenu}
             onBottomPassedReverse={this.hideFixedMenu}
           >
-            <Menu
+            <Navbar
+              fixed="top"
+              collapseOnSelect
+              expand="lg"
+              variant="dark"
+              style={{ backgroundColor: "#1b1c1d" }}
+            >
+              <Navbar.Brand href="/">Stiles&Lydia</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="mr-auto">
+                  <Nav.Link href="#features">Features</Nav.Link>
+                  <Nav.Link href="#pricing">Pricing</Nav.Link>
+                  <NavDropdown
+                    title="Categories"
+                    id="collasible-nav-dropdown"
+                    loading={loading}
+                  >
+                    <NavDropdown.Item
+                    // key={item.id}
+                    // onClick={() =>
+                    //   this.props.history.push({
+                    //     pathname: `/${item.category}`.toLowerCase(),
+                    //     state: {
+                    //       categoryChoose: item.category.toLowerCase(),
+                    //     },
+                    //     // access to state - this.props.location.state.*******
+                    //   })
+                    // }
+                    >
+                      {/* {item.category} */}
+                      Jackets
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </Nav>
+                <Nav className="justify-content-center">
+                  <Nav.Item>
+                    <SearchBar />
+                  </Nav.Item>
+                </Nav>
+                <Nav>
+                  {authenticated ? (
+                    <React.Fragment>
+                      <Grid.Column width="2">
+                        <Link to="/profile">
+                          <Menu.Item>Profile</Menu.Item>
+                        </Link>
+                      </Grid.Column>
+                      <Grid.Column width="1">
+                        <Dropdown
+                          icon="cart"
+                          loading={loading}
+                          text={`${
+                            cart !== null ? cart.order_items.length : 0
+                          }`}
+                          className="link item"
+                        >
+                          <Dropdown.Menu>
+                            {cart &&
+                              cart.order_items.map((order_item) => {
+                                return (
+                                  <Dropdown.Item key={order_item.id}>
+                                    {order_item.quantity} x{" "}
+                                    {order_item.item.title}
+                                  </Dropdown.Item>
+                                );
+                              })}
+                            {cart && cart.order_items.length < 1 ? (
+                              <Dropdown.Item>
+                                No items in your cart
+                              </Dropdown.Item>
+                            ) : null}
+                            <Dropdown.Divider />
+                            <Dropdown.Item
+                              icon="arrow right"
+                              text="Chechout"
+                              onClick={() =>
+                                this.props.history.push("/order-summary")
+                              }
+                            />
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Grid.Column>
+                      <Grid.Column width="2">
+                        <Menu.Item
+                          onClick={() => {
+                            this.props.logout();
+                            this.props.logoutReload();
+                          }}
+                        >
+                          Logout
+                        </Menu.Item>
+                      </Grid.Column>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <Nav.Link href="/login">Login</Nav.Link>
+
+                      <Nav.Link href="/signup">Signup</Nav.Link>
+                    </React.Fragment>
+                  )}
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
+            {/* <Menu
               fixed="top"
               inverted
               pointing
@@ -176,7 +288,7 @@ class CustomLayout extends Component {
                   </React.Fragment>
                 )}
               </Grid>
-            </Menu>
+            </Menu> */}
           </Visibility>
 
           {this.props.children}

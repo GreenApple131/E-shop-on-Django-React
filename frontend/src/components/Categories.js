@@ -97,7 +97,8 @@ export default class CategorieChoose extends Component {
 
   render() {
     const { data } = this.state;
-    const categoryChoose = this.props.location.state.categoryChoose;
+    if (this.props.location.state.categoryChoose===undefined || null){
+    const categoryChoose = '';}
     return (
       <React.Fragment>
         {/* categoryChoose={this.props.location.state.searchValue} */}

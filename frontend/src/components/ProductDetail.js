@@ -219,7 +219,7 @@ class ProductDetail extends Component {
                             </Button>
                           )}
                           {!item.discount_price && (
-                            <Label color="black" floated="left" size="big">
+                            <Label basic color="black" floated="left" size="big">
                               ${item.price}
                             </Label>
                           )}

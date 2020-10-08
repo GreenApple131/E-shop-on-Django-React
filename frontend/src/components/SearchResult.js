@@ -23,7 +23,6 @@ import {
 import { productListURL } from "../constants";
 import FilterResults from "react-filter-search";
 
-
 const initialState = {
   data: [],
   isLoading: false,
@@ -95,9 +94,10 @@ export function SearchBar(props) {
               return {
                 title: list.data[key].title,
                 description: list.data[key].description,
-                price: '$'+list.data[key].price,
+                price: "$" + list.data[key].price,
                 id: list.data[key].id,
                 image: list.data[key].image,
+                slug: list.data[key].slug,
               };
             }))
           );
@@ -137,7 +137,7 @@ export function SearchBar(props) {
         onSearchChange={handleSearchChange}
         results={results}
         value={value}
-        size='small'
+        size="small"
         placeholder="Search what do you want..."
         fluid
         style={{
@@ -145,7 +145,7 @@ export function SearchBar(props) {
           circular: true,
           link: true,
           marginTop: "5px",
-          width: '10',
+          width: "10",
         }}
       />
     </Grid.Column>
@@ -161,8 +161,6 @@ class SearchResult extends Component {
   async componentDidMount() {
     this.setState({ loading: true });
 
-    // this.props.fetchCart(); // update the cart count
-
     const res = await axios
       .get(productListURL)
       .then((res) => {
@@ -172,14 +170,28 @@ class SearchResult extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
+
   }
 
-  handleChangeSearch = (event) => {
-    const { searchValue } = this.props.location.state;
-    this.setState({ searchValue });
+  getSearchValue = () => {
+    console.log('value1')
+    if (this.props.location.state.searchValue === 'undefined'){
+      const searchValue = '***'
+      console.log('value2')
+    } else {
+      console.log('value3')
+      const searchValue = this.props.location.state.searchValue
+    }
   };
 
   render() {
+
+    // if (this.props.location.state.searchValue === undefined) {
+    //   this.setState({ searchValue: 'scarf' })
+    // }
+    // const searchValue = ''
+    
+
     return (
       <Container style={{ marginTop: "70px" }}>
         <Header as="h2">
