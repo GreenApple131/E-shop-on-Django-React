@@ -174,13 +174,6 @@ class SearchResult extends Component {
   }
 
   render() {
-
-    // if (this.props.location.state.searchValue === undefined) {
-    //   this.setState({ searchValue: 'scarf' })
-    // }
-    // const searchValue = ''
-    
-
     return (
       <Container style={{ marginTop: "70px" }}>
         <Header as="h2">

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link, NavLink, withRouter } from "react-router-dom";
 import axios from "axios";
 import { createMedia } from "@artsy/fresnel";
 import {
@@ -19,10 +19,10 @@ import {
   Navbar,
   Nav,
   NavDropdown,
-  Form,
   FormControl,
   Button,
 } from "react-bootstrap";
+import { LinkContainer } from 'react-router-bootstrap';
 import { productListURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
@@ -78,91 +78,73 @@ class CustomLayout extends Component {
             <Navbar
               fixed="top"
               collapseOnSelect
-              expand="lg"
+              expand='lg'
               variant="dark"
               style={{ backgroundColor: "#1b1c1d" }}
             >
-              <Navbar.Brand href="/">Stiles&Lydia</Navbar.Brand>
+              <Navbar.Brand as={Link} to='/'>Stiles&Lydia</Navbar.Brand>
               <Nav>
-                <NavDropdown
-                  title="Categories"
-                  id="collasible-nav-dropdown"
-                  loading={loading}
-                >
-                  <NavDropdown.Item>
-                    Jackets
-                  </NavDropdown.Item>
+                <NavDropdown title="Categories" id="collasible-nav-dropdown">
+                  <NavDropdown.Item>Jackets</NavDropdown.Item>
+                  <NavDropdown.Item>Outwear</NavDropdown.Item>
+                  <NavDropdown.Item>Hats</NavDropdown.Item>
+                  <NavDropdown.Item>Shirts</NavDropdown.Item>
                 </NavDropdown>
-              </Nav>
-              <Nav className="justify-content-center responsive-navbar-nav">
-                <Nav.Item>
-                  <SearchBar />
-                </Nav.Item>
               </Nav>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav>
-                  {authenticated ? (
-                    <React.Fragment>
-                      <Grid.Column width="2">
-                        <Link to="/profile">
-                          <Menu.Item>Profile</Menu.Item>
-                        </Link>
-                      </Grid.Column>
-                      <Grid.Column width="1">
-                        <Dropdown
-                          icon="cart"
-                          loading={loading}
-                          text={`${
-                            cart !== null ? cart.order_items.length : 0
-                          }`}
-                          className="link item"
-                        >
-                          <Dropdown.Menu>
-                            {cart &&
-                              cart.order_items.map((order_item) => {
-                                return (
-                                  <Dropdown.Item key={order_item.id}>
-                                    {order_item.quantity} x{" "}
-                                    {order_item.item.title}
-                                  </Dropdown.Item>
-                                );
-                              })}
-                            {cart && cart.order_items.length < 1 ? (
-                              <Dropdown.Item>
-                                No items in your cart
-                              </Dropdown.Item>
-                            ) : null}
-                            <Dropdown.Divider />
-                            <Dropdown.Item
-                              icon="arrow right"
-                              text="Chechout"
-                              onClick={() =>
-                                this.props.history.push("/order-summary")
-                              }
-                            />
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </Grid.Column>
-                      <Grid.Column width="2">
-                        <Menu.Item
-                          onClick={() => {
-                            this.props.logout();
-                            this.props.logoutReload();
-                          }}
-                        >
-                          Logout
-                        </Menu.Item>
-                      </Grid.Column>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <Nav.Link href="/login">Login</Nav.Link>
-
-                      <Nav.Link href="/signup">Signup</Nav.Link>
-                    </React.Fragment>
-                  )}
+                <Nav className="mr-auto">
+                  <Nav.Item>
+                    <SearchBar />
+                  </Nav.Item>
                 </Nav>
+                {authenticated ? (
+                  <Nav>
+                    <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
+                    <NavDropdown
+                      icon="cart"
+                      loading={loading}
+                      text={`${cart !== null ? cart.order_items.length : 0}`}
+                      className="link item"
+                    >
+                      <Dropdown.Menu>
+                        {cart &&
+                          cart.order_items.map((order_item) => {
+                            return (
+                              <Dropdown.Item key={order_item.id}>
+                                {order_item.quantity} x {order_item.item.title}
+                              </Dropdown.Item>
+                            );
+                          })}
+                        {cart && cart.order_items.length < 1 ? (
+                          <Dropdown.Item>No items in your cart</Dropdown.Item>
+                        ) : null}
+                        <Dropdown.Divider />
+                        <Nav.Icon
+                          icon="arrow right"
+                          text="Chechout"
+                          onClick={() =>
+                            this.props.history.push("/order-summary")
+                          }
+                        />
+                      </Dropdown.Menu>
+                    </NavDropdown>
+                    <Nav.Link
+                      onClick={() => {
+                        this.props.logout();
+                        this.props.logoutReload();
+                      }}
+                    >
+                      Logout
+                    </Nav.Link>
+                  </Nav>
+                ) : (
+                  <Nav className="justify-content-end">
+                    <Nav.Link as={Link} to="/login">Login</Nav.Link>
+
+                    <Nav.Link as={Link} to="/signup">Signup</Nav.Link>
+                  </Nav>
+                )}
               </Navbar.Collapse>
             </Navbar>
             {/* <Menu
