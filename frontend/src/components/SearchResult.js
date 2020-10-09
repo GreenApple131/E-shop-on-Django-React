@@ -64,8 +64,8 @@ export function SearchBar(props) {
   const handlePressEnter = (e) => {
     if (e.keyCode === 13) {
       history.push({
-        pathname: `/search/result/${e.target.value}`,
-        state: { searchValue: e.target.value },
+        pathname: `/search/${e.target.value}`,
+        // state: { searchValue: e.target.value },
         // access to state - this.props.location.state.*******
       });
     }
@@ -145,7 +145,7 @@ export function SearchBar(props) {
           circular: true,
           link: true,
           marginTop: "5px",
-          width: "10",
+          minWidth: "500px",
         }}
       />
     </Grid.Column>
@@ -173,17 +173,6 @@ class SearchResult extends Component {
 
   }
 
-  getSearchValue = () => {
-    console.log('value1')
-    if (this.props.location.state.searchValue === 'undefined'){
-      const searchValue = '***'
-      console.log('value2')
-    } else {
-      console.log('value3')
-      const searchValue = this.props.location.state.searchValue
-    }
-  };
-
   render() {
 
     // if (this.props.location.state.searchValue === undefined) {
@@ -195,12 +184,12 @@ class SearchResult extends Component {
     return (
       <Container style={{ marginTop: "70px" }}>
         <Header as="h2">
-          Search result of "{this.props.location.state.searchValue}"
+          Search result of "{this.props.match.params.searchRequest}"
         </Header>
 
         {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
         <SearchFilterResults
-          searchValue={this.props.location.state.searchValue}
+          searchValue={this.props.match.params.searchRequest}
         />
       </Container>
     );

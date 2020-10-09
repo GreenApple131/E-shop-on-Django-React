@@ -12,6 +12,7 @@ import Checkout from "./components/Checkout";
 import Profile from "./components/Profile";
 import SearchResult from "./components/SearchResult";
 import CategorieChoose from "./components/Categories";
+import { PageNotFound } from "./components/PageNotFound";
 
 const categories = [
   "jackets",
@@ -26,9 +27,10 @@ const categories = [
 
 const BaseRouter = () => (
   <Hoc>
-    <Route exact path="/" component={HomepageLayout} />
+    <Route path="/" exact={true} component={HomepageLayout} />
     <Route path="/products/:productSlug" component={ProductDetail} />
-    <Route path="/search/result/:searchRequest" component={SearchResult} />
+
+    <Route path="/search/:searchRequest" component={SearchResult} />
     <Route path="/login" component={Login} />
     <Route path="/signup" component={Signup} />
     <Route path="/profile" component={Profile} />
@@ -44,6 +46,8 @@ const BaseRouter = () => (
     <Route path="/shoes" component={CategorieChoose} />
     <Route path="/hats" component={CategorieChoose} />
     <Route path="/outwear" component={CategorieChoose} />
+
+    {/* <Route component={PageNotFound} /> */}
   </Hoc>
 );
 

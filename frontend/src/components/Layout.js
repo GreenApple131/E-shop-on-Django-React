@@ -83,38 +83,24 @@ class CustomLayout extends Component {
               style={{ backgroundColor: "#1b1c1d" }}
             >
               <Navbar.Brand href="/">Stiles&Lydia</Navbar.Brand>
+              <Nav>
+                <NavDropdown
+                  title="Categories"
+                  id="collasible-nav-dropdown"
+                  loading={loading}
+                >
+                  <NavDropdown.Item>
+                    Jackets
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+              <Nav className="justify-content-center responsive-navbar-nav">
+                <Nav.Item>
+                  <SearchBar />
+                </Nav.Item>
+              </Nav>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="mr-auto">
-                  <Nav.Link href="#features">Features</Nav.Link>
-                  <Nav.Link href="#pricing">Pricing</Nav.Link>
-                  <NavDropdown
-                    title="Categories"
-                    id="collasible-nav-dropdown"
-                    loading={loading}
-                  >
-                    <NavDropdown.Item
-                    // key={item.id}
-                    // onClick={() =>
-                    //   this.props.history.push({
-                    //     pathname: `/${item.category}`.toLowerCase(),
-                    //     state: {
-                    //       categoryChoose: item.category.toLowerCase(),
-                    //     },
-                    //     // access to state - this.props.location.state.*******
-                    //   })
-                    // }
-                    >
-                      {/* {item.category} */}
-                      Jackets
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </Nav>
-                <Nav className="justify-content-center">
-                  <Nav.Item>
-                    <SearchBar />
-                  </Nav.Item>
-                </Nav>
                 <Nav>
                   {authenticated ? (
                     <React.Fragment>
