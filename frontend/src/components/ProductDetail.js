@@ -197,12 +197,12 @@ class ProductDetail extends Component {
                           {item.size.map((s) => {
                             return (
                               <Form.Field
-                                key={s.slug}
+                                key={s.id}
                                 control={Radio}
                                 label={s.size}
                                 name={s.name}
-                                value={s.slug}
-                                checked={value === s.slug}
+                                value={s.id}
+                                checked={value === s.id}
                                 onChange={this.handleChange}
                               />
                             );

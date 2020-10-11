@@ -3,7 +3,8 @@ import axios from "axios";
 import {
   Button,
   Card,
-  Dimmer,
+  Container,
+  Divider,
   Grid,
   Header,
   Image,
@@ -77,7 +78,7 @@ export class Categories extends Component {
 export default class CategorieChoose extends Component {
   state = {
     data: [],
-    categoryChoose: ''
+    categoryChoose: "",
   };
 
   async componentDidMount() {
@@ -97,98 +98,100 @@ export default class CategorieChoose extends Component {
 
   render() {
     const { data } = this.state;
-    if (this.props.location.state.categoryChoose===undefined || null){
-    const categoryChoose = '';}
+    const categoryChoose = this.props.match.params.categoryChoose;
     return (
       <React.Fragment>
         {/* categoryChoose={this.props.location.state.searchValue} */}
-
-          <Grid
-          doubling
-          columns={5}
-          style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
+        <Container>
+          <Header style={{ marginTop: "50px", marginBottom: "10px" }}>
+            {categoryChoose}
+          </Header>
+          <Divider />
+        </Container>
+        <Container>
+          <Card.Group>
             {data.map((item) => {
               return (
-                <Grid.Column key={item.id}>
-                    <Card style={{ width: "300px", height: "420px" }}>
-                      <Image
-                        src={item.image}
-                        style={{
-                          width: "220px",
-                          height: "257px",
-                          backgroundPosition: "center",
-                          backgroundSize: "cover",
-                          backgroundRepeat: "noRepeat",
-                        }}
-                        wrapped
-                        ui={true}
+                <React.Fragment >
+                  <Card key={item.id} style={{ width: "220px", height: "auto" }}>
+                    <Image
+                      src={item.image}
+                      style={{
+                        width: "220px",
+                        height: "257px",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "noRepeat",
+                      }}
+                      wrapped
+                      ui={true}
+                      as="a"
+                      onClick={() =>
+                        this.props.history.push(`/products/${item.slug}`)
+                      }
+                    />
+                    <Card.Content>
+                      <Item.Header
                         as="a"
                         onClick={() =>
                           this.props.history.push(`/products/${item.slug}`)
                         }
-                      />
-                      <Card.Content>
-                        <Item.Header
-                          as="a"
-                          onClick={() =>
-                            this.props.history.push(`/products/${item.slug}`)
-                          }
-                        >
-                          {item.title}
-                        </Item.Header>
-                        <Card.Meta>
-                          {item.category} {"  "}
-                          {item.discount_price && ( // always show, not just when there is a discount
-                            <Label color="violet">discount</Label>
-                          )}
-                        </Card.Meta>
-                        <Card.Description>Rating...</Card.Description>
-                      </Card.Content>
-                      <Card.Content extra>
-                        <React.Fragment>
-                          {item.discount_price && (
-                            <Header
-                              floated="left"
-                              color="violet"
-                              style={{ marginTop: "10px" }}
-                            >
-                              <small>
-                                <strike>
-                                  <span>${item.price}</span>
-                                </strike>
-                              </small>{" "}
-                              ${item.discount_price}
-                            </Header>
-                          )}
-                          {!item.discount_price && (
-                            <Header
-                              color="black"
-                              floated="left"
-                              size="medium"
-                              style={{ marginTop: "7px" }}
-                            >
-                              ${item.price}
-                            </Header>
-                          )}
-                          <Button
-                            animated="vertical"
-                            color="black"
-                            floated="right"
-                            onClick={() => this.handleAddToCart(item.slug)}
+                      >
+                        {item.title}
+                      </Item.Header>
+                      <Card.Meta>
+                        {item.category} {"  "}
+                        {item.discount_price && ( // always show, not just when there is a discount
+                          <Label color="violet">discount</Label>
+                        )}
+                      </Card.Meta>
+                      <Card.Description>Rating...</Card.Description>
+                    </Card.Content>
+                    <Card.Content extra>
+                      <React.Fragment>
+                        {item.discount_price && (
+                          <Header
+                            floated="left"
+                            color="violet"
+                            style={{ marginTop: "10px" }}
                           >
-                            <Button.Content hidden>Buy</Button.Content>
-                            <Button.Content visible>
-                              <Icon name="cart plus" />
-                            </Button.Content>
-                          </Button>
-                        </React.Fragment>
-                      </Card.Content>
-                    </Card>
-                </Grid.Column>
+                            <small>
+                              <strike>
+                                <span>${item.price}</span>
+                              </strike>
+                            </small>{" "}
+                            ${item.discount_price}
+                          </Header>
+                        )}
+                        {!item.discount_price && (
+                          <Header
+                            color="black"
+                            floated="left"
+                            size="medium"
+                            style={{ marginTop: "7px" }}
+                          >
+                            ${item.price}
+                          </Header>
+                        )}
+                        <Button
+                          animated="vertical"
+                          color="black"
+                          floated="right"
+                          onClick={() => this.handleAddToCart(item.slug)}
+                        >
+                          <Button.Content hidden>Buy</Button.Content>
+                          <Button.Content visible>
+                            <Icon name="cart plus" />
+                          </Button.Content>
+                        </Button>
+                      </React.Fragment>
+                    </Card.Content>
+                  </Card>
+                </React.Fragment>
               );
             })}
-          </Grid>
+          </Card.Group>
+        </Container>
       </React.Fragment>
     );
   }

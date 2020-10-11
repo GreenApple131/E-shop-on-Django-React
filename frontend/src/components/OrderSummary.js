@@ -95,11 +95,12 @@ class OrderSummary extends React.Component {
       .catch((err) => {
         this.setState({ error: err });
       });
+    
   };
 
-  handleRemoveItem = (itemID) => {
+  handleRemoveItem = (id) => {
     authAxios
-      .delete(orderItemDeleteURL(itemID))
+      .delete(orderItemDeleteURL(id))
       .then((res) => {
         // callback
         this.handleFetchOrder();

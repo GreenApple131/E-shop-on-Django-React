@@ -36,16 +36,16 @@ const BaseRouter = () => (
     <Route path="/profile" component={Profile} />
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
-    {/* <Route path={`/${categories}`} component={CategorieChoose} /> */}
+    <Route path="/category/:categoryChoose" component={CategorieChoose} />
 
-    <Route path="/jackets" component={CategorieChoose} />
+    {/* <Route path="/jackets" component={CategorieChoose} />
     <Route path="/coats" component={CategorieChoose} />
     <Route path="/shirts" component={CategorieChoose} />
     <Route path="/t-shirts" component={CategorieChoose} />
     <Route path="/sport" component={CategorieChoose} />
     <Route path="/shoes" component={CategorieChoose} />
     <Route path="/hats" component={CategorieChoose} />
-    <Route path="/outwear" component={CategorieChoose} />
+    <Route path="/outwear" component={CategorieChoose} /> */}
 
     {/* <Route component={PageNotFound} /> */}
   </Hoc>
