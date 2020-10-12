@@ -144,7 +144,7 @@ export function SearchBar(props) {
           name: "search",
           circular: true,
           link: true,
-          marginTop: "5px",
+          marginTop: "4px",
           minWidth: "500px",
         }}
       />

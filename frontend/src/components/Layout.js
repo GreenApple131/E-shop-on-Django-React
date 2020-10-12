@@ -1,28 +1,21 @@
 import React, { Component } from "react";
-import _ from "lodash";
 import { connect } from "react-redux";
-import { Link, NavLink, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import axios from "axios";
 import { authAxios } from "../utils";
-import { createMedia } from "@artsy/fresnel";
 import {
+  Button,
   Container,
   Divider,
   Dropdown,
   Grid,
   Header,
   Icon,
-  Input,
   Image,
   List,
   Menu,
-  Responsive,
   Segment,
-  Sidebar,
-  Visibility,
 } from "semantic-ui-react";
-import { Navbar, Nav, NavDropdown, FormControl, Button } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { productListURL, orderSummaryURL, mediaURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
 import { fetchCart } from "../store/actions/cart";
@@ -30,157 +23,32 @@ import { SearchBar } from "./SearchResult";
 import Categories from "./Categories";
 
 // ResponsiveNavBar
-import ResponsiveHeader from "dna-responsive-nav";
 import "semantic-ui-css/semantic.min.css";
-import "dna-responsive-nav/dist/dna-rn.css";
+import "./elements/navbar.css";
 // ResponsiveNavBar
-const Logo = mediaURL + "logo.png";
+// const Logo = mediaURL + "logo.png";
 
 
-const NavBarMobile = ({
-  children,
-  leftItems,
-  onPusherClick,
-  onToggle,
-  rightItems,
-  visible
-}) => (
-  <Sidebar.Pushable>
-    <Sidebar
-      width='thin'
-      as={Menu}
-      animation="overlay"
-      vertical
-      visible={visible}
-      size='huge'
-      inverted
-    >
-        <Menu.Item href="/" name="Mixed"/>
-
-        <Menu.Item>
-          <Menu.Header>Men</Menu.Header>
-            <Menu.Menu> 
-              <Menu.Item href='/tester' name='Tester' />
-              <Menu.Item href='/gifts' name='Gifts' />
-              <Menu.Item href='/perfumes' name='Perfumes' />
-            </Menu.Menu>
-        </Menu.Item>
-        </Sidebar>
-    <Sidebar.Pusher
-      dimmed={visible}
-      onClick={onPusherClick}
-      style={{ minHeight: "100vh" }}
-    >
-      <Menu fixed="top" inverted>
-        <Menu.Item>
-          <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
-        </Menu.Item>
-        <Menu.Item onClick={onToggle}>
-          <Icon name="sidebar" />
-        </Menu.Item>
-        <Menu.Menu position="right" icon>
-            <Menu.Item href='/tester' name='cart' >
-            <Icon name='cart'/>
-            </Menu.Item>
-            <Menu.Item href='/gifts' name='user' >
-            <Icon name='user'/>
-            </Menu.Item>
-        </Menu.Menu>
-      </Menu>
-      {children}
-    </Sidebar.Pusher>
-  </Sidebar.Pushable>
-);
-
-const NavBarDesktop = ({ leftItems, rightItems }) => (
-  <div>
-  <Menu fixed="top" borderless inverted>
-    <Menu.Item>
-      <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
-    </Menu.Item>
-    <Menu.Item style={{width:380}}>
-      <Input fluid icon='search' placeholder='Search for Products, Brands and More' />
-    </Menu.Item>
-    <Menu.Menu position="right">
-      {_.map(rightItems, item => <Menu.Item {...item} />)}
-    </Menu.Menu>
-  </Menu>
-  <Menu fixed="top" style={{ marginTop: "61" }} secondary>    
-  <Menu.Menu>
-    {_.map(leftItems, item => <Menu.Item {...item} />)}
-  </Menu.Menu>
-  </Menu>
-  </div>
-);
-
-const NavBarChildren = ({ children }) => (
-  <Container style={{ marginTop: "5em" }}>{children}</Container>
-);
-
-class NavBar extends Component {
-  state = {
-    visible: false
-  };
-
-  handlePusher = () => {
-    const { visible } = this.state;
-
-    if (visible) this.setState({ visible: false });
-  };
-
-  handleToggle = () => this.setState({ visible: !this.state.visible });
-
-  render() {
-    const { children, leftItems, rightItems } = this.props;
-    const { visible } = this.state;
-
-    return (
-      <div>
-        <Responsive {...Responsive.onlyMobile}>
-          <NavBarMobile
-            leftItems={leftItems}
-            onPusherClick={this.handlePusher}
-            onToggle={this.handleToggle}
-            rightItems={rightItems}
-            visible={visible}
-          >
-            <NavBarChildren>{children}</NavBarChildren>
-          </NavBarMobile>
-        </Responsive>
-        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-          <NavBarDesktop leftItems={leftItems} rightItems={rightItems} />
-          <NavBarChildren>{children}</NavBarChildren>
-        </Responsive>
-      </div>
-    );
-  }
-}
-
-const leftItems = [
-  { as: "a", content: "Mixed", key: "mixed" },
-  { as: "a", content: "Men", key: "men" }
-];
-const rightItems = [
-  { as: "a", content: "Signup", key: "signup" },
-  { as: "a", content: "Log in", key: "login" }
-];
-
-const ResponsiveNavBar = ({children}) => (
-  <NavBar leftItems={leftItems} rightItems={rightItems}>
-    {children}
-  </NavBar>
-);
-
-const { Media } = createMedia({
-  breakpoints: {
-    mobile: 0,
-    tablet: 768,
-    computer: 1024,
-  },
-});
 
 class CustomLayout extends Component {
-  state = { value: "", data: [] };
+  state = {
+    value: "",
+    data: [],
+    dropdownMenuStyle: {
+      display: "none",
+    },
+  };
+
+  handleToggleDropdownMenu = () => {
+    let newState = Object.assign({}, this.state);
+    if (newState.dropdownMenuStyle.display === "none") {
+      newState.dropdownMenuStyle = { display: "flex" };
+    } else {
+      newState.dropdownMenuStyle = { display: "none" };
+    }
+
+    this.setState(newState);
+  };
 
   async componentDidMount() {
     this.setState({ loading: true });
@@ -222,22 +90,280 @@ class CustomLayout extends Component {
   hideFixedMenu = () => this.setState({ fixed: false });
   showFixedMenu = () => this.setState({ fixed: true });
 
-  handleSidebarHide = () => this.setState({ sidebarOpened: false });
-  handleToggle = () => this.setState({ sidebarOpened: true });
 
   render() {
     const { authenticated, cart, loading } = this.props;
-    const { data, fixed, sidebarOpened } = this.state;
+    const { data } = this.state;
 
-    
     return (
       <React.Fragment>
+        <div className="App">
+          <Grid padded className="tablet computer only">
+            <Menu borderless fluid fixed="top" size="huge" inverted>
+              <Container>
+                <Menu.Item onClick={() => this.props.history.push("/")}>
+                  Stiles&Lydia
+                </Menu.Item>
 
-        <ResponsiveNavBar children={this.props.children}/>
+                <Dropdown text="Categories" className="link item">
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/jackets")
+                      }
+                    >
+                      Jackets
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/coats")}
+                    >
+                      Coats
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/outwear")
+                      }
+                    >
+                      Outwear
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/hats")}
+                    >
+                      Hats
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/shirts")
+                      }
+                    >
+                      Shirts
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/t-shirts")
+                      }
+                    >
+                      T-shirts
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/sport")}
+                    >
+                      Sports
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/shoes")}
+                    >
+                      Shoes
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                <SearchBar />
+                <Menu.Menu position="right">
+                  {authenticated ? (
+                    <React.Fragment>
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/profile")}
+                      >
+                        Profile
+                      </Menu.Item>
+                      <Dropdown
+                        icon="cart"
+                        loading={loading}
+                        text={`${cart !== null ? cart.order_items.length : 0}`}
+                        className="link item"
+                      >
+                        <Dropdown.Menu>
+                          {cart &&
+                            cart.order_items.map((order_item) => {
+                              return (
+                                <Dropdown.Item key={order_item.id}>
+                                  {order_item.quantity} x{" "}
+                                  {order_item.item.title}
+                                </Dropdown.Item>
+                              );
+                            })}
+                          {cart && cart.order_items.length < 1 ? (
+                            <Dropdown.Item>No items in your cart</Dropdown.Item>
+                          ) : null}
+                          <Dropdown.Divider />
+                          <Dropdown.Item
+                            icon="arrow right"
+                            text="Chechout"
+                            onClick={() =>
+                              this.props.history.push("/order-summary")
+                            }
+                          />
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      <Menu.Item
+                        onClick={() => {
+                          this.props.logout();
+                          this.props.logoutReload();
+                        }}
+                      >
+                        Logout
+                      </Menu.Item>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/login")}
+                      >
+                        Login
+                      </Menu.Item>
 
-        
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/signup")}
+                      >
+                        Signup
+                      </Menu.Item>
+                    </React.Fragment>
+                  )}
+                </Menu.Menu>
+              </Container>
+            </Menu>
+          </Grid>
+          <Grid padded className="mobile only">
+          <Menu borderless fluid fixed="top" size="huge" inverted>
+          <Menu.Item onClick={() => this.props.history.push("/")}>
+                  Stiles&Lydia
+                </Menu.Item>
+              <Menu.Menu position="right">
+                <Menu.Item>
+                  <Button
+                    icon
+                    basic
+                    toggle
+                    onClick={this.handleToggleDropdownMenu}
+                  >
+                    <Icon name="content" />
+                  </Button>
+                </Menu.Item>
+              </Menu.Menu>
+              <Menu
+                vertical
+                borderless
+                fluid
+                style={this.state.dropdownMenuStyle}
+              >
+                <Dropdown text="Categories" className="link item">
+                  <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/jackets")
+                      }
+                    >
+                      Jackets
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/coats")}
+                    >
+                      Coats
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/outwear")
+                      }
+                    >
+                      Outwear
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/hats")}
+                    >
+                      Hats
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/shirts")
+                      }
+                    >
+                      Shirts
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.props.history.push("/category/t-shirts")
+                      }
+                    >
+                      T-shirts
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/sport")}
+                    >
+                      Sports
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/category/shoes")}
+                    >
+                      Shoes
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                <SearchBar />
+                {authenticated ? (
+                    <React.Fragment>
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/profile")}
+                      >
+                        Profile
+                      </Menu.Item>
+                      <Dropdown
+                        icon="cart"
+                        loading={loading}
+                        text={`${cart !== null ? cart.order_items.length : 0}`}
+                        className="link item"
+                      >
+                        <Dropdown.Menu>
+                          {cart &&
+                            cart.order_items.map((order_item) => {
+                              return (
+                                <Dropdown.Item key={order_item.id}>
+                                  {order_item.quantity} x{" "}
+                                  {order_item.item.title}
+                                </Dropdown.Item>
+                              );
+                            })}
+                          {cart && cart.order_items.length < 1 ? (
+                            <Dropdown.Item>No items in your cart</Dropdown.Item>
+                          ) : null}
+                          <Dropdown.Divider />
+                          <Dropdown.Item
+                            icon="arrow right"
+                            text="Chechout"
+                            onClick={() =>
+                              this.props.history.push("/order-summary")
+                            }
+                          />
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      <Menu.Item
+                        onClick={() => {
+                          this.props.logout();
+                          this.props.logoutReload();
+                        }}
+                      >
+                        Logout
+                      </Menu.Item>
+                    </React.Fragment>
+                  ) : (
+                    <React.Fragment>
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/login")}
+                      >
+                        Login
+                      </Menu.Item>
 
-        {/* {this.props.children} */}
+                      <Menu.Item
+                        onClick={() => this.props.history.push("/signup")}
+                      >
+                        Signup
+                      </Menu.Item>
+                    </React.Fragment>
+                  )}
+              </Menu>
+            </Menu>
+          </Grid>
+          {this.props.children}
+        </div>
 
         <Segment inverted vertical style={{ padding: "5em 0em" }}>
           <Container textAlign="center">
@@ -303,69 +429,6 @@ class CustomLayout extends Component {
   }
 }
 
-class MobileContainer extends Component {
-  state = {};
-
-  handleSidebarHide = () => this.setState({ sidebarOpened: false });
-  handleToggle = () => this.setState({ sidebarOpened: true });
-
-  render() {
-    const { children } = this.props;
-    const { sidebarOpened } = this.state;
-
-    return (
-      <Media as={Sidebar.Pushable} at="mobile">
-        <Sidebar.Pushable>
-          <Sidebar
-            as={Menu}
-            animation="overlay"
-            inverted
-            onHide={this.handleSidebarHide}
-            vertical
-            visible={sidebarOpened}
-          >
-            <Menu.Item as="a" active>
-              Home
-            </Menu.Item>
-            <Menu.Item as="a">Work</Menu.Item>
-            <Menu.Item as="a">Company</Menu.Item>
-            <Menu.Item as="a">Careers</Menu.Item>
-            <Menu.Item as="a">Log in</Menu.Item>
-            <Menu.Item as="a">Sign Up</Menu.Item>
-          </Sidebar>
-
-          <Sidebar.Pusher dimmed={sidebarOpened}>
-            <Segment
-              inverted
-              textAlign="center"
-              style={{ minHeight: 45, padding: "0em 0em" }}
-              vertical
-            >
-              <Container>
-                <Menu inverted pointing secondary size="large">
-                  <Menu.Item onClick={this.handleToggle}>
-                    <Icon name="sidebar" />
-                  </Menu.Item>
-                  <Menu.Item position="right">
-                    <Button as="a" inverted>
-                      Log in
-                    </Button>
-                    <Button as="a" inverted style={{ marginLeft: "0.5em" }}>
-                      Sign Up
-                    </Button>
-                  </Menu.Item>
-                </Menu>
-              </Container>
-            </Segment>
-
-            {children}
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </Media>
-    );
-  }
-}
-
 const mapStateToProps = (state) => {
   return {
     authenticated: state.auth.token !== null,
@@ -385,5 +448,3 @@ const mapDispatchToProps = (dispatch) => {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(CustomLayout)
 );
-
-// export default App;
