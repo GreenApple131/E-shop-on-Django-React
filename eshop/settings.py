@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'multiselectfield',
 
     'core',
-    'frontend',
 ]
 
 MIDDLEWARE = [
@@ -71,7 +70,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             # os.path.join(BASE_DIR, 'templates'),         # html templates
-            os.path.join(BASE_DIR, 'frontend/build/')     # react
+            os.path.join(BASE_DIR, 'build/')     # react
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -129,7 +128,7 @@ DATABASES = {
 # STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    '/frontend/build/static',
+    '/build/static',
     '/home/dmytro/Projects/eshop/lib/python3.6/site-packages/django/contrib/admin/static',
 ]
 
@@ -140,7 +139,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, "/media/") ??????????????????
-MEDIA_ROOT = os.path.join(BASE_DIR, "frontend/build/static/media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "build/static/media")
 
 
 LOGIN_REDIRECT_URL = '/'
