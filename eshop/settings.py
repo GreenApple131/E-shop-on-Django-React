@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '#+$e6a(n1)(g=2ct35$!mr2phx!mr2rv*dgr4o++s=apd_m3xz'
 
-DEBUG = False
+DEBUG = True
 
 SITE_ID = 1
 
@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.sites',
-    'whitenoise.runserver_nostatic'
     'django.contrib.staticfiles',
 
     'allauth',
@@ -48,13 +47,15 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -100,6 +101,9 @@ DATABASES = {
     }
 }
 
+# import dj_database_url
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 # CACHES = {
 #     'default': {
@@ -124,7 +128,7 @@ DATABASES = {
 
 # STATIC_ROOT = ''
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ 
+STATICFILES_DIRS = [
     '/frontend/build/static',
     '/home/dmytro/Projects/eshop/lib/python3.6/site-packages/django/contrib/admin/static',
 ]
