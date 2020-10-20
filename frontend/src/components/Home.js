@@ -235,20 +235,16 @@ class DesktopContainer extends Component {
           {/* <SearchFilterResults value={this.props.value} /> */}
 
           {/*  */}
-          <Grid
-            doubling
-            columns={5}
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
+          <Card.Group>
             {data.map((item) => {
               return (
-                <Grid.Column key={item.id}>
-                  <Card style={{ width: "300px", height: "420px" }}>
+                <React.Fragment >
+                  <Card key={item.id} style={{ width: "200px", height: "auto" }}>
                     <Image
                       src={item.image}
                       style={{
-                        width: "220px",
-                        height: "257px",
+                        width: "200px",
+                        height: "237px",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                         backgroundRepeat: "noRepeat",
@@ -317,10 +313,10 @@ class DesktopContainer extends Component {
                       </React.Fragment>
                     </Card.Content>
                   </Card>
-                </Grid.Column>
+                </React.Fragment>
               );
             })}
-          </Grid>
+          </Card.Group>
         </Container>
 
         {children}

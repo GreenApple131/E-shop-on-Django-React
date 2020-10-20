@@ -14,7 +14,7 @@ DEBUG = True
 
 SITE_ID = 1
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eshop.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eshop.com', '*']
 
 
 INSTALLED_APPS = [
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -125,6 +126,8 @@ STATICFILES_DIRS = [
     '/frontend/build/static',
     '/home/dmytro/Projects/eshop/lib/python3.6/site-packages/django/contrib/admin/static',
 ]
+
+EACT_APP_DIR = os.path.join(BASE_DIR, 'frontend')
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
