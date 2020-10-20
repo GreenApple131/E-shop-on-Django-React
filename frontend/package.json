@@ -50,6 +50,10 @@
     "eject": "react-scripts eject",
     "heroku-prebuild": "NODE_ENV=production cd frontend/ && npm install && npm build && cd .."
   },
+  "engines": {
+    "node": "14.13.1",
+    "npm": "6.14.8"
+  },
   "cacheDirectories": [
     "frontend/node_modules"
   ],
