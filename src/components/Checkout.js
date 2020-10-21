@@ -210,57 +210,54 @@ class CheckoutForm extends Component {
 
     return (
       <React.Fragment>
-        <Form onSubmit={this.handleSubmit}>
-          <div className="form-row">
-            {error && (
-              <Message
-                error
-                header="There was an error"
-                content={JSON.stringify(error)}
-              />
-            )}
-            {loading && (
-              <Segment>
-                <Dimmer active inverted>
-                  <Loader inverted>Loading</Loader>
-                </Dimmer>
+        <div>
+        {error && (
+          <Message
+            error
+            header="There was some errors with your submission"
+            content={JSON.stringify(error)}
+          />
+        )}
+        {loading && (
+          <Segment>
+            <Dimmer active inverted>
+              <Loader inverted>Loading</Loader>
+            </Dimmer>
+            <Image src="/images/wireframe/short-paragraph.png" />
+          </Segment>
+        )}
 
-                <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-              </Segment>
-            )}
+        <OrderPreview data={data} />
+        <Divider />
+        <CouponForm
+          handleAddCoupon={(e, code) => this.handleAddCoupon(e, code)}
+        />
+        <Divider />
+        
+
+        
+          <React.Fragment>
+            <Header>Would you like to complete the purchase?</Header>
+            <CardElement />
             {success && (
               <Message positive>
-                <Message.Header>Your payment was successfull</Message.Header>
+                <Message.Header>Your payment was successful</Message.Header>
                 <p>
-                  Go to your <b>profile</b> to see the delivery status.
+                  Go to your <b>profile</b> to see the order delivery status.
                 </p>
               </Message>
             )}
-
-            <OrderPreview data={data} />
-            <Divider />
-            <CouponForm handleAddCoupon={(e, code) => this.handleAddCoupon(e, code)}/>
-            <Divider />
-            
-
-            <Header htmlFor="card-element">
-              Would You like to complete the purchase?
-            </Header>
-            <CardSection />
             <Button
+              loading={loading}
+              disabled={loading}
               primary
               onClick={this.submit}
-              // type="submit"
-              loading={loading}
-              disabled={loading} // cant submit twise !
-              // disabled={!this.props.stripe}
-
               style={{ marginTop: "10px" }}
             >
               Submit
             </Button>
-          </div>
-        </Form>
+          </React.Fragment>
+      </div>
         <Divider />
         
       </React.Fragment>
@@ -277,13 +274,11 @@ const stripePromise = loadStripe(
 
 const Checkout = () => (
   <Container text>
-    <div>
       <h1>Complete your order</h1>
       <Elements stripe={stripePromise}>
         <CheckoutForm />
         <Divider />      
       </Elements>
-    </div>
   </Container>
 );
 

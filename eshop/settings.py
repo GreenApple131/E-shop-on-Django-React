@@ -9,7 +9,7 @@ from decouple import config
 # development or production
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(file)))
 
 SECRET_KEY = '#+$e6a(n1)(g=2ct35$!mr2phx!mr2rv*dgr4o++s=apd_m3xz'
 
@@ -130,17 +130,13 @@ DATABASES['default'].update(db_from_env)
 #     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build', 'static'),
+    os.path.join(BASE_DIR, 'build/static'),
 ]
-
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
 
 
 MEDIA_URL = '/media/'
