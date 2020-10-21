@@ -9,7 +9,7 @@ from decouple import config
 # development or production
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(file)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '#+$e6a(n1)(g=2ct35$!mr2phx!mr2rv*dgr4o++s=apd_m3xz'
 
