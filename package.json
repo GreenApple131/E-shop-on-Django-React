@@ -1,5 +1,6 @@
 {
   "name": "frontend",
+  "homepage": "https://eshop-django-react.herokuapp.com/",
   "version": "0.2.0",
   "author": "Dmytro Lutsiv",
   "private": true,
