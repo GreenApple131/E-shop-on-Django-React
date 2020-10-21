@@ -15,7 +15,7 @@ DEBUG = True
 
 SITE_ID = 1
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eshop.com', 'eshop-django-react.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eshop.com', 'https://eshop-django-react.herokuapp.com']
 
 
 INSTALLED_APPS = [
@@ -61,6 +61,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+    'https://eshop-django-react.herokuapp.com',
+
 )
 
 ROOT_URLCONF = 'eshop.urls'
@@ -125,14 +127,12 @@ DATABASES = {
 #     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# STATIC_ROOT = ''
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    '/build/static',
-    '/home/dmytro/Projects/eshop/lib/python3.6/site-packages/django/contrib/admin/static',
+    os.path.join(BASE_DIR, 'build/static'),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
