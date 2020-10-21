@@ -130,22 +130,18 @@ DATABASES['default'].update(db_from_env)
 #     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'build', 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
-
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-WHITENOISE_ROOT = os.path.join(FRONTEND_DIR, 'build', 'root')
 
 
 MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, "/media/") ??????????????????
-MEDIA_ROOT = os.path.join(BASE_DIR, "build/static/media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 LOGIN_REDIRECT_URL = '/'
