@@ -120,7 +120,7 @@ class PaymentView(View):
 
 	# # should be post? maybe not
 	def post(self, *args, **kwargs):
-			domain_url = 'http://localhost:8000/payment/stripe/'
+			domain_url = 'https://eshop-django-react.herokuapp.com/payment/stripe/'
 			stripe.api_key = settings.STRIPE_SECRET_KEY
 			order = Order.objects.get(user=self.request.user, ordered=False)
 			amount = int((order.get_total()) * 100)

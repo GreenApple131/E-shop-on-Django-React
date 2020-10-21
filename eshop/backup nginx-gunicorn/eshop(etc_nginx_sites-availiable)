@@ -7,7 +7,7 @@ server {
     
     # Статические файлu
     location /static {
-        root /home/dmytro/Projects/eshop/eshop/frontend/build/;
+        root /home/dmytro/Projects/eshop/eshop/build/;
     }
     
     location /media {
