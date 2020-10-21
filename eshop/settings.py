@@ -17,12 +17,10 @@ DEBUG = True
 
 SITE_ID = 1
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1',
-                 'eshop.com', 'eshop-django-react.herokuapp.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eshop-django-react.herokuapp.com']
 
 
 INSTALLED_APPS = [
-    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -130,13 +128,13 @@ DATABASES['default'].update(db_from_env)
 #     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'build/static'),
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 MEDIA_URL = '/media/'
