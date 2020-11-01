@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {
   Button,
@@ -103,96 +104,113 @@ export default class CategorieChoose extends Component {
       <React.Fragment>
         {/* categoryChoose={this.props.location.state.searchValue} */}
         <Container>
-          <Header style={{ marginTop: "50px", marginBottom: "10px" }}>
-            {categoryChoose}
+          <Header
+            style={{
+              margin: 10,
+              fontFamily: "monospace",
+              fontSize: 32,
+              marginTop: "30px",
+              marginBottom: "10px",
+            }}
+          >
+            {categoryChoose.replace(/^./, categoryChoose[0].toUpperCase())}
+            {/* xxx.replace(/^./, xxx[0].toUpperCase())   -  capitalize first character */}
           </Header>
           <Divider />
         </Container>
         <Container>
-          <Card.Group>
-            {data.map((item) => {
-              return (
-                <React.Fragment >
-                  <Card key={item.id} style={{ width: "220px", height: "auto" }}>
-                    <Image
-                      src={item.image}
-                      style={{
-                        width: "220px",
-                        height: "257px",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        backgroundRepeat: "noRepeat",
-                      }}
-                      wrapped
-                      ui={true}
-                      as="a"
-                      onClick={() =>
-                        this.props.history.push(`/products/${item.slug}`)
-                      }
-                    />
-                    <Card.Content>
-                      <Item.Header
-                        as="a"
-                        onClick={() =>
-                          this.props.history.push(`/products/${item.slug}`)
-                        }
-                      >
-                        {item.title}
-                      </Item.Header>
-                      <Card.Meta>
-                        {item.category} {"  "}
-                        {item.discount_price && ( // always show, not just when there is a discount
-                          <Label color="violet">discount</Label>
-                        )}
-                      </Card.Meta>
-                      <Card.Description>Rating...</Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                      <React.Fragment>
-                        {item.discount_price && (
-                          <Header
-                            floated="left"
-                            color="violet"
-                            style={{ marginTop: "10px" }}
-                          >
-                            <small>
-                              <strike>
-                                <span>${item.price}</span>
-                              </strike>
-                            </small>{" "}
-                            ${item.discount_price}
-                          </Header>
-                        )}
-                        {!item.discount_price && (
-                          <Header
-                            color="black"
-                            floated="left"
-                            size="medium"
-                            style={{ marginTop: "7px" }}
-                          >
-                            ${item.price}
-                          </Header>
-                        )}
-                        <Button
-                          animated="vertical"
-                          color="black"
-                          floated="right"
-                          onClick={() => this.handleAddToCart(item.slug)}
-                        >
-                          <Button.Content hidden>Buy</Button.Content>
-                          <Button.Content visible>
-                            <Icon name="cart plus" />
-                          </Button.Content>
-                        </Button>
-                      </React.Fragment>
-                    </Card.Content>
-                  </Card>
-                </React.Fragment>
-              );
-            })}
-          </Card.Group>
+          <GetItemsByCategory data={data} categoryChoose={categoryChoose} />
         </Container>
       </React.Fragment>
     );
   }
+}
+
+function GetItemsByCategory(props) {
+  const history = useHistory();
+
+  const getItems = props.categoryChoose;
+
+  return (
+    <Card.Group>
+      {props.data.map(
+        (item) =>
+          item.category ===
+            getItems.replace(/^./, getItems[0].toUpperCase()) && (
+            <React.Fragment key={item.id}>
+              <Card style={{ width: "220px", height: "auto" }}>
+                <Image
+                  src={item.image}
+                  style={{
+                    width: "220px",
+                    height: "257px",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundRepeat: "noRepeat",
+                  }}
+                  wrapped
+                  ui={true}
+                  as="a"
+                  onClick={() => history.push(`/products/${item.slug}`)}
+                />
+                <Card.Content>
+                  <Item.Header
+                    as="a"
+                    onClick={() => history.push(`/products/${item.slug}`)}
+                  >
+                    {item.title}
+                  </Item.Header>
+                  <Card.Meta>
+                    {item.category} {"  "}
+                    {item.discount_price && ( // always show, not just when there is a discount
+                      <Label color="violet">discount</Label>
+                    )}
+                  </Card.Meta>
+                  <Card.Description>Rating...</Card.Description>
+                </Card.Content>
+                <Card.Content extra>
+                  <React.Fragment>
+                    {item.discount_price && (
+                      <Header
+                        floated="left"
+                        color="violet"
+                        style={{ marginTop: "10px" }}
+                      >
+                        <small>
+                          <strike>
+                            <span>${item.price}</span>
+                          </strike>
+                        </small>{" "}
+                        ${item.discount_price}
+                      </Header>
+                    )}
+                    {!item.discount_price && (
+                      <Header
+                        color="black"
+                        floated="left"
+                        size="medium"
+                        style={{ marginTop: "7px" }}
+                      >
+                        ${item.price}
+                      </Header>
+                    )}
+                    <Button
+                      animated="vertical"
+                      color="black"
+                      floated="right"
+                      onClick={() => this.handleAddToCart(item.slug)}
+                    >
+                      <Button.Content hidden>Buy</Button.Content>
+                      <Button.Content visible>
+                        <Icon name="cart plus" />
+                      </Button.Content>
+                    </Button>
+                  </React.Fragment>
+                </Card.Content>
+              </Card>
+            </React.Fragment>
+          )
+      )}
+    </Card.Group>
+  );
 }

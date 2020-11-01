@@ -26,9 +26,7 @@ import Categories from "./Categories";
 import "semantic-ui-css/semantic.min.css";
 import "./elements/navbar.css";
 // ResponsiveNavBar
-// const Logo = mediaURL + "logo.png";
-
-
+const Logo = mediaURL + "logo.png";
 
 class CustomLayout extends Component {
   state = {
@@ -90,7 +88,6 @@ class CustomLayout extends Component {
   hideFixedMenu = () => this.setState({ fixed: false });
   showFixedMenu = () => this.setState({ fixed: true });
 
-
   render() {
     const { authenticated, cart, loading } = this.props;
     const { data } = this.state;
@@ -102,10 +99,19 @@ class CustomLayout extends Component {
             <Menu borderless fluid fixed="top" size="huge" inverted>
               <Container>
                 <Menu.Item onClick={() => this.props.history.push("/")}>
+                  <Image
+                    size="mini"
+                    src={Logo}
+                    style={{
+                      marginRight: "1.5em",
+                      marginTop: "-15px",
+                      marginBottom: "-10px",
+                    }}
+                  />
                   Stiles&Lydia
                 </Menu.Item>
 
-                <Dropdown text="Categories" className="link item">
+                <Dropdown item simple text="Categories" className="link item">
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() =>
@@ -224,10 +230,10 @@ class CustomLayout extends Component {
             </Menu>
           </Grid>
           <Grid padded className="mobile only">
-          <Menu borderless fluid fixed="top" size="huge" inverted>
-          <Menu.Item onClick={() => this.props.history.push("/")}>
-                  Stiles&Lydia
-                </Menu.Item>
+            <Menu borderless fluid fixed="top" size="huge" inverted>
+              <Menu.Item onClick={() => this.props.history.push("/")}>
+                Stiles&Lydia
+              </Menu.Item>
               <Menu.Menu position="right">
                 <Menu.Item>
                   <Button
@@ -300,65 +306,64 @@ class CustomLayout extends Component {
                 </Dropdown>
                 <SearchBar />
                 {authenticated ? (
-                    <React.Fragment>
-                      <Menu.Item
-                        onClick={() => this.props.history.push("/profile")}
-                      >
-                        Profile
-                      </Menu.Item>
-                      <Dropdown
-                        icon="cart"
-                        loading={loading}
-                        text={`${cart !== null ? cart.order_items.length : 0}`}
-                        className="link item"
-                      >
-                        <Dropdown.Menu>
-                          {cart &&
-                            cart.order_items.map((order_item) => {
-                              return (
-                                <Dropdown.Item key={order_item.id}>
-                                  {order_item.quantity} x{" "}
-                                  {order_item.item.title}
-                                </Dropdown.Item>
-                              );
-                            })}
-                          {cart && cart.order_items.length < 1 ? (
-                            <Dropdown.Item>No items in your cart</Dropdown.Item>
-                          ) : null}
-                          <Dropdown.Divider />
-                          <Dropdown.Item
-                            icon="arrow right"
-                            text="Chechout"
-                            onClick={() =>
-                              this.props.history.push("/order-summary")
-                            }
-                          />
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <Menu.Item
-                        onClick={() => {
-                          this.props.logout();
-                          this.props.logoutReload();
-                        }}
-                      >
-                        Logout
-                      </Menu.Item>
-                    </React.Fragment>
-                  ) : (
-                    <React.Fragment>
-                      <Menu.Item
-                        onClick={() => this.props.history.push("/login")}
-                      >
-                        Login
-                      </Menu.Item>
+                  <React.Fragment>
+                    <Menu.Item
+                      onClick={() => this.props.history.push("/profile")}
+                    >
+                      Profile
+                    </Menu.Item>
+                    <Dropdown
+                      icon="cart"
+                      loading={loading}
+                      text={`${cart !== null ? cart.order_items.length : 0}`}
+                      className="link item"
+                    >
+                      <Dropdown.Menu>
+                        {cart &&
+                          cart.order_items.map((order_item) => {
+                            return (
+                              <Dropdown.Item key={order_item.id}>
+                                {order_item.quantity} x {order_item.item.title}
+                              </Dropdown.Item>
+                            );
+                          })}
+                        {cart && cart.order_items.length < 1 ? (
+                          <Dropdown.Item>No items in your cart</Dropdown.Item>
+                        ) : null}
+                        <Dropdown.Divider />
+                        <Dropdown.Item
+                          icon="arrow right"
+                          text="Chechout"
+                          onClick={() =>
+                            this.props.history.push("/order-summary")
+                          }
+                        />
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    <Menu.Item
+                      onClick={() => {
+                        this.props.logout();
+                        this.props.logoutReload();
+                      }}
+                    >
+                      Logout
+                    </Menu.Item>
+                  </React.Fragment>
+                ) : (
+                  <React.Fragment>
+                    <Menu.Item
+                      onClick={() => this.props.history.push("/login")}
+                    >
+                      Login
+                    </Menu.Item>
 
-                      <Menu.Item
-                        onClick={() => this.props.history.push("/signup")}
-                      >
-                        Signup
-                      </Menu.Item>
-                    </React.Fragment>
-                  )}
+                    <Menu.Item
+                      onClick={() => this.props.history.push("/signup")}
+                    >
+                      Signup
+                    </Menu.Item>
+                  </React.Fragment>
+                )}
               </Menu>
             </Menu>
           </Grid>
@@ -407,7 +412,7 @@ class CustomLayout extends Component {
             </Grid>
 
             <Divider inverted section />
-            <Image centered size="mini" src="/logo.png" />
+            <Image centered size="small" src={Logo} />
             <List horizontal inverted divided link size="small">
               <List.Item as="a" href="#">
                 Site Map

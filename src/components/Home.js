@@ -25,6 +25,7 @@ import {
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
+import ElementsCard from "./ElementsCard";
 import "../App.css";
 
 // slider
@@ -217,7 +218,16 @@ class DesktopContainer extends Component {
               content={JSON.stringify(error)}
             />
           )}
-          <Header as="h1" textAlign="center">
+
+
+          <Header textAlign='center'
+            style={{
+              marginTop: 20,
+              margin: 10,
+              fontFamily: "monospace",
+              fontSize: 32,
+            }}
+          >
             Popular Items
           </Header>
           <Divider />
@@ -234,89 +244,70 @@ class DesktopContainer extends Component {
 
           {/* <SearchFilterResults value={this.props.value} /> */}
 
-          {/*  */}
-          <Card.Group>
-            {data.map((item) => {
-              return (
-                <React.Fragment >
-                  <Card key={item.id} style={{ width: "200px", height: "auto" }}>
-                    <Image
-                      src={item.image}
-                      style={{
-                        width: "200px",
-                        height: "237px",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        backgroundRepeat: "noRepeat",
-                      }}
-                      wrapped
-                      ui={true}
-                      as="a"
-                      onClick={() =>
-                        this.props.history.push(`/products/${item.slug}`)
-                      }
-                    />
-                    <Card.Content>
-                      <Item.Header
-                        as="a"
-                        onClick={() =>
-                          this.props.history.push(`/products/${item.slug}`)
-                        }
-                      >
-                        {item.title}
-                      </Item.Header>
-                      <Card.Meta>
-                        {item.category} {"  "}
-                        {item.discount_price && ( // always show, not just when there is a discount
-                          <Label color="violet">discount</Label>
-                        )}
-                      </Card.Meta>
-                      <Card.Description>Rating...</Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                      <React.Fragment>
-                        {item.discount_price && (
-                          <Header
-                            floated="left"
-                            color="violet"
-                            style={{ marginTop: "10px" }}
-                          >
-                            <small>
-                              <strike>
-                                <span>${item.price}</span>
-                              </strike>
-                            </small>{" "}
-                            ${item.discount_price}
-                          </Header>
-                        )}
-                        {!item.discount_price && (
-                          <Header
-                            color="black"
-                            floated="left"
-                            size="medium"
-                            style={{ marginTop: "7px" }}
-                          >
-                            ${item.price}
-                          </Header>
-                        )}
-                        <Button
-                          animated="vertical"
-                          color="black"
-                          floated="right"
-                          onClick={() => this.handleAddToCart(item.slug)}
-                        >
-                          <Button.Content hidden>Buy</Button.Content>
-                          <Button.Content visible>
-                            <Icon name="cart plus" />
-                          </Button.Content>
-                        </Button>
-                      </React.Fragment>
-                    </Card.Content>
-                  </Card>
-                </React.Fragment>
-              );
-            })}
-          </Card.Group>
+          {/* slice - first 5 elements */}
+          <ElementsCard data={data.slice(0, 5)} />
+          <Divider />
+
+          {/* new element */}
+
+          <Header textAlign='center'
+            style={{
+              marginTop: 20,
+              margin: 10,
+              fontFamily: "monospace",
+              fontSize: 32,
+            }}
+          >
+            Top Discount
+          </Header>
+          <Divider />
+          {/* <SearchFilter /> */}
+          {loading && ( // if loading then do smth after &&
+            <Segment>
+              <Dimmer active inverted>
+                <Loader inverted>Loading</Loader>
+              </Dimmer>
+
+              <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+            </Segment>
+          )}
+
+          {/* <SearchFilterResults value={this.props.value} /> */}
+
+          {/* slice - from 1 to 5 elements or another combination */}
+          <ElementsCard data={data.slice(5, 7)} />
+          <Divider />
+
+          
+          {/* new element */}
+
+          <Header textAlign="center"
+            style={{
+              marginTop: 20,
+              margin: 10,
+              fontFamily: "monospace",
+              fontSize: 32,
+            }}
+          >
+            New Items
+          </Header>
+          <Divider />
+          {/* <SearchFilter /> */}
+          {loading && ( // if loading then do smth after &&
+            <Segment>
+              <Dimmer active inverted>
+                <Loader inverted>Loading</Loader>
+              </Dimmer>
+
+              <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+            </Segment>
+          )}
+
+          {/* <SearchFilterResults value={this.props.value} /> */}
+
+          {/* slice - first 5 elements */}
+          <ElementsCard data={data.slice(7, 8)} />
+
         </Container>
 
         {children}

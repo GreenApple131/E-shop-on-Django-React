@@ -112,22 +112,16 @@ class ProductDetail extends Component {
 
     const BreadcrumbExampleSection = () => (
       <Breadcrumb>
-        <Breadcrumb.Section link>
+        <Breadcrumb.Section>
           <Link to="/">Home</Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
-        {item.category_type === "M" ? (
-          <Breadcrumb.Section link>
-            <Link to={"/men"}>Men's</Link>
-          </Breadcrumb.Section>
-        ) : (
-          <Breadcrumb.Section link>
-            <Link to={"/women"}>Women's</Link>
-          </Breadcrumb.Section>
-        )}
+        <Breadcrumb.Section >
+          <Link to="/category">Categories</Link>
+        </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
-        <Breadcrumb.Section link>
-          <Link to={`/${item.category_type}/${item.category}`.toLowerCase()}>{item.category}</Link>
+        <Breadcrumb.Section>
+          <Link to={`/category/${item.category}`.toLowerCase()}>{item.category}</Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
         <Breadcrumb.Section active>{item.title}</Breadcrumb.Section>
