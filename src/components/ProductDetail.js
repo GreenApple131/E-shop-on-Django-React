@@ -20,7 +20,7 @@ import {
   Radio,
   Segment,
 } from "semantic-ui-react";
-import { localhost, productDetailURL, addToCartURL } from "../constants";
+import { productDetailURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 

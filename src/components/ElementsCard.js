@@ -1,5 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { connect } from "react-redux";
+import { fetchCart } from "../store/actions/cart";
+import { authAxios } from "../utils";
+import { addToCartURL } from "../constants";
 import {
   Button,
   Card,
@@ -16,7 +20,19 @@ import {
 } from "semantic-ui-react";
 
 function ElementsCard(props) {
-	const history = useHistory();
+  const history = useHistory();
+
+  const handleAddToCart = (slug) => {
+    authAxios
+      .post(addToCartURL, { slug })
+      .then((res) => {
+        props.fetchCart(); // update the cart count
+      })
+      .catch((err) => {
+        console.log("Error in handleAddToCart");
+      });
+  };
+
   return (
     <Card.Group>
       {props.data.map((item) => {
@@ -35,16 +51,12 @@ function ElementsCard(props) {
                 wrapped
                 ui={true}
                 as="a"
-                onClick={() =>
-                  history.push(`/products/${item.slug}`)
-                }
+                onClick={() => history.push(`/products/${item.slug}`)}
               />
               <Card.Content>
                 <Item.Header
                   as="a"
-                  onClick={() =>
-                    history.push(`/products/${item.slug}`)
-                  }
+                  onClick={() => history.push(`/products/${item.slug}`)}
                 >
                   {item.title}
                 </Item.Header>
@@ -86,7 +98,7 @@ function ElementsCard(props) {
                     animated="vertical"
                     color="black"
                     floated="right"
-                    onClick={() => this.handleAddToCart(item.slug)}
+                    onClick={() => handleAddToCart(item.slug)}
                   >
                     <Button.Content hidden>Buy</Button.Content>
                     <Button.Content visible>
@@ -103,4 +115,10 @@ function ElementsCard(props) {
   );
 }
 
-export default ElementsCard;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchCart: () => dispatch(fetchCart()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(ElementsCard);

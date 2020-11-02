@@ -64,11 +64,11 @@ class CustomLayout extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-  }
-
-  handleFetchOrder = () => {
-    this.setState({ loading: true });
-    authAxios
+    }
+    
+    handleFetchOrder = () => {
+      this.setState({ loading: true });
+      authAxios
       .get(orderSummaryURL)
       .then((res) => {
         this.setState({ data: res.data, loading: false });
@@ -177,7 +177,7 @@ class CustomLayout extends Component {
                         loading={loading}
                         text={`${cart !== null ? cart.order_items.length : 0}`}
                         className="link item"
-                      >
+                        >
                         <Dropdown.Menu>
                           {cart &&
                             cart.order_items.map((order_item) => {
@@ -188,7 +188,7 @@ class CustomLayout extends Component {
                                 </Dropdown.Item>
                               );
                             })}
-                          {cart && cart.order_items.length < 1 ? (
+                          {cart && cart.order_items.length <= 0 ? (
                             <Dropdown.Item>No items in your cart</Dropdown.Item>
                           ) : null}
                           <Dropdown.Divider />
@@ -370,7 +370,7 @@ class CustomLayout extends Component {
           {this.props.children}
         </div>
 
-        <Segment inverted vertical style={{ padding: "5em 0em" }}>
+        <Segment inverted vertical style={{ padding: "4em 0em" }}>
           <Container textAlign="center">
             <Grid divided inverted stackable>
               <Grid.Column width={3}>
@@ -412,7 +412,6 @@ class CustomLayout extends Component {
             </Grid>
 
             <Divider inverted section />
-            <Image centered size="small" src={Logo} />
             <List horizontal inverted divided link size="small">
               <List.Item as="a" href="#">
                 Site Map

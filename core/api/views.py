@@ -62,13 +62,12 @@ class OrderQuantityUpdateView(APIView):
                     order_item.quantity -= 1
                     order_item.save()
                 else:
-                    order.items.remove(order_item)
+                    order_item.delete()
                 return Response(status=HTTP_200_OK)
             else:
                 return Response({"message": "This item was not in your cart"}, status=HTTP_400_BAD_REQUEST)
         else:
             return Response({"message": "You do not have an active order"}, status=HTTP_400_BAD_REQUEST)
-
 
 
 class OrderItemDeleteView(DestroyAPIView):

@@ -22,7 +22,6 @@ import {
   Segment,
   Visibility,
 } from "semantic-ui-react";
-import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { createMedia } from "@artsy/fresnel";
 import ElementsCard from "./ElementsCard";
@@ -113,21 +112,6 @@ class DesktopContainer extends Component {
         this.setState({ error: err, loading: false });
       });
   }
-
-  handleAddToCart = (slug) => {
-    this.setState({ loading: true });
-
-    authAxios
-      .post(addToCartURL, { slug })
-      .then((res) => {
-        this.props.fetchCart(); // update the cart count
-
-        this.setState({ loading: false });
-      })
-      .catch((err) => {
-        this.setState({ error: err, loading: false });
-      });
-  };
 
   hideFixedMenu = () => this.setState({ fixed: false });
   // showFixedMenu = () => this.setState({ fixed: true })

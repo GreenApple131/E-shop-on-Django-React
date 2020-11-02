@@ -15,6 +15,7 @@ import {
 } from "semantic-ui-react";
 import { Link, Redirect } from "react-router-dom";
 import { authAxios } from "../utils";
+import { fetchCart } from "../store/actions/cart";
 import {
   addToCartURL,
   orderSummaryURL,
@@ -91,11 +92,12 @@ class OrderSummary extends React.Component {
       .then((res) => {
         // callback
         this.handleFetchOrder();
+        // update cart quantity
+        this.props.fetchCart();
       })
       .catch((err) => {
         this.setState({ error: err });
       });
-    
   };
 
   handleRemoveItem = (id) => {
@@ -104,6 +106,8 @@ class OrderSummary extends React.Component {
       .then((res) => {
         // callback
         this.handleFetchOrder();
+        // update cart quantity
+        this.props.fetchCart();
       })
       .catch((err) => {
         this.setState({ error: err });
@@ -167,7 +171,9 @@ class OrderSummary extends React.Component {
                           name="minus"
                           style={{ float: "left", cursor: "pointer" }}
                           onClick={() =>
-                            this.handleRemoveQuantityFromCart(orderItem.item.slug)
+                            this.handleRemoveQuantityFromCart(
+                              orderItem.item.slug
+                            )
                           }
                         />
                         {orderItem.quantity}
@@ -234,4 +240,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(OrderSummary);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchCart: () => dispatch(fetchCart()), // cart reload
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderSummary);
