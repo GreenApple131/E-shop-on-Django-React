@@ -1,21 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { mediaURL, productListURL, addToCartURL } from "../constants";
+import { mediaURL, productListURL } from "../constants";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   Button,
-  Card,
   Container,
   Dimmer,
   Divider,
-  Grid,
   Header,
   Icon,
   Image,
-  Item,
-  Label,
   Loader,
   Message,
   Sidebar,
@@ -159,37 +155,37 @@ class DesktopContainer extends Component {
           onBottomPassed={this.showFixedMenu}
           onBottomPassedReverse={this.hideFixedMenu}
         >
-          {/* <Container> */}
-          <Segment
-            inverted
-            textAlign="center"
-            style={{ maxHeight: 700, padding: "0em 0em" }}
-            vertical
-          >
-            <Slider className="slider-wrapper">
-              {content.map((item, index) => (
-                <div
-                  key={index}
-                  className="slider-content"
-                  // style={{ background: `url('${item.image}') no-repeat center center` }}
-                  style={{ background: `url(${item.image})` }}
+              {/* <Container> */}
+                <Segment
+                  inverted
+                  textAlign="center"
+                  style={{ maxHeight: 700, padding: "0em 0em" }}
+                  vertical
                 >
-                  <div
-                    className="inner"
-                    style={{ height: "auto", width: "100%" }}
-                  >
-                    <h1>{item.title}</h1>
-                    <p>{item.description}</p>
-                    <Link to={item.redirectLink}>
-                      <button>{item.button}</button>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-            {/* <HomepageHeading /> */}
-          </Segment>
-          {/* </Container> */}
+                  <Slider className="slider-wrapper">
+                    {content.map((item, index) => (
+                      <div
+                        key={index}
+                        className="slider-content"
+                        // style={{ background: `url('${item.image}') no-repeat center center` }}
+                        style={{ background: `url(${item.image})` }}
+                      >
+                        <div
+                          className="inner"
+                          style={{ height: "auto", width: "100%" }}
+                        >
+                          <h1>{item.title}</h1>
+                          <p>{item.description}</p>
+                          <Link to={item.redirectLink}>
+                            <button>{item.button}</button>
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </Slider>
+                  {/* <HomepageHeading /> */}
+                </Segment>
+              {/* </Container> */}
         </Visibility>
 
         {/* <ProductList /> */}
@@ -203,8 +199,8 @@ class DesktopContainer extends Component {
             />
           )}
 
-
-          <Header textAlign='center'
+          <Header
+            textAlign="center"
             style={{
               marginTop: 20,
               margin: 10,
@@ -234,7 +230,8 @@ class DesktopContainer extends Component {
 
           {/* new element */}
 
-          <Header textAlign='center'
+          <Header
+            textAlign="center"
             style={{
               marginTop: 20,
               margin: 10,
@@ -262,10 +259,10 @@ class DesktopContainer extends Component {
           <ElementsCard data={data.slice(5, 7)} />
           <Divider />
 
-          
           {/* new element */}
 
-          <Header textAlign="center"
+          <Header
+            textAlign="center"
             style={{
               marginTop: 20,
               margin: 10,
@@ -291,7 +288,6 @@ class DesktopContainer extends Component {
 
           {/* slice - first 5 elements */}
           <ElementsCard data={data.slice(7, 8)} />
-
         </Container>
 
         {children}

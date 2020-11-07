@@ -48,12 +48,13 @@ class CustomLayout extends Component {
     this.setState(newState);
   };
 
+  componentWillMount() {
+    this.props.fetchCart(); // update the cart count
+  }
+
   async componentDidMount() {
     this.setState({ loading: true });
-    this.props.fetchCart();
     this.handleFetchOrder();
-
-    // this.props.fetchCart(); // update the cart count
 
     const res = await axios
       .get(productListURL)

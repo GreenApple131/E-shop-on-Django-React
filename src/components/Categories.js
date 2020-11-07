@@ -17,7 +17,7 @@ import {
   Menu,
   Segment,
 } from "semantic-ui-react";
-import { SearchFilterResults } from "./SearchResult";
+import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
@@ -222,6 +222,10 @@ class CategorieChoose extends Component {
             )}
           </Card.Group>
         </Container>
+
+        <CategoryFilter />
+
+        
       </React.Fragment>
     );
   }
