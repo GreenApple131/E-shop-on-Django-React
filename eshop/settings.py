@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'multiselectfield',
+    'django_filters',
 
     'core',
 ]
@@ -66,6 +67,18 @@ CORS_ORIGIN_WHITELIST = (
     'https://eshop-django-react.herokuapp.com',
 
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    
+}
 
 ROOT_URLCONF = 'eshop.urls'
 
@@ -179,16 +192,6 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 # Stripe
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_TEST_PUBLISHABLE_KEY')
 STRIPE_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY')
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ),
-}
 
 
 # Internationalization

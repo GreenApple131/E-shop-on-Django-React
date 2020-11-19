@@ -1,21 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import {
+  Breadcrumb,
   Button,
   Card,
   Container,
   Divider,
-  Grid,
   Header,
   Image,
   Icon,
   Item,
   Label,
-  Loader,
   Menu,
-  Segment,
 } from "semantic-ui-react";
 import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListURL } from "../constants";
@@ -114,10 +112,24 @@ class CategorieChoose extends Component {
   render() {
     const { data } = this.state;
     const categoryChoose = this.props.match.params.categoryChoose;
+    const BreadcrumbSection = () => (
+      <Breadcrumb>
+        <Breadcrumb.Section>
+          <Link to="/">
+            <Icon link color="black" name="home" />{" "}
+          </Link>
+        </Breadcrumb.Section>
+        <Breadcrumb.Divider icon="right chevron" />
+        <Breadcrumb.Section active>
+          {categoryChoose.replace(/^./, categoryChoose[0].toUpperCase())}
+        </Breadcrumb.Section>
+      </Breadcrumb>
+    );
     return (
       <React.Fragment>
         {/* categoryChoose={this.props.location.state.searchValue} */}
-        <Container>
+        <Container style={{ marginTop: "10px" }}>
+          <BreadcrumbSection />
           <Header
             style={{
               margin: 10,
@@ -224,8 +236,6 @@ class CategorieChoose extends Component {
         </Container>
 
         <CategoryFilter />
-
-        
       </React.Fragment>
     );
   }

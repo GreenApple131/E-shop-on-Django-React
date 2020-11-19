@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Item, Order, OrderItem, Coupon, Sizes, Variation, ItemVariation
+from core.models import Item, Order, OrderItem, Coupon, Sizes, OtherMarks, Variation, ItemVariation
 
 
 class StringSerializer(serializers.StringRelatedField):
@@ -27,10 +27,20 @@ class ItemSizeSerializer(serializers.ModelSerializer):
         )
 
 
+class ItemMarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OtherMarks
+        fields = (
+            'id',
+            'mark'
+        )
+
+
 class ItemSerializer(serializers.ModelSerializer):
     category = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
+    other_marks = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
@@ -42,6 +52,7 @@ class ItemSerializer(serializers.ModelSerializer):
             'category',
             'category_type',
             'size',
+            'other_marks',
             'label',
             'slug',
             'description',
@@ -56,6 +67,9 @@ class ItemSerializer(serializers.ModelSerializer):
 
     def get_size(self, obj):
         return ItemSizeSerializer(obj.size, many=True).data
+    
+    def get_other_marks(self, obj):
+        return ItemMarkSerializer(obj.other_marks, many=True).data
 
 
 class VariationDetailSerializer(serializers.ModelSerializer):
@@ -170,6 +184,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     label = serializers.SerializerMethodField()
     variations = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
+    other_marks = serializers.SerializerMethodField()
 
     class Meta:
         model = Item
@@ -182,6 +197,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             'category',
             'category_type',
             'size',
+            'other_marks',
             'label',
             'slug',
             'description',
@@ -201,3 +217,6 @@ class ItemDetailSerializer(serializers.ModelSerializer):
     
     def get_size(self, obj):
         return ItemSizeSerializer(obj.size, many=True).data
+    
+    def get_other_marks(self, obj):
+        return ItemMarkSerializer(obj.other_marks, many=True).data

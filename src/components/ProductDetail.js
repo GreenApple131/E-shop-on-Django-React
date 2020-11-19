@@ -110,18 +110,18 @@ class ProductDetail extends Component {
     const { data, error, loading, formData, value } = this.state;
     const item = data;
 
-    const BreadcrumbExampleSection = () => (
+    const BreadcrumbSection = () => (
       <Breadcrumb>
         <Breadcrumb.Section>
-          <Link to="/">Home</Link>
-        </Breadcrumb.Section>
-        <Breadcrumb.Divider icon="right chevron" />
-        <Breadcrumb.Section >
-          <Link to="/category">Categories</Link>
+          <Link to="/">
+            <Icon link color="black" name="home" />{" "}
+          </Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
         <Breadcrumb.Section>
-          <Link to={`/category/${item.category}`.toLowerCase()}>{item.category}</Link>
+          <Link to={`/category/${item.category}`.toLowerCase()}>
+            {item.category}
+          </Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
         <Breadcrumb.Section active>{item.title}</Breadcrumb.Section>
@@ -130,7 +130,7 @@ class ProductDetail extends Component {
 
     return (
       <Container style={{ marginTop: "10px" }}>
-        <BreadcrumbExampleSection />
+        <BreadcrumbSection />
         {error && ( // if error then do smth after &&
           <Message
             error
@@ -213,7 +213,12 @@ class ProductDetail extends Component {
                             </Button>
                           )}
                           {!item.discount_price && (
-                            <Label basic color="black" floated="left" size="big">
+                            <Label
+                              basic
+                              color="black"
+                              floated="left"
+                              size="big"
+                            >
                               ${item.price}
                             </Label>
                           )}

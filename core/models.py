@@ -57,6 +57,13 @@ class Sizes(models.Model):
 		return self.size
 
 
+class OtherMarks(models.Model):
+	mark = models.CharField(max_length=100, default='ordinary') # special option can be ordinary, special, new or something else for front filtering on landing
+
+	def __str__(self):
+		return self.mark
+
+
 class Item(models.Model):
 	title = models.CharField(max_length=100)
 	price = models.FloatField()
@@ -70,6 +77,7 @@ class Item(models.Model):
 	description = models.TextField(
 	    max_length=5000, default="This is a test description. Write something about this product.")
 	size = models.ManyToManyField(Sizes)
+	other_marks = models.ManyToManyField(OtherMarks)
 	image = models.ImageField()
 
 	def __str__(self):
