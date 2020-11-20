@@ -116,6 +116,9 @@ class DesktopContainer extends Component {
   render() {
     const { children } = this.props;
     const { data, error, loading } = this.state;
+    let renderFivePopularElements = 1;
+    let renderFiveDiscountElements = 1;
+    let renderFiveNewElements = 1;
 
     const content = [
       {
@@ -227,14 +230,19 @@ class DesktopContainer extends Component {
 
           {/* Card Group   discount/new/popular...    */}
           <Card.Group>
-            {data.map((item) =>
-              item.other_marks.map((m, j) =>
+            {data.map((item, x) =>
+              item.other_marks.map((m) =>
                 m.mark === "popular" ? (
                   // if "discount" render it
                   // <React.Fragment key={j}>{item.title} {i} </React.Fragment>
-                  <ElementsCard key={j} {...item} />
+                  <React.Fragment>
+                    {renderFivePopularElements !== 6 &&
+                      renderFivePopularElements++ && (
+                        <ElementsCard key={x} {...item}></ElementsCard>
+                      )}
+                  </React.Fragment>
                 ) : (
-                  <React.Fragment></React.Fragment>
+                  <React.Fragment />
                 )
               )
             )}
@@ -269,22 +277,24 @@ class DesktopContainer extends Component {
 
           {/* <SearchFilterResults value={this.props.value} /> */}
 
-
           {/* Card Group   discount/new/popular...    */}
           <Card.Group>
-            {data.map((item) =>
+            {data.map((item, x) =>
               item.other_marks.map((m, j) =>
                 m.mark === "discount" ? (
                   // if "discount" render it
-                  // <React.Fragment key={j}>{item.title} {i} </React.Fragment>
-                  <ElementsCard key={j} {...item} />
+                  <React.Fragment>
+                    {renderFiveDiscountElements !== 6 &&
+                      renderFiveDiscountElements++ && (
+                        <ElementsCard key={x} {...item}></ElementsCard>
+                      )}
+                  </React.Fragment>
                 ) : (
-                  <React.Fragment></React.Fragment>
+                  <React.Fragment />
                 )
               )
             )}
           </Card.Group>
-
           <Divider />
 
           {/* new element */}
@@ -316,14 +326,17 @@ class DesktopContainer extends Component {
 
           {/* Card Group   discount/new/popular...    */}
           <Card.Group>
-            {data.map((item) =>
+            {data.map((item, x) =>
               item.other_marks.map((m, j) =>
                 m.mark === "new" ? (
-                  // if "discount" render it
-                  // <React.Fragment key={j}>{item.title} {i} </React.Fragment>
-                  <ElementsCard key={j} {...item} />
+                  // if "new" render it with limit !!! 5 !!! first elements
+                  <React.Fragment>
+                    {renderFiveNewElements !== 6 && renderFiveNewElements++ && (
+                      <ElementsCard key={x} {...item}></ElementsCard>
+                    )}
+                  </React.Fragment>
                 ) : (
-                  <React.Fragment></React.Fragment>
+                  <React.Fragment />
                 )
               )
             )}
