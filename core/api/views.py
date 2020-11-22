@@ -15,6 +15,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework import filters
 
 from core.models import Item, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
@@ -28,6 +29,9 @@ class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
+    filter_backends = [filters.SearchFilter]
+    filter_fields = ['price', 'size', 'discount_price', 'category', 'category_type']
+    search_fields = ['title']
 
 
 class ItemDetailView(RetrieveAPIView):

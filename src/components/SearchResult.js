@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory, Link, useParams } from "react-router-dom";
 import axios from "axios";
 import _ from "lodash";
 import {
@@ -21,7 +21,7 @@ import {
   Label,
   Search,
 } from "semantic-ui-react";
-import { productListURL } from "../constants";
+import { productListURL, productSearchURL } from "../constants";
 import FilterResults from "react-filter-search";
 
 const initialState = {
@@ -49,6 +49,9 @@ function reducer(state, action) {
     case "UPDATE_SELECTION":
       return { ...state, value: action.selection };
 
+    case "UPDATE_ERROR":
+      return { ...state, error: action };
+
     default:
       throw new Error();
   }
@@ -57,6 +60,7 @@ function reducer(state, action) {
 export function SearchBar(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [list, setList] = useState(null);
+  const [data, setData] = useState([]);
   const { loading, results, value } = state;
   const history = useHistory();
 
@@ -153,63 +157,72 @@ export function SearchBar(props) {
   );
 }
 
-class SearchResult extends Component {
-  state = {
-    data: [],
-    searchValue: "",
-  };
+// async componentDidMount() {
+//   this.setState({ loading: true });
+//   console.log(this.props.match.params.searchRequest)
 
-  async componentDidMount() {
-    this.setState({ loading: true });
+// const res = axios
+// .get(productSearchURL(this.props.match.params.searchRequest))
+//   .then((res) => {
+//     this.setState({data: res.data})
+//     console.log(this.state.data);
+//   })
+//   .catch((err) => {
+//     this.setState({ error: err });
+//   });
+// }
 
-    const res = await axios
-      .get(productListURL)
+function SearchResult(props) {
+  const history = useHistory();
+
+  let { searchRequest } = useParams();   // get the searchRequest
+
+  const [data, setData] = useState([]);
+  const [error, setError] = useState("");
+
+  const searchedItem = searchRequest;
+
+  useEffect(() => {
+    axios
+      .get(productSearchURL(searchRequest))
       .then((res) => {
-        console.log(res.data);
-        this.setState({ data: res.data, loading: false });
+        console.log("data", res.data);
+        setData(res.data);
       })
       .catch((err) => {
-        this.setState({ error: err, loading: false });
+        setError(err);
       });
-  }
+  }, [searchRequest]);  // when searchRequest changes, starts useEffect
 
-  render() {
-    const { data } = this.state;
-    const searchedItem = this.props.match.params.searchRequest;
+  const BreadcrumbSection = () => (
+    <Breadcrumb>
+      <Breadcrumb.Section>
+        <Link to="/">
+          <Icon link color="black" name="home" />{" "}
+        </Link>
+      </Breadcrumb.Section>
+      <Breadcrumb.Divider icon="right chevron" />
+      <Breadcrumb.Section active>Search for: {searchedItem}</Breadcrumb.Section>
+    </Breadcrumb>
+  );
 
-    const BreadcrumbSection = () => (
-      <Breadcrumb>
-        <Breadcrumb.Section>
-          <Link to="/">
-            <Icon link color="black" name="home" />{" "}
-          </Link>
-        </Breadcrumb.Section>
-        <Breadcrumb.Divider icon="right chevron" />
-        <Breadcrumb.Section active>
-          Search for: {searchedItem}
-        </Breadcrumb.Section>
-      </Breadcrumb>
-    );
+  return (
+    <Container style={{ marginTop: "10px" }}>
+      <BreadcrumbSection />
+      <Header as="h2">Search result of "{searchedItem}"</Header>
 
-    return (
-      <Container style={{ marginTop: "10px" }}>
-        <BreadcrumbSection />
-        <Header as="h2">
-          Search result of "{this.props.match.params.searchRequest}"
-        </Header>
+      {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
 
-        {/* <SearchFilterResults searchValue={this.state.searchValue} /> */}
-
-        <FilterResults
-          value={this.props.match.params.searchRequest}
+      <FilterResults
+          value={searchedItem}
           data={data}
-          renderResults={(results) => (
+          renderResults={() => (
             <Grid
               doubling
               columns={5}
               style={{ marginTop: "10px", marginBottom: "10px" }}
             >
-              {results.map((item) => {
+              {data.map((item) => {
                 return (
                   <Grid.Column key={item.id}>
                     <Card style={{ width: "300px", height: "420px" }}>
@@ -226,14 +239,14 @@ class SearchResult extends Component {
                         ui={true}
                         as="a"
                         onClick={() =>
-                          this.props.history.push(`/products/${item.slug}`)
+                          history.push(`/products/${item.slug}`)
                         }
                       />
                       <Card.Content>
                         <Item.Header
                           as="a"
                           onClick={() =>
-                            this.props.history.push(`/products/${item.slug}`)
+                            history.push(`/products/${item.slug}`)
                           }
                         >
                           {item.title}
@@ -292,9 +305,8 @@ class SearchResult extends Component {
             </Grid>
           )}
         />
-      </Container>
-    );
-  }
+    </Container>
+  );
 }
 
 export default SearchResult;

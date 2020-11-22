@@ -9,7 +9,8 @@ export const endpoint = `${localhost}${apiURL}`
 
 export const mediaURL = `${localhost}/media/`
 
-export const productListURL = `${endpoint}/products/`
+export const productListURL = `${endpoint}/`
+export const productSearchURL = searchRequest => `${endpoint}/search/?search=${searchRequest}`
 export const productDetailURL = slug => `${endpoint}/products/${slug}/`
 export const addToCartURL = `${endpoint}/add-to-cart/`
 export const orderSummaryURL = `${endpoint}/order-summary/`
