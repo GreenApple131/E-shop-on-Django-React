@@ -13,6 +13,7 @@ import Profile from "./components/Profile";
 import SearchResult from "./components/SearchResult";
 import CategorieChoose from "./components/Categories";
 import { PageNotFound } from "./components/PageNotFound";
+import AllItems from "./components/AllItems";
 
 const categories = [
   "jackets",
@@ -37,6 +38,7 @@ const BaseRouter = () => (
     <Route path="/order-summary" component={OrderSummary} />
     <Route path="/checkout" component={Checkout} />
     <Route path="/category/:categoryChoose" component={CategorieChoose} />
+    <Route path="/allitems" component={AllItems} />
 
     {/* <Route path="/jackets" component={CategorieChoose} />
     <Route path="/coats" component={CategorieChoose} />

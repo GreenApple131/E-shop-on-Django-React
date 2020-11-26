@@ -65,11 +65,11 @@ class CustomLayout extends Component {
       .catch((err) => {
         this.setState({ error: err, loading: false });
       });
-    }
-    
-    handleFetchOrder = () => {
-      this.setState({ loading: true });
-      authAxios
+  }
+
+  handleFetchOrder = () => {
+    this.setState({ loading: true });
+    authAxios
       .get(orderSummaryURL)
       .then((res) => {
         this.setState({ data: res.data, loading: false });
@@ -114,6 +114,11 @@ class CustomLayout extends Component {
 
                 <Dropdown item simple text="Categories" className="link item">
                   <Dropdown.Menu>
+                    <Dropdown.Item
+                      onClick={() => this.props.history.push("/allitems")}
+                    >
+                      All Items
+                    </Dropdown.Item>
                     <Dropdown.Item
                       onClick={() =>
                         this.props.history.push("/category/jackets")
@@ -178,7 +183,7 @@ class CustomLayout extends Component {
                         loading={loading}
                         text={`${cart !== null ? cart.order_items.length : 0}`}
                         className="link item"
-                        >
+                      >
                         <Dropdown.Menu>
                           {cart &&
                             cart.order_items.map((order_item) => {

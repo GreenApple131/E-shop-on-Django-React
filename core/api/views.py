@@ -31,7 +31,7 @@ class ItemListView(ListAPIView):
     queryset = Item.objects.all()
     filter_backends = [filters.SearchFilter]
     filter_fields = ['price', 'size', 'discount_price', 'category', 'category_type']
-    search_fields = ['title']
+    search_fields = ['category']
 
 
 class ItemDetailView(RetrieveAPIView):

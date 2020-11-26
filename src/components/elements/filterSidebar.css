@@ -1,0 +1,78 @@
+/* Styles go here */
+
+body {
+    font-family: sans-serif;
+    font-size: 12px;
+  }
+  
+  .filters {
+    float: left;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 30%;
+  }
+  
+  .results {
+    float: right;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 65%;
+  }
+  
+  .select-all span.button {
+    display: inline-block;
+    padding: 0 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+  }
+  
+  .select-all span.button.active {
+    background: green;
+  }
+  
+  .select-all span.state {
+    padding: 0 5px;
+    border: 0;
+  }
+  
+  .tabset nav {
+    display: block;
+  }
+  
+  .tabset nav ul,
+  ul.filterset {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .tabset nav li {
+    float: left;
+    display: inline-block;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .tabset nav li {
+    background: #ddd;
+    margin-left: 1px;
+  }
+  
+  .tabset nav li:first-child {
+    margin-left: 0;
+  }
+  
+  .tabset nav li.active {
+    background: #eee;
+  }
+  
+  .tab {
+    display: none;
+    clear: both;
+    padding: 10px;
+    background: #efefef;
+  }
+  
+  .tab.active {
+    display:block;
+  }
