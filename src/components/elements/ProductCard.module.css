@@ -1,0 +1,16 @@
+.productCard {
+    width: 150px;
+    height: 100px;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .footer {
+    display: flex;
+    /* justify-content: space-evenly; */
+  }
+  

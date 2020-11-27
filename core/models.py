@@ -5,14 +5,14 @@ from multiselectfield import MultiSelectField
 
 
 CATEGORY_CHOICES = (
-	('Co', 'Coats'),
-	('Ja', 'Jackets'),
-	('S', 'Shirts'),
-	('Ts', 'T-shirts'),
-	('Sw', 'Sport wear'),
-	('Sh', 'Shoes'),
-	('Hat', 'Hats'),
-	('Ow', 'Outwear')
+	('Coats', 'Coats'),
+	('Jackets', 'Jackets'),
+	('Shirts', 'Shirts'),
+	('T-shirts', 'T-shirts'),
+	('Sport-wear', 'Sport wear'),
+	('Shoes', 'Shoes'),
+	('Hats', 'Hats'),
+	('Outwear', 'Outwear')
 )
 
 CATEGORY_TYPES = (
@@ -69,7 +69,7 @@ class Item(models.Model):
 	price = models.FloatField()
 	discount_price = models.FloatField(blank=True, null=True)
 	category = models.CharField(
-	    choices=CATEGORY_CHOICES, max_length=3, blank=False)
+	    choices=CATEGORY_CHOICES, max_length=30, blank=False)
 	category_type = models.CharField(
 		choices=CATEGORY_TYPES, max_length=5, blank=False)
 	label = models.CharField(choices=LABEL_CHOICES, max_length=1, default="P")
