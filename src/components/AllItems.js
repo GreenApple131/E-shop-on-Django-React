@@ -80,13 +80,46 @@ function AllFilters() {
 
   const handlePrice = (event, newValue) => {
     setPrice(newValue);
+
+    function filter(array = [], filters = {}) {
+      const keys = Object.keys(filters).filter(key => filters.hasOwnProperty(key));
+      return array.filter(elem => {
+          const commonKeys = keys.filter(key => elem.hasOwnProperty(key));
+          console.log(commonKeys)
+          return commonKeys.reduce((flag, key) => (flag && filters[key].includes(elem[key])), true);
+      });
+  }
+  
+  const products_test = [
+    {country: 'Russia', img: 'link.img', genre: 'Comedy', name: 'Вишнёвый сад'},
+    {country: 'France', img: 'link.img', genre: 'Novel', name: 'Oberman'},
+    {country: 'Italy', img: 'link.img', genre: 'Adventures', name: 'Il cimitero di Praga'},
+    {country: 'USA', img: 'link.img', genre: 'Comedy', name: 'The Ransom of Red Chief'}
+  ];
+  
+  const filters_test = {
+    country: ['Russia', 'Italy', 'France'],
+    genre: ['Comedy', 'Novel']
   };
+  console.log("funck", filter(products_test, filters_test))
+  };
+
+  
+
+
 
   const filteredProducts = products.filter(
     (item) =>
       item.name.toLowerCase().includes(search) &&
       item.category.includes(category) &&
-      (item.color === "white" || item.color === "black") &&
+      ((color.red === true && item.color === 'red' ) ||
+      (color.blue === true && item.color === 'blue' ) ||
+      (color.yellow === true && item.color === 'yellow' ) ||
+      (color.white === true && item.color === 'white' ) ||
+      (color.black === true && item.color === 'black' ) ||
+      (color.green === true && item.color === 'green' ) ||
+      (color.grey === true && item.color === 'grey' ) ||
+      (color.orange === true && item.color === 'orange' )) &&
       item.price > price[0] &&
       item.price < price[1]
   );
@@ -285,106 +318,54 @@ const Color = ({ color, handleColor }) => {
     <FormControl component="fieldset">
       <FormLabel component="legend">Filter by Color</FormLabel>
       <FormGroup>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.red}
-              value="red"
-              color="primary"
-              onChange={handleColor}
-              name="red"
+        {filters.map((el, i) => {
+          return (
+            <FormControlLabel
+              key={i}
+              control={
+                <Checkbox
+                  checked={color[el.name]}
+                  value={el.name}
+                  color="primary"
+                  onChange={handleColor}
+                  name={el.name}
+                />
+              }
+              label={el.name}
             />
-          }
-          label="Red"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.orange}
-              value="orange"
-              color="primary"
-              onChange={handleColor}
-              name="orange"
-            />
-          }
-          label="Orange"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.yellow}
-              value="yellow"
-              color="primary"
-              onChange={handleColor}
-              name="yellow"
-            />
-          }
-          label="Yellow"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.green}
-              value="green"
-              color="primary"
-              onChange={handleColor}
-              name="green"
-            />
-          }
-          label="Green"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.blue}
-              value="blue"
-              color="primary"
-              onChange={handleColor}
-              name="blue"
-            />
-          }
-          label="Blue"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.white}
-              value="white"
-              color="primary"
-              onChange={handleColor}
-              name="white"
-            />
-          }
-          label="White"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.black}
-              value="black"
-              color="primary"
-              onChange={handleColor}
-              name="black"
-            />
-          }
-          label="Black"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={color.grey}
-              color="primary"
-              value="grey"
-              onChange={handleColor}
-              name="grey"
-            />
-          }
-          label="Grey"
-        />
+          );
+        })}
       </FormGroup>
     </FormControl>
   );
 };
+
+const filters = [
+  {
+    name: "grey",
+  },
+  {
+    name: "blue",
+  },
+  {
+    name: "black",
+  },
+  {
+    name: "white",
+  },
+  {
+    name: "green",
+  },
+  {
+    name: "yellow",
+  },
+  {
+    name: "orange",
+  },
+  {
+    name: "red",
+  },
+];
 
 const Products = ({ data }) => {
   return (
