@@ -1,27 +1,17 @@
-import React, { Component, useEffect, useState } from "react";
-import {
-  Typography,
-  Card,
-  CardContent,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  FormGroup,
-  InputLabel,
-  Select,
-  Slider,
-  TextField,
-  MenuItem,
-  FormHelperText,
-} from "@material-ui/core";
+import React, { Component, useEffect, useState, Fragment, Suspense } from "react";
 
-import { connect } from "react-redux";
+
+import faker from "faker";
+import { connect, Provider } from "react-redux";
+// import { render } from "react-dom";
+// import { combineReducers, createStore } from "redux";
+// import _ from "lodash";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import {
   Breadcrumb,
   Container,
+  Checkbox,
   Divider,
   Header,
   Icon,
@@ -32,157 +22,264 @@ import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { ItemsCards } from "./ElementsCard";
 
-import "./elements/filterSidebar.css";
+import "./elements/filters.scss";
+import "./elements/filter.css";
 
-import styles from "./elements/Filters.module.css";
-import productStyles from "./elements/Products.module.css";
-import productCardStyles from "./elements/ProductCard.module.css";
-import allItemsStyles from "./elements/AllItems.module.css";
+// import styles from "./elements/Filters.module.css";
+// import productStyles from "./elements/Products.module.css";
+// import productCardStyles from "./elements/ProductCard.module.css";
+// import allItemsStyles from "./elements/AllItems.module.css";
 
-function AllFilters() {
-  const [products, setProducts] = useState(dummydata);
+// const DATA_ENTRIES = 500;
+// const ENTRIES_PER_PAGE = 50;
 
-  const [search, setSearch] = useState("");
-  const [price, setPrice] = useState([0, 2000]);
-  const [category, setCategory] = useState("");
-  const [color, setColor] = useState({
-    blue: false,
-    red: false,
-    yellow: false,
-    white: false,
-    black: false,
-    green: false,
-    grey: false,
-    orange: false,
-  });
-  const [colorArray, setColorArray] = useState([]);
+// [{title: "Men's Scarf"}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
+// function dataAfter(props) {
+//   const dataBefore = props.data
+//   console.log('dataBefore', props.data)
+//   dataBefore.map((data) => {
+//     return(
+//       Object.values(data)
+//     )
+//   })
+// }
 
-  const handleCategory = (e) => {
-    setCategory(e.target.value);
-  };
+// const entryAttrs = dataAfter()
 
-  const handleColor = (e) => {
-    if (e.target.checked) {
-      setColorArray([...colorArray, e.target.value]);
-    } else {
-      colorArray.splice(colorArray.indexOf(e.target.value), 1);
+// const AppContainer = connect(AppMapStateToProps, AppMapDispatchToProps)(App);
+
+// const store = createStore(reducers);
+
+// class AllFilters extends Component {
+//   render() {
+//     return (
+//       <Provider store={store}>
+//         <AppContainer />
+//       </Provider>
+//     );
+//   }
+// }
+
+const filterKeys = ['category', 'price'];
+
+const initialFilterState = filterKeys.reduce(
+  (collection, key) => ({
+    ...collection,
+    [key]: [],
+  }),
+  {}
+);
+
+const without = (obj, key) => {
+  const { [key]: omit, ...foo } = obj;
+  return foo;
+};
+
+const filterItems = (items, filter) => {
+  const valueMap = {};
+  const filteredItems = new Set();
+
+  for (const filterAttribute in filter) {
+    const filterValues = filter[filterAttribute];
+
+    for (const value of filterValues) {
+      valueMap[filterAttribute] = { [value]: 0 };
+    }
+  }
+
+
+  for (const item of items) {
+    const allFilterMatches = [];
+
+    for (const filterAttribute in filter) {
+      const filterValues = filter[filterAttribute];
+      const matchesFilter =
+        filterValues.length === 0 ||
+        filterValues.includes(item[filterAttribute]);
+
+      allFilterMatches.push(matchesFilter);
+
+      const filterWithoutThisFilterAttribute = without(filter, filterAttribute);
+
+      const matchesOtherFilter = Object.entries(
+        filterWithoutThisFilterAttribute
+      ).every(
+        ([key, values]) => values.length === 0 || values.includes(item[key])
+      );
+
+      if (matchesOtherFilter) {
+        valueMap[filterAttribute] = valueMap[filterAttribute] || {};
+
+        valueMap[filterAttribute][item[filterAttribute]] =
+          valueMap[filterAttribute][item[filterAttribute]] || 0;
+
+        if (valueMap[filterAttribute][item[filterAttribute]] !== undefined) {
+          valueMap[filterAttribute][item[filterAttribute]] += 1;
+        }
+      }
     }
 
-    setColor({ ...color, [e.target.name]: e.target.checked });
-
-    console.log(filteredProducts);
-    console.log(color);
-  };
-
-  const handlePrice = (event, newValue) => {
-    setPrice(newValue);
-
-    function filter(array = [], filters = {}) {
-      const keys = Object.keys(filters).filter(key => filters.hasOwnProperty(key));
-      return array.filter(elem => {
-          const commonKeys = keys.filter(key => elem.hasOwnProperty(key));
-          console.log(commonKeys)
-          return commonKeys.reduce((flag, key) => (flag && filters[key].includes(elem[key])), true);
-      });
+    if (allFilterMatches.every(Boolean)) {
+      filteredItems.add(item);
+    }
   }
-  
-  const products_test = [
-    {country: 'Russia', img: 'link.img', genre: 'Comedy', name: 'Вишнёвый сад'},
-    {country: 'France', img: 'link.img', genre: 'Novel', name: 'Oberman'},
-    {country: 'Italy', img: 'link.img', genre: 'Adventures', name: 'Il cimitero di Praga'},
-    {country: 'USA', img: 'link.img', genre: 'Comedy', name: 'The Ransom of Red Chief'}
-  ];
-  
-  const filters_test = {
-    country: ['Russia', 'Italy', 'France'],
-    genre: ['Comedy', 'Novel']
-  };
-  console.log("funck", filter(products_test, filters_test))
-  };
 
-  
+  return { filteredItems: [...filteredItems], valueMap };
+};
 
+const App = ({ items }) => {
+  const [filter, setFilter] = useState(initialFilterState);
 
-
-  const filteredProducts = products.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search) &&
-      item.category.includes(category) &&
-      ((color.red === true && item.color === 'red' ) ||
-      (color.blue === true && item.color === 'blue' ) ||
-      (color.yellow === true && item.color === 'yellow' ) ||
-      (color.white === true && item.color === 'white' ) ||
-      (color.black === true && item.color === 'black' ) ||
-      (color.green === true && item.color === 'green' ) ||
-      (color.grey === true && item.color === 'grey' ) ||
-      (color.orange === true && item.color === 'orange' )) &&
-      item.price > price[0] &&
-      item.price < price[1]
-  );
+  const then = performance.now();
+  const { filteredItems, valueMap } = filterItems(items, filter);
+  // console.log(
+  //   `filtering ${items.length} items took ${(performance.now() - then).toFixed(
+  //     2
+  //   )}ms`
+  // )
 
   return (
-    <div className={allItemsStyles.container}>
-      <MyFilters
-        search={search}
-        price={price}
-        category={category}
-        color={color}
-        handleSearch={handleSearch}
-        handlePrice={handlePrice}
-        handleCategory={handleCategory}
-        handleColor={handleColor}
-      />
-      <Products data={filteredProducts} />
+    <div style={{ display: "flex", padding: 10 }}>
+      <div style={{ position: "fixed", top: 0, marginTop: '200px' }}>
+        {filterKeys.map((key) => (
+          <Fragment key={key}>
+            <div>{key}</div>
+            <div
+              style={{
+                overflowY: "auto",
+                border: "1px solid #000",
+                padding: 5,
+                margin: 5,
+                marginBottom: 20,
+                height: "25vh",
+              }}
+            >
+              {Object.entries(valueMap[key])
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .map(([value, count]) => (
+                  <label style={{ display: "block" }} key={value}>
+                    <Checkbox
+                      name={key}
+                      checked={filter[key].includes(value)}
+                      onChange={({ target: { name, checked } }) =>
+                        setFilter((filter) => ({
+                          ...filter,
+                          [key]: checked
+                            ? [...filter[key], value]
+                            : filter[key].filter((v) => v !== value),
+                        }))
+                      }
+                    />
+                    <span style={{ marginLeft: "1ch" }}>
+                      {value} ({count})
+                    </span>
+                  </label>
+                ))}
+            </div>
+          </Fragment>
+        ))}
+      </div>
+
+      <div
+        style={{
+          flexGrow: 1,
+          marginLeft: 200,
+          display: "grid",
+          gridTemplateColumns: `repeat(${filterKeys.length + 1}, 1fr)`,
+          gridTemplateRows: `repeat(${filteredItems.length}, 25px)`,
+        }}
+      >
+        <div style={{ fontWeight: "bold", marginLeft: 10 }}>title</div>
+        {filterKeys.map((key) => (
+          <div key={key} style={{ fontWeight: "bold", marginLeft: 10 }}>
+            {key}
+          </div>
+        ))}
+
+        {filteredItems.slice(0, 100).map((item) => (
+          <Fragment key={item.id}>
+            <div
+              style={{
+                marginLeft: 10,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {item.title}
+            </div>
+            {filterKeys.map((key) => (
+              <div key={key} style={{ marginLeft: 10 }}>
+                {item[key]}
+              </div>
+            ))}
+          </Fragment>
+        ))}
+      </div>
     </div>
   );
+};
+
+
+const allData = fetchItemsData()
+
+function fetchItemsData() {
+    let itemsPromise = fetchItems();
+  return {
+    items: wrapPromise(itemsPromise)
+  };
 }
 
-const MyFilters = ({
-  search,
-  category,
-  color,
-  price,
-  handleSearch,
-  handlePrice,
-  handleCategory,
-  handleColor,
-}) => {
-  return (
-    <Card variant="outlined" className={styles.cardContainer}>
-      <CardContent style={{ height: "100%" }}>
-        <Typography variant="h5" color="primary" align="left">
-          Filter
-        </Typography>
-        <div className={styles.filterContainer}>
-          <Search
-            className={styles.flexItem}
-            search={search}
-            handleSearch={handleSearch}
-          />
-          <Category
-            className={styles.flexItem}
-            category={category}
-            handleCategory={handleCategory}
-          />
-          <Price
-            className={styles.flexItem}
-            price={price}
-            handlePrice={handlePrice}
-          />
-          <Color
-            className={styles.flexItem}
-            color={color}
-            handleColor={handleColor}
-          />
-        </div>
-      </CardContent>
-    </Card>
+function wrapPromise(promise) {
+  let status = "pending";
+  let result;
+  let suspender = promise.then(
+    r => {
+      status = "success";
+      result = r;
+    },
+    e => {
+      status = "error";
+      result = e;
+    }
   );
-};
+  return {
+    read() {
+      if (status === "pending") {
+        throw suspender;
+      } else if (status === "error") {
+        throw result;
+      } else if (status === "success") {
+        return result;
+      }
+    }
+  };
+}
+
+async function fetchItems() {
+  // const items = [];
+    // for (var i = 0; i < 50; i++) {
+    //   items.push({
+    //     id: faker.random.uuid(),
+    //     name: faker.commerce.productName(),
+    //     color: faker.commerce.color(),
+    //     material: faker.commerce.productMaterial(),
+    //     price: faker.commerce.price(),
+    //   });
+    // }
+
+    const items = await axios.get(productListURL) 
+
+
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve(items.data);
+      console.log("fetched items", items.data);
+    }, 1000);
+  });
+}
+
 
 class AllItems extends Component {
   state = {
@@ -216,6 +313,7 @@ class AllItems extends Component {
 
   render() {
     const { data } = this.state;
+    
     const BreadcrumbSection = () => (
       <Breadcrumb>
         <Breadcrumb.Section>
@@ -227,6 +325,7 @@ class AllItems extends Component {
         <Breadcrumb.Section active>All Items</Breadcrumb.Section>
       </Breadcrumb>
     );
+
     return (
       <React.Fragment>
         {/* categoryChoose={this.props.location.state.searchValue} */}
@@ -249,7 +348,14 @@ class AllItems extends Component {
         </Container>
 
         {/*  */}
-        <AllFilters />
+
+        {/* {data !== [] ? (<App items={data} />) : (<></>) } */}
+        <Suspense
+          fallback={<h1>Loading items...</h1>}
+        >
+          <ItemsSuspense  />
+        </Suspense>
+        
         {/*  */}
 
         <Container>
@@ -263,169 +369,12 @@ class AllItems extends Component {
   }
 }
 
-const Category = ({ category, handleCategory }) => {
-  return (
-    <FormControl>
-      <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
-      <Select
-        labelId="demo-simple-select-helper-label"
-        id="demo-simple-select-helper"
-        value={category}
-        onChange={handleCategory}
-      >
-        <MenuItem value="">
-          <em>Category</em>
-        </MenuItem>
-        <MenuItem value="Upperwear">Upperwear</MenuItem>
-        <MenuItem value="Lowerwear">Lowerwear</MenuItem>
-        <MenuItem value="Footwear">Footwear</MenuItem>
-      </Select>
-      <FormHelperText>Filter by Category</FormHelperText>
-    </FormControl>
-  );
-};
-
-const Price = ({ price, handlePrice }) => {
-  return (
-    <div>
-      <FormLabel component="legend">Filter by Price</FormLabel>
-      <Slider
-        value={price}
-        onChange={handlePrice}
-        min={0}
-        max={2000}
-        valueLabelDisplay="auto"
-        aria-labelledby="range-slider"
-        style={{ width: "210px" }}
-      />
-    </div>
-  );
-};
-
-const Search = ({ search, handleSearch }) => {
-  return (
-    <TextField
-      id="standard-required"
-      label="Search by name"
-      onChange={handleSearch}
-      defaultValue={search}
-    />
-  );
-};
-
-const Color = ({ color, handleColor }) => {
-  return (
-    <FormControl component="fieldset">
-      <FormLabel component="legend">Filter by Color</FormLabel>
-      <FormGroup>
-        {filters.map((el, i) => {
-          return (
-            <FormControlLabel
-              key={i}
-              control={
-                <Checkbox
-                  checked={color[el.name]}
-                  value={el.name}
-                  color="primary"
-                  onChange={handleColor}
-                  name={el.name}
-                />
-              }
-              label={el.name}
-            />
-          );
-        })}
-      </FormGroup>
-    </FormControl>
-  );
-};
-
-const filters = [
-  {
-    name: "grey",
-  },
-  {
-    name: "blue",
-  },
-  {
-    name: "black",
-  },
-  {
-    name: "white",
-  },
-  {
-    name: "green",
-  },
-  {
-    name: "yellow",
-  },
-  {
-    name: "orange",
-  },
-  {
-    name: "red",
-  },
-];
-
-const Products = ({ data }) => {
-  return (
-    <div className={productStyles.container}>
-      {data.map((item) => (
-        <ProductCard item={item} />
-      ))}
-    </div>
-  );
-};
-
-const ProductCard = ({ item }) => {
-  return (
-    <Card className={productCardStyles.productCard} variant="outlined">
-      <CardContent className={productCardStyles.content}>
-        <Typography variant="h6" color="textPrimary" align="center">
-          {item.name}
-        </Typography>
-        <Typography variant="subheading2" color="textPrimary">
-          Rs. {item.price}
-        </Typography>
-        <div className={productCardStyles.footer}>
-          <Typography
-            variant="body"
-            color="textSecondary"
-            style={{ marginRight: "10px" }}
-          >
-            {item.category}
-          </Typography>
-          <Typography variant="body" color="textSecondary">
-            {item.color}
-          </Typography>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-const dummydata = [
-  { name: "T-shirt", color: "blue", price: "699", category: "Upperwear" },
-  { name: "T-shirt", color: "red", price: "1299", category: "Upperwear" },
-  { name: "T-shirt", color: "white", price: "499", category: "Upperwear" },
-  { name: "T-shirt", color: "black", price: "699", category: "Upperwear" },
-  { name: "Jeans", color: "blue", price: "999", category: "Lowerwear" },
-  { name: "Jeans", color: "black", price: "1299", category: "Lowerwear" },
-  { name: "Jeans", color: "blue", price: "1299", category: "Lowerwear" },
-  { name: "Pants", color: "grey", price: "999", category: "Lowerwear" },
-  { name: "Pants", color: "white", price: "1299", category: "Lowerwear" },
-  { name: "Shorts", color: "orange", price: "499", category: "Lowerwear" },
-  { name: "Sweater", color: "green", price: "1499", category: "Upperwear" },
-  { name: "Sweater", color: "grey", price: "1299", category: "Upperwear" },
-  { name: "Shoes", color: "blue", price: "1599", category: "Footwear" },
-  { name: "Shoes", color: "red", price: "1599", category: "Footwear" },
-  { name: "T-shirt", color: "green", price: "699", category: "Upperwear" },
-  { name: "T-shirt", color: "yellow", price: "499", category: "Upperwear" },
-  { name: "Slippers", color: "blue", price: "499", category: "Footwear" },
-  { name: "Slippers", color: "white", price: "299", category: "Footwear" },
-  { name: "Shoes", color: "white", price: "999", category: "Footwear" },
-  { name: "Shorts", color: "white", price: "699", category: "Lowerwear" },
-];
+function ItemsSuspense() {
+  const newData = allData.items.read();
+    console.log("newData", newData)
+    return <App items={newData} />
+  
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
