@@ -95,9 +95,9 @@ class CustomLayout extends Component {
 
     return (
       <React.Fragment>
-        <div className="App">
+        <div className="App" style={{minHeight: '650px'}}>
           <Grid padded className="tablet computer only">
-            <Menu borderless fluid fixed="top" size="huge" inverted>
+            <Menu borderless fluid fixed="top" size="huge" inverted >
               <Container>
                 <Menu.Item onClick={() => this.props.history.push("/")}>
                   <Image

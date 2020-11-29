@@ -1,7 +1,14 @@
-import React, { Component, useEffect, useState, Fragment, Suspense } from "react";
-
+import React, {
+  Component,
+  useEffect,
+  useState,
+  Fragment,
+  Suspense,
+  createRef,
+} from "react";
 
 import faker from "faker";
+import _ from "lodash";
 import { connect, Provider } from "react-redux";
 // import { render } from "react-dom";
 // import { combineReducers, createStore } from "redux";
@@ -12,9 +19,17 @@ import {
   Breadcrumb,
   Container,
   Checkbox,
+  Dimmer,
   Divider,
   Header,
   Icon,
+  Image,
+  Loader,
+  Placeholder,
+  Rail,
+  Ref,
+  Segment,
+  Sticky,
 } from "semantic-ui-react";
 import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListURL } from "../constants";
@@ -22,7 +37,7 @@ import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { ItemsCards } from "./ElementsCard";
 
-import "./elements/filters.scss";
+// import "./elements/filters.scss";
 import "./elements/filter.css";
 
 // import styles from "./elements/Filters.module.css";
@@ -61,7 +76,7 @@ import "./elements/filter.css";
 //   }
 // }
 
-const filterKeys = ['category', 'price'];
+const filterKeys = ["category", "price"];
 
 const initialFilterState = filterKeys.reduce(
   (collection, key) => ({
@@ -87,7 +102,6 @@ const filterItems = (items, filter) => {
       valueMap[filterAttribute] = { [value]: 0 };
     }
   }
-
 
   for (const item of items) {
     const allFilterMatches = [];
@@ -138,48 +152,54 @@ const App = ({ items }) => {
   //     2
   //   )}ms`
   // )
+  const contextRef = createRef();
 
   return (
-    <div style={{ display: "flex", padding: 10 }}>
-      <div style={{ position: "fixed", top: 0, marginTop: '200px' }}>
-        {filterKeys.map((key) => (
-          <Fragment key={key}>
-            <div>{key}</div>
-            <div
-              style={{
-                overflowY: "auto",
-                border: "1px solid #000",
-                padding: 5,
-                margin: 5,
-                marginBottom: 20,
-                height: "25vh",
-              }}
-            >
-              {Object.entries(valueMap[key])
-                .sort((a, b) => a[0].localeCompare(b[0]))
-                .map(([value, count]) => (
-                  <label style={{ display: "block" }} key={value}>
-                    <Checkbox
-                      name={key}
-                      checked={filter[key].includes(value)}
-                      onChange={({ target: { name, checked } }) =>
-                        setFilter((filter) => ({
-                          ...filter,
-                          [key]: checked
-                            ? [...filter[key], value]
-                            : filter[key].filter((v) => v !== value),
-                        }))
-                      }
-                    />
-                    <span style={{ marginLeft: "1ch" }}>
-                      {value} ({count})
-                    </span>
-                  </label>
-                ))}
-            </div>
-          </Fragment>
-        ))}
-      </div>
+    <div style={{padding: 10 }}>
+      <Ref innerRef={contextRef}>
+        <Rail style={{ top: 100 }}>
+          <Sticky context={contextRef} offset={100} bottomOffset={100}>
+            {filterKeys.map((key) => (
+              <Fragment key={key}>
+                <div>{key}</div>
+                <div
+                  style={{
+                    overflowY: "auto",
+                    border: "1px solid #000",
+                    padding: 5,
+                    margin: 5,
+                    marginBottom: 20,
+                    height: "25vh",
+                    width: "180px",
+                  }}
+                >
+                  {Object.entries(valueMap[key])
+                    .sort((a, b) => a[0].localeCompare(b[0]))
+                    .map(([value, count]) => (
+                      <label style={{ display: "block" }} key={value}>
+                        <Checkbox
+                          name={key}
+                          checked={filter[key].includes(value)}
+                          onChange={({ target: { name, checked } }) =>
+                            setFilter((filter) => ({
+                              ...filter,
+                              [key]: checked
+                                ? [...filter[key], value]
+                                : filter[key].filter((v) => v !== value),
+                            }))
+                          }
+                        />
+                        <span style={{ marginLeft: "1ch" }}>
+                          {value} ({count})
+                        </span>
+                      </label>
+                    ))}
+                </div>
+              </Fragment>
+            ))}
+          </Sticky>
+        </Rail>
+      </Ref>
 
       <div
         style={{
@@ -197,7 +217,7 @@ const App = ({ items }) => {
           </div>
         ))}
 
-        {filteredItems.slice(0, 100).map((item) => (
+        {filteredItems.slice(0, 10).map((item) => (
           <Fragment key={item.id}>
             <div
               style={{
@@ -221,13 +241,12 @@ const App = ({ items }) => {
   );
 };
 
-
-const allData = fetchItemsData()
+const allData = fetchItemsData();
 
 function fetchItemsData() {
-    let itemsPromise = fetchItems();
+  let itemsPromise = fetchItems();
   return {
-    items: wrapPromise(itemsPromise)
+    items: wrapPromise(itemsPromise),
   };
 }
 
@@ -235,11 +254,11 @@ function wrapPromise(promise) {
   let status = "pending";
   let result;
   let suspender = promise.then(
-    r => {
+    (r) => {
       status = "success";
       result = r;
     },
-    e => {
+    (e) => {
       status = "error";
       result = e;
     }
@@ -253,26 +272,25 @@ function wrapPromise(promise) {
       } else if (status === "success") {
         return result;
       }
-    }
+    },
   };
 }
 
 async function fetchItems() {
   // const items = [];
-    // for (var i = 0; i < 50; i++) {
-    //   items.push({
-    //     id: faker.random.uuid(),
-    //     name: faker.commerce.productName(),
-    //     color: faker.commerce.color(),
-    //     material: faker.commerce.productMaterial(),
-    //     price: faker.commerce.price(),
-    //   });
-    // }
+  // for (var i = 0; i < 50; i++) {
+  //   items.push({
+  //     id: faker.random.uuid(),
+  //     name: faker.commerce.productName(),
+  //     color: faker.commerce.color(),
+  //     material: faker.commerce.productMaterial(),
+  //     price: faker.commerce.price(),
+  //   });
+  // }
 
-    const items = await axios.get(productListURL) 
+  const items = await axios.get(productListURL);
 
-
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(items.data);
       console.log("fetched items", items.data);
@@ -280,10 +298,10 @@ async function fetchItems() {
   });
 }
 
-
 class AllItems extends Component {
   state = {
     data: [],
+    loading: false,
     categoryChoose: "",
   };
 
@@ -293,10 +311,10 @@ class AllItems extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        this.setState({ data: res.data });
+        this.setState({ data: res.data, loading: false });
       })
       .catch((err) => {
-        this.setState({ error: err });
+        this.setState({ error: err, loading: false });
       });
   }
 
@@ -312,8 +330,8 @@ class AllItems extends Component {
   };
 
   render() {
-    const { data } = this.state;
-    
+    const { data, loading } = this.state;
+
     const BreadcrumbSection = () => (
       <Breadcrumb>
         <Breadcrumb.Section>
@@ -351,14 +369,29 @@ class AllItems extends Component {
 
         {/* {data !== [] ? (<App items={data} />) : (<></>) } */}
         <Suspense
-          fallback={<h1>Loading items...</h1>}
+          fallback={
+            <Segment style={{ height: "200px" }}>
+              <Dimmer active inverted>
+                <Loader inverted>Loading</Loader>
+              </Dimmer>
+              <Image src="/images/wireframe/short-paragraph.png" />
+            </Segment>
+          }
         >
-          <ItemsSuspense  />
+          <ItemsSuspense />
         </Suspense>
-        
+
         {/*  */}
 
         <Container>
+          {loading && (
+            <Segment style={{ height: "200px" }}>
+              <Dimmer active inverted>
+                <Loader inverted>Loading</Loader>
+              </Dimmer>
+              <Image src="/images/wireframe/short-paragraph.png" />
+            </Segment>
+          )}
           {/* <GetItemsByCategory data={data} categoryChoose={categoryChoose} /> */}
           <ItemsCards data={data} />
         </Container>
@@ -371,9 +404,8 @@ class AllItems extends Component {
 
 function ItemsSuspense() {
   const newData = allData.items.read();
-    console.log("newData", newData)
-    return <App items={newData} />
-  
+  console.log("newData", newData);
+  return <App items={newData} />;
 }
 
 const mapDispatchToProps = (dispatch) => {
