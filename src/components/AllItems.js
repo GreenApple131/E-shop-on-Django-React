@@ -179,7 +179,7 @@ const App = ({ items }) => {
                       <label style={{ display: "block" }} key={value}>
                         <Checkbox
                           name={key}
-                          checked={filter[key].includes(value)}
+                          // checked={filter[key].includes(value)}
                           onChange={({ target: { name, checked } }) =>
                             setFilter((filter) => ({
                               ...filter,
@@ -203,21 +203,19 @@ const App = ({ items }) => {
 
       <div
         style={{
-          flexGrow: 1,
           marginLeft: 200,
-          display: "grid",
           gridTemplateColumns: `repeat(${filterKeys.length + 1}, 1fr)`,
           gridTemplateRows: `repeat(${filteredItems.length}, 25px)`,
         }}
       >
-        <div style={{ fontWeight: "bold", marginLeft: 10 }}>title</div>
-        {filterKeys.map((key) => (
+        <ItemsCards style={{ fontWeight: "bold", marginLeft: '10'}} data={filteredItems} />
+        {/* {filterKeys.map((key) => (
           <div key={key} style={{ fontWeight: "bold", marginLeft: 10 }}>
             {key}
           </div>
-        ))}
+        ))} */}
 
-        {filteredItems.slice(0, 10).map((item) => (
+        {/* {filteredItems.slice(0, 10).map((item) => (
           <Fragment key={item.id}>
             <div
               style={{
@@ -235,8 +233,9 @@ const App = ({ items }) => {
               </div>
             ))}
           </Fragment>
-        ))}
+        ))} */}
       </div>
+      
     </div>
   );
 };
@@ -290,11 +289,14 @@ async function fetchItems() {
 
   const items = await axios.get(productListURL);
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(items.data);
-      console.log("fetched items", items.data);
-    }, 1000);
+  const itemsFixedPrice = items.data.map((pr) => {
+    pr.price = pr.price.toString()
+    return( pr )
+  })
+
+  return new Promise((resolve) => { 
+      resolve(itemsFixedPrice);
+      console.log("fetched items", itemsFixedPrice);
   });
 }
 
@@ -393,7 +395,7 @@ class AllItems extends Component {
             </Segment>
           )}
           {/* <GetItemsByCategory data={data} categoryChoose={categoryChoose} /> */}
-          <ItemsCards data={data} />
+          {/* <ItemsCards data={data} /> */}
         </Container>
 
         <CategoryFilter />
