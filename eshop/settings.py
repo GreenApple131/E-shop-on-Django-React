@@ -30,6 +30,13 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 
+    # elasticsearch
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
+    # 'search_indexes',  # Elasticsearch integration with the Django
+                       # REST framework
+    # elasticsearch
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -62,8 +69,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
+    'http://eshop-django-react.herokuapp.com',
     'https://eshop-django-react.herokuapp.com',
-
 )
 
 REST_FRAMEWORK = {
@@ -73,8 +80,20 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ),    
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+        'PAGE_SIZE': 40,
+        'ORDERING_PARAM': 'ordering',
 }
+
+# Elasticsearch
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch:9200'
+    },
+}
+
 
 ROOT_URLCONF = 'eshop.urls'
 
@@ -207,6 +226,7 @@ USE_TZ = True
 # CRISPY FORMS
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 
 ''' Windows '''

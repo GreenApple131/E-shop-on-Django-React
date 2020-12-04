@@ -289,7 +289,7 @@ async function fetchItems() {
 
   const items = await axios.get(productListURL);
 
-  const itemsFixedPrice = items.data.map((pr) => {
+  const itemsFixedPrice = items.data.results.map((pr) => {
     pr.price = pr.price.toString()
     return( pr )
   })
@@ -313,7 +313,7 @@ class AllItems extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        this.setState({ data: res.data, loading: false });
+        this.setState({ data: res.data.results, loading: false });
       })
       .catch((err) => {
         this.setState({ error: err, loading: false });

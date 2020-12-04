@@ -91,7 +91,7 @@ class CategorieChoose extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        this.setState({ data: res.data });
+        this.setState({ data: res.data.results });
       })
       .catch((err) => {
         this.setState({ error: err });

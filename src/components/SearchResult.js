@@ -94,15 +94,15 @@ export function SearchBar(props) {
         .get(productListURL)
         .then(function (list) {
           setList(
-            (list = Object.keys(list.data).map((key) => {
+            (list = Object.keys(list.data.results).map((key) => {
               // перетворення для source у вигляд масиву списків, щоб могло нормально відображати результат пошуку [{…}, {…}, {…}]
               return {
-                title: list.data[key].title,
-                description: list.data[key].description,
-                price: "$" + list.data[key].price,
-                id: list.data[key].id,
-                image: list.data[key].image,
-                slug: list.data[key].slug,
+                title: list.data.results[key].title,
+                description: list.data.results[key].description,
+                price: "$" + list.data.results[key].price,
+                id: list.data.results[key].id,
+                image: list.data.results[key].image,
+                slug: list.data.results[key].slug,
               };
             }))
           );
@@ -186,8 +186,8 @@ function SearchResult(props) {
     axios
       .get(productSearchURL(searchRequest))
       .then((res) => {
-        console.log("data", res.data);
-        setData(res.data);
+        console.log("data", res.data.results);
+        setData(res.data.results);
       })
       .catch((err) => {
         setError(err);

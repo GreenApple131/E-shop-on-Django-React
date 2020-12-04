@@ -213,7 +213,7 @@ class AllItems extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        this.setState({ data: res.data });
+        this.setState({ data: res.data.results });
       })
       .catch((err) => {
         this.setState({ error: err });
@@ -785,8 +785,8 @@ async function fetchItems() {
   const items = await axios.get(productListURL);
 
   return new Promise((resolve) => { 
-      resolve(items.data);
-      console.log("fetched items", items.data);
+      resolve(items.data.results);
+      console.log("fetched items", items.data.results);
   });
 }
 
@@ -803,7 +803,7 @@ class AllItems extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        this.setState({ data: res.data, loading: false });
+        this.setState({ data: res.data.results, loading: false });
       })
       .catch((err) => {
         this.setState({ error: err, loading: false });

@@ -102,8 +102,8 @@ class DesktopContainer extends Component {
     const res = await axios
       .get(productListURL)
       .then((res) => {
-        console.log(res.data);
-        this.setState({ data: res.data, loading: false });
+        console.log("res.data",res.data.results);
+        this.setState({ data: res.data.results, loading: false });
       })
       .catch((err) => {
         this.setState({ error: err, loading: false });
