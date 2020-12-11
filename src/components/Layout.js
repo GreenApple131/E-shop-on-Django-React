@@ -114,6 +114,11 @@ class CustomLayout extends Component {
 
                 <Dropdown item simple text="Categories" className="link item">
                   <Dropdown.Menu>
+                  <Dropdown.Item
+                      onClick={() => this.props.history.push("/testfilter")}
+                    >
+                      Test Filter
+                    </Dropdown.Item>
                     <Dropdown.Item
                       onClick={() => this.props.history.push("/allitems")}
                     >

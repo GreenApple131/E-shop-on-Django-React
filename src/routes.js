@@ -14,6 +14,7 @@ import SearchResult from "./components/SearchResult";
 import CategorieChoose from "./components/Categories";
 import { PageNotFound } from "./components/PageNotFound";
 import AllItems from "./components/AllItems";
+import TestFilter from "./components/TestFilter";
 
 const categories = [
   "jackets",
@@ -39,6 +40,7 @@ const BaseRouter = () => (
     <Route path="/checkout" component={Checkout} />
     <Route path="/category/:categoryChoose" component={CategorieChoose} />
     <Route path="/allitems" component={AllItems} />
+    <Route path="/testfilter" component={TestFilter} />
 
     {/* <Route path="/jackets" component={CategorieChoose} />
     <Route path="/coats" component={CategorieChoose} />

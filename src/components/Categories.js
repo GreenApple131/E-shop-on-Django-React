@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import {
   Breadcrumb,
@@ -16,7 +16,7 @@ import {
   Menu,
 } from "semantic-ui-react";
 import CategoryFilter from "./CategoryFilter";
-import { addToCartURL, productListURL } from "../constants";
+import { addToCartURL, productListCategoryURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 
@@ -77,28 +77,28 @@ export class Categories extends Component {
   }
 }
 
-class CategorieChoose extends Component {
-  state = {
-    data: [],
-    categoryChoose: "",
-  };
+function CategorieChoose()  {
+  const history = useHistory();
 
-  async componentDidMount() {
-    this.setState({ loading: true });
+  let { categoryChoose } = useParams();   // get the category
 
-    // this.props.fetchCart(); // update the cart count
+  const [data, setData] = useState([]);
+  const [error, setError] = useState("");
 
-    const res = await axios
-      .get(productListURL)
+  const chosenCategory = categoryChoose.replace(/^./, categoryChoose[0].toUpperCase());
+
+  useEffect(() => {
+    axios
+      .get(productListCategoryURL(chosenCategory))
       .then((res) => {
-        this.setState({ data: res.data.results });
+        setData(res.data.results);
       })
       .catch((err) => {
-        this.setState({ error: err });
+        setError(err);
       });
-  }
-
-  handleAddToCart = (slug) => {
+  }, [categoryChoose]);  // when category changes, starts useEffect
+  
+  const handleAddToCart = (slug) => {
     authAxios
       .post(addToCartURL, { slug })
       .then((res) => {
@@ -109,9 +109,6 @@ class CategorieChoose extends Component {
       });
   };
 
-  render() {
-    const { data } = this.state;
-    const categoryChoose = this.props.match.params.categoryChoose;
     const BreadcrumbSection = () => (
       <Breadcrumb>
         <Breadcrumb.Section>
@@ -121,7 +118,7 @@ class CategorieChoose extends Component {
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
         <Breadcrumb.Section active>
-          {categoryChoose.replace(/^./, categoryChoose[0].toUpperCase())}
+          {chosenCategory}
         </Breadcrumb.Section>
       </Breadcrumb>
     );
@@ -139,7 +136,7 @@ class CategorieChoose extends Component {
               marginBottom: "10px",
             }}
           >
-            {categoryChoose.replace(/^./, categoryChoose[0].toUpperCase())}
+            {chosenCategory}
             {/* xxx.replace(/^./, xxx[0].toUpperCase())   -  capitalize first character */}
           </Header>
           <Divider />
@@ -149,11 +146,7 @@ class CategorieChoose extends Component {
           <Card.Group>
             {data.map(
               (item) =>
-                item.category ===
-                  categoryChoose.replace(
-                    /^./,
-                    categoryChoose[0].toUpperCase()
-                  ) && (
+                item.category === chosenCategory && (
                   <React.Fragment key={item.id}>
                     <Card style={{ width: "220px", height: "auto" }}>
                       <Image
@@ -169,14 +162,14 @@ class CategorieChoose extends Component {
                         ui={true}
                         as="a"
                         onClick={() =>
-                          this.props.history.push(`/products/${item.slug}`)
+                          history.push(`/products/${item.slug}`)
                         }
                       />
                       <Card.Content>
                         <Item.Header
                           as="a"
                           onClick={() =>
-                            this.props.history.push(`/products/${item.slug}`)
+                            history.push(`/products/${item.slug}`)
                           }
                         >
                           {item.title}
@@ -219,7 +212,7 @@ class CategorieChoose extends Component {
                             animated="vertical"
                             color="black"
                             floated="right"
-                            onClick={() => this.handleAddToCart(item.slug)}
+                            onClick={() => handleAddToCart(item.slug)}
                           >
                             <Button.Content hidden>Buy</Button.Content>
                             <Button.Content visible>
@@ -238,7 +231,7 @@ class CategorieChoose extends Component {
         <CategoryFilter />
       </React.Fragment>
     );
-  }
+  
 }
 
 const mapDispatchToProps = (dispatch) => {
