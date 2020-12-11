@@ -32,7 +32,7 @@ import {
   Sticky,
 } from "semantic-ui-react";
 import CategoryFilter from "./CategoryFilter";
-import { addToCartURL, productListURL } from "../constants";
+import { addToCartURL, productListURL, productListLimPriceURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { ItemsCards } from "./ElementsCard";
@@ -288,6 +288,7 @@ async function fetchItems() {
   // }
 
   const items = await axios.get(productListURL);
+  // const items = await axios.get(productListLimPriceURL(20, 50));
 
   const itemsFixedPrice = items.data.results.map((pr) => {
     pr.price = pr.price.toString()

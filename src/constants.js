@@ -10,6 +10,7 @@ export const endpoint = `${localhost}${apiURL}`
 export const mediaURL = `${localhost}/media/`
 
 export const productListURL = `${endpoint}/`
+export const productListLimPriceURL = (min_price, max_price) => `${endpoint}/?min_price=${min_price}&max_price=${max_price}`
 export const productSearchURL = searchRequest => `${endpoint}/search/?search=${searchRequest}`
 export const productDetailURL = slug => `${endpoint}/products/${slug}/`
 export const addToCartURL = `${endpoint}/add-to-cart/`

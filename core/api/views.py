@@ -28,13 +28,14 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class ItemFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
+    category = django_filters.CharFilter(field_name="category", lookup_expr='exact')
     other_marks = django_filters.CharFilter(field_name="other_marks__mark", lookup_expr='exact')
     min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
     max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
 
     class Meta:
         model = Item
-        fields = ['title', 'min_price', 'max_price', 'other_marks']
+        fields = ['title', 'category', 'min_price', 'max_price', 'other_marks']
 
 
 class ItemListView(ListAPIView):
