@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework import filters
+from django_filters import rest_framework as django_filters
 
 from core.models import Item, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
@@ -25,13 +26,26 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+class ItemFilter(django_filters.FilterSet):
+    title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
+    other_marks = django_filters.CharFilter(field_name="other_marks__mark", lookup_expr='exact')
+    min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
+    max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
+
+    class Meta:
+        model = Item
+        fields = ['title', 'min_price', 'max_price', 'other_marks']
+
+
 class ItemListView(ListAPIView):
+    queryset = Item.objects.all()
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
-    queryset = Item.objects.all()
-    filter_backends = [filters.SearchFilter]
-    filter_fields = ['price', 'size', 'discount_price', 'category', 'category_type']
-    search_fields = ['title']
+    filterset_class = ItemFilter
+
+    # filter_backends = [filters.SearchFilter]
+    # filter_fields = ['price', 'size', 'discount_price', 'category', 'category_type']
+    # search_fields = ['title']
 
 
 class ItemDetailView(RetrieveAPIView):

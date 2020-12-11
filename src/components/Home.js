@@ -28,7 +28,7 @@ import "../App.css";
 // import { Carousel } from 'react-responsive-carousel'
 import Slider from "react-animated-slider";
 import "react-animated-slider/build/horizontal.css";
-// import 'normalize.css/normalize.css'
+import 'normalize.css/normalize.css'
 import "./elements/sliderStyles.css";
 import "./elements/slider-animations.css";
 

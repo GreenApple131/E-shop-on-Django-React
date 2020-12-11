@@ -30,12 +30,9 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 
-    # elasticsearch
-    'django_elasticsearch_dsl',
-    'django_elasticsearch_dsl_drf',
-    # 'search_indexes',  # Elasticsearch integration with the Django
-                       # REST framework
-    # elasticsearch
+    # filtering
+    'django_filters',
+
 
     'allauth',
     'allauth.account',
@@ -81,17 +78,13 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
         'PAGE_SIZE': 40,
         'ORDERING_PARAM': 'ordering',
-}
-
-# Elasticsearch
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'elasticsearch:9200'
-    },
 }
 
 
