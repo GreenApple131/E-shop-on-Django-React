@@ -17,6 +17,8 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework import filters
 from django_filters import rest_framework as django_filters
+from django_filters.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from core.models import Item, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
 from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
@@ -30,12 +32,20 @@ class ItemFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
     category = django_filters.CharFilter(field_name="category", lookup_expr='exact')
     other_marks = django_filters.CharFilter(field_name="other_marks__mark", lookup_expr='exact')
-    min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
-    max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
+    # min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
+    # max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
+    price = django_filters.RangeFilter(field_name="price", lookup_expr='lte')
+    ordering = django_filters.OrderingFilter(
+        fields={
+            'price': 'price',
+            'title': 'title',
+            # add 'discount_price' and 'star rate'(оцінка)
+        })
+        # http://localhost:8000/api/?category=Hats&ordering=-price 
 
     class Meta:
         model = Item
-        fields = ['title', 'category', 'min_price', 'max_price', 'other_marks']
+        fields = ['title', 'category', 'price', 'other_marks']
 
 
 class ItemListView(ListAPIView):
@@ -43,8 +53,10 @@ class ItemListView(ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = ItemSerializer
     filterset_class = ItemFilter
+    
+    # ordering = ['username']
 
-    # filter_backends = [filters.SearchFilter]
+    # filter_backends = [filters.OrderingFilter]
     # filter_fields = ['price', 'size', 'discount_price', 'category', 'category_type']
     # search_fields = ['title']
 
