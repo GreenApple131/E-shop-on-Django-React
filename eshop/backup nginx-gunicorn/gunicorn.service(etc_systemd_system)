@@ -7,7 +7,7 @@ After=network.target
 User=dmytro
 Group=www-data
 WorkingDirectory=/home/dmytro/Projects/django/eshop/eshop
-ExecStart=/home/dmytro/.local/bin/gunicorn \              # path can be found by typing "which gunicorn" in project venv 
+ExecStart=/home/dmytro/Projects/django/eshop/bin/gunicorn \    # path can be found by typing "which gunicorn" in project venv 
           --access-logfile - \
           --workers 3 \
           --bind unix:/run/gunicorn.sock \
