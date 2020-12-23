@@ -111,7 +111,7 @@ import "./elements/filter.css";
         <div className="App">
       <div className="category d-flex">
         <h5>По категории</h5>
-        <select
+        {/* <select
           id="category"
           name="category"
           value={state.category}
@@ -121,7 +121,7 @@ import "./elements/filter.css";
           {state.data.map((d, i) => (
             <option key={i}>{d.category}</option>
           ))}
-        </select>
+        </select> */}
         <FormControl component="fieldset">
       <FormLabel component="legend">Filter by Color</FormLabel>
       <FormGroup>

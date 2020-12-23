@@ -28,13 +28,18 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+class MultiValueCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
+    # Так як наші categories and other_marks мають відношення ManyToMany, щоб фільтрувати їх діапазон ВСЕРЕДИНІ (lookup_expr='in') використовуємо django_filters.BaseInFilter.  
+    # django_filters.CharFilter підключається тому, що ми шукаємо не по primary_key(pk), а по Char словах('Jackets', 'Hats' і тд.)
+    # запит виглядає так http://localhost:8000/api/?category=Hats,Jackets і видає результат по шуканих категоріях "Hats + Jackets"
+    pass
+
+
 class ItemFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
-    category = django_filters.CharFilter(field_name="category", lookup_expr='exact')
-    other_marks = django_filters.CharFilter(field_name="other_marks__mark", lookup_expr='exact')
-    # min_price = django_filters.NumberFilter(field_name="price", lookup_expr='gte')
-    # max_price = django_filters.NumberFilter(field_name="price", lookup_expr='lte')
-    price = django_filters.RangeFilter(field_name="price", lookup_expr='lte')
+    category = MultiValueCharFilter(field_name="category", lookup_expr='in') # call custom filter class
+    other_marks = MultiValueCharFilter(field_name='other_marks__mark', lookup_expr='in') # call custom filter class
+    price = django_filters.RangeFilter(field_name="price") # range from min to max
     ordering = django_filters.OrderingFilter(
         fields={
             'price': 'price',
@@ -45,7 +50,7 @@ class ItemFilter(django_filters.FilterSet):
 
     class Meta:
         model = Item
-        fields = ['title', 'category', 'price', 'other_marks']
+        fields = ['title', 'price', 'category', 'other_marks']
 
 
 class ItemListView(ListAPIView):
@@ -289,3 +294,16 @@ class AddCouponView(APIView):
             order.coupon = coupon
             order.save()
             return Response(status=HTTP_200_OK)
+
+
+
+# class MultiValueCharFilter(django_filters.BaseCSVFilter, django_filters.CharFilter):
+#     def filter(self, qs, value):
+#         # value is either a list or an 'empty' value
+#         values = value or []
+#         for value in values:
+#             qs = super(MultiValueCharFilter, self).filter(qs, value)
+#         return qs
+#  class AND може бути корисний для пошуку тільки шуканих елементів в моделі.
+#  other_marks = MultiValueCharFilter(field_name='other_marks__mark', lookup_expr='contains')
+#  наприклад видасть результат для запиту http://localhost:8000/api/?other_marks=new,popular тільки тоді, коли товари мають ці два теги(mark)
