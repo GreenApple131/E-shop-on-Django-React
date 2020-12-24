@@ -34,16 +34,16 @@ import {
   MenuItem,
   FormHelperText,
 } from "@material-ui/core";
-import CategoryFilter from "./CategoryFilter";
+import CategoryFilter from "../CategoryFilter";
 import {
   addToCartURL,
   productListURL,
   productFilterAndOrderURL,
   productListCategoryURL
-} from "../constants";
-import { authAxios } from "../utils";
-import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+} from "../../constants";
+import { authAxios } from "../../utils";
+import { fetchCart } from "../../store/actions/cart";
+import { ItemsCards } from "../ElementsCard";
 
 // import "./elements/filters.scss";
 import "./elements/filter.css";

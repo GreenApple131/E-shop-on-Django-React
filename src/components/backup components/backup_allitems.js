@@ -26,11 +26,11 @@ import {
   Header,
   Icon,
 } from "semantic-ui-react";
-import CategoryFilter from "./CategoryFilter";
-import { addToCartURL, productListURL } from "../constants";
-import { authAxios } from "../utils";
-import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+import CategoryFilter from "../CategoryFilter";
+import { addToCartURL, productListURL } from "../../constants";
+import { authAxios } from "../../utils";
+import { fetchCart } from "../../store/actions/cart";
+import { ItemsCards } from "../ElementsCard";
 
 import "./elements/filterSidebar.css";
 
@@ -524,11 +524,11 @@ import {
   Segment,
   Sticky,
 } from "semantic-ui-react";
-import CategoryFilter from "./CategoryFilter";
-import { addToCartURL, productListURL } from "../constants";
-import { authAxios } from "../utils";
-import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+import CategoryFilter from "../CategoryFilter";
+import { addToCartURL, productListURL } from "../../constants";
+import { authAxios } from "../../utils";
+import { fetchCart } from "../../store/actions/cart";
+import { ItemsCards } from "../ElementsCard";
 
 // import "./elements/filters.scss";
 import "./elements/filter.css";

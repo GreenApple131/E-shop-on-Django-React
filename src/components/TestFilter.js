@@ -1,4 +1,4 @@
-import React, { useEffect, useState,  } from "react";
+import React, { useEffect, useState } from "react";
 import faker from "faker";
 import _ from "lodash";
 import { connect, Provider } from "react-redux";
@@ -39,7 +39,7 @@ import {
   addToCartURL,
   productListURL,
   productFilterAndOrderURL,
-  productListCategoryURL
+  productListCategoryURL,
 } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
@@ -48,154 +48,88 @@ import { ItemsCards } from "./ElementsCard";
 // import "./elements/filters.scss";
 import "./elements/filter.css";
 
+function TestFilter() {
+  // const history = useHistory();
 
-  function TestFilter() {
-    // const history = useHistory();
-  
-    const category = undefined;
-    const price_min = 1;
-    const price_max = 999;
-    const other_marks = undefined;
-    const ordering = '-price';
+  const [error, setError] = useState("");
 
-    const [getData, setData] = useState([]);
-    const [error, setError] = useState("");
-    
-    const [state, setState] = useState({
-      data: [],
-      category: "all",
-      priceStart: "",
-      priceEnd: "",
-    });
+  // Request looks like:
+  // /api/?title=hat&price_min=10&price_max=100&category=Hats&other_marks=new&ordering=price
 
-    
+  const [state, setState] = useState({
+    data: [],
+    category: undefined,
+    category: undefined,
+    price_min: undefined,
+    price_max: undefined,
+    other_marks: undefined,
+    ordering: "price",
+  });
 
-    useEffect(() => {
-      axios
-        .get(productFilterAndOrderURL(category, price_min, price_max, other_marks, ordering))
-        // .get(productListCategoryURL(category))
-        .then((res) => {
-          console.log('TestFilter', res.data.results)
-          const itemsFixedPrice = res.data.results.map((pr) => {
-            pr.price = pr.price.toString()
-            return( pr )
-          })
-          console.log('itemsFixedPrice', itemsFixedPrice)
-          setData(res.data.results);
-          setState({...state, data: itemsFixedPrice, category: res.data.results.category} )
-        })
-        .catch((err) => {
-          setError(err);
+  useEffect(() => {
+    axios
+      .get(
+        productFilterAndOrderURL(
+          state.category,
+          state.price_min,
+          state.price_max,
+          state.other_marks,
+          state.ordering
+        )
+      )
+      // .get(productListCategoryURL(category))
+      .then((res) => {
+        console.log("TestFilter", res.data.results);
+        const itemsFixedPrice = res.data.results.map((pr) => {
+          pr.price = pr.price.toString();
+          return pr;
         });
-    }, []); // when category changes, starts useEffect
-  
-    
-    function handleChange({ target: { name, value } }) {
+        setState({
+          ...state,
+          data: itemsFixedPrice,
+          category: res.data.results.category,
+        });
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, []); // when category changes, starts useEffect
+
+  function handleChange({ target: { name, value } }) {
     setState((prev) => ({ ...prev, [name]: value }));
   }
-  let data = state.data;
-  if (state.category && state.category !== "all") {
-    data = data.filter((d) => d.category === state.category);
-  }
-  if (state.priceStart) {
-    data = data.filter((d) => Number(d.price) >= Number(state.priceStart));
-  }
-  if (state.priceEnd) {
-    data = data.filter((d) => Number(d.price) <= Number(state.priceEnd));
-  } 
 
-    return (
-      <React.Fragment>
-        {/* categoryChoose={this.props.location.state.searchValue} */}
-        <Container style={{ marginTop: "10px" }}>
-        <div className="App">
-      <div className="category d-flex">
-        <h5>По категории</h5>
-        <select
-          id="category"
-          name="category"
-          value={state.category}
-          onChange={handleChange}
-        >
-          <option>all</option>
-          {state.data.map((d, i) => (
-            <option key={i}>{d.category}</option>
-          ))}
-        </select>
-        <FormControl component="fieldset">
-      <FormLabel component="legend">Filter by Color</FormLabel>
-      <FormGroup>
-        {state.data.map((d, i) => {
-          return (
-            <FormControlLabel
-              key={i}
-              control={
-                <Checkbox
-                  // checked={d.category}
-                  // value={d.category}
-                  color="primary"
-                  onChange={handleChange}
-                  name={d.category}
-                />
-              }
-              label={d.category}
-            />
-          );
-        })}
-      </FormGroup>
-    </FormControl>
-        {/* {state.data.map((d, i) => (
-            <Checkbox key={i}>{d.category}</Checkbox>
-          ))} */}
-      </div>
-      <div className="price-filter d-flex">
-        <div className="input-group ">
-          <h5>По цене</h5>
-          <input
-            type="number"
-            placeholder="с"
-            value={state.priceStart}
-            name="priceStart"
-            onChange={handleChange}
-          />
-          <input
-            type="number"
-            placeholder="до"
-            value={state.priceEnd}
-            name="priceEnd"
-            onChange={handleChange}
-          />
-          <div className="input-group-append">
-            <button className="btn btn-outline-secondary" type="button">
-              Button
-            </button>
-          </div>
-        </div>
-      </div>
-      <Divider />
-      <ItemsCards data={data} />
-    </div>
+  let data = state.data;
+  let category = state.category;
+
+  return (
+    <React.Fragment>
+      {/* categoryChoose={this.props.location.state.searchValue} */}
+      <Container style={{ marginTop: "10px" }}>
+        <React.Fragment>
           <Header
             style={{
               margin: 10,
               fontFamily: "monospace",
-              fontSize: 32,
+              fontSize: 30,
               marginTop: "30px",
               marginBottom: "10px",
             }}
           >
-            {category}
+            Categories
           </Header>
+            {data.map((c) => (<></>))}
           <Divider />
-        </Container>
-        {/* <Container>
-          <ItemsCards data={getData} />
-        </Container> */}
-  
-        <CategoryFilter />
-      </React.Fragment>
-    );
-  }
+          <ItemsCards data={data} />
+        </React.Fragment>
+
+        <Divider />
+      </Container>
+
+      <CategoryFilter />
+    </React.Fragment>
+  );
+}
 
 export default TestFilter;
 // export default connect(null, mapDispatchToProps)(TestFilter);
