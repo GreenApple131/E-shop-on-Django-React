@@ -26,8 +26,8 @@ export const orderItemUpdateQuantityURL = `${endpoint}/order-item/update-quantit
 // Filters and ordering
 export const productFilterAndOrderURL = (category, price_min, price_max, other_marks, ordering) => 
 `${endpoint}/?
-${category === undefined ? category = '' : '&category='+category}
-${price_min === undefined ? price_min = '' : 'price_min='+price_min}
+${'&category='+category}
+${price_min === undefined ? price_min = '' : '&price_min='+price_min}
 ${price_max === undefined ? price_max = '' : '&price_max='+price_max}
 ${other_marks === undefined ? other_marks = '' : '&other_marks='+other_marks}
 ${ordering === undefined ? ordering = '' : '&ordering='+ordering}
