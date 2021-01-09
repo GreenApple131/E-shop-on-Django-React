@@ -79,7 +79,7 @@ function ElementsCard(props) {
                 )}
                 {!props.discount_price && (
                   <Header
-                    color="black"
+                    // color="black"
                     floated="left"
                     size="medium"
                     style={{ marginTop: "7px" }}
@@ -182,7 +182,7 @@ export class ItemsCards extends React.Component {
                           )}
                           {!item.discount_price && (
                             <Header
-                              color="black"
+                              // color="black"
                               floated="left"
                               size="medium"
                               style={{ marginTop: "7px" }}

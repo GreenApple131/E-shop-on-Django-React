@@ -198,7 +198,11 @@ function SearchResult(props) {
     <Breadcrumb>
       <Breadcrumb.Section>
         <Link to="/">
-          <Icon link color="black" name="home" />{" "}
+          <Icon 
+            link 
+            // color="black" 
+            name="home" 
+          />{" "}
         </Link>
       </Breadcrumb.Section>
       <Breadcrumb.Divider icon="right chevron" />
@@ -277,7 +281,7 @@ function SearchResult(props) {
                           )}
                           {!item.discount_price && (
                             <Header
-                              color="black"
+                              // color="black"
                               floated="left"
                               size="medium"
                               style={{ marginTop: "7px" }}

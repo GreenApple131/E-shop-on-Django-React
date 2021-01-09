@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import axios from "axios";
@@ -24,6 +24,15 @@ import { productDetailURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 
+import "./common/index.scss";
+import "./common/index.css";
+
+import "react-image-gallery/styles/scss/image-gallery.scss";
+// import "react-image-gallery/styles/css/image-gallery.css";
+import ImageGallery from "react-image-gallery";
+import Details from "./ItemDetails/Details";
+import DetailsTabs from "./ItemDetails/DetailsTabs";
+
 class ProductDetail extends Component {
   state = {
     loading: false,
@@ -31,10 +40,13 @@ class ProductDetail extends Component {
     formVisible: false,
     data: [],
     formData: {},
+    images: [],
+    imagesForGallery: [],
   };
 
   componentDidMount() {
     this.handleFetchItem();
+    window.scrollTo(0, 0); // start from top page
   }
 
   handleToggleForm = () => {
@@ -62,7 +74,26 @@ class ProductDetail extends Component {
       .get(productDetailURL(params.productSlug))
       .then((res) => {
         console.log(res.data);
-        this.setState({ data: res.data, loading: false });
+        var mainImages = [];
+        mainImages.push({
+          original: res.data.image,
+          thumbnail: res.data.image,
+        });
+        var imagesForDetailsGallery = [];
+        imagesForDetailsGallery.push({
+          src: res.data.image,
+          thumbnail: res.data.image,
+          thumbnailWidth: 320,
+          caption: res.data.title,
+          tags: [{value: "Jacket", title: "Jacket"}, {value: "Man", title: "Man"}],
+        });
+
+        this.setState({
+          data: res.data,
+          loading: false,
+          images: mainImages,
+          imagesForGallery: imagesForDetailsGallery,
+        });
       })
       .catch((err) => {
         this.setState({ error: err, loading: false });
@@ -107,14 +138,21 @@ class ProductDetail extends Component {
   };
 
   render() {
-    const { data, error, loading, formData, value } = this.state;
+    const {
+      data,
+      error,
+      loading,
+      value,
+      images,
+      imagesForGallery,
+    } = this.state;
     const item = data;
 
     const BreadcrumbSection = () => (
       <Breadcrumb>
         <Breadcrumb.Section>
           <Link to="/">
-            <Icon link color="black" name="home" />{" "}
+            <Icon link color="" name="home" />{" "}
           </Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />
@@ -128,9 +166,14 @@ class ProductDetail extends Component {
       </Breadcrumb>
     );
 
+    // Images for carousel and thumbnail need to be formated like this
+    // const imagesdef = [{ original: "https://picsum.photos/id/1018/1000/600/",
+    //                      thumbnail: "https://picsum.photos/id/1018/250/150/", }];
+
     return (
-      <Container style={{ marginTop: "10px" }}>
+      <section style={{ marginTop: "10px", marginBottom: "200px" }}>
         <BreadcrumbSection />
+        <Divider />
         {error && ( // if error then do smth after &&
           <Message
             error
@@ -147,155 +190,42 @@ class ProductDetail extends Component {
             <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
           </Segment>
         )}
-        <Grid
-          columns={2}
-          divided
-          style={{ marginTop: "5px", marginBottom: "10px" }}
-        >
-          <Grid.Row>
-            <Grid.Column>
-              <Card fluid>
-                <Card.Content>
-                  <Header textAlign="center" as="h1">
-                    {item.title}
-                  </Header>
-                  <Image src={item.image} wrapped ui={true} />
-                  <Card.Meta>
-                    <React.Fragment>
-                      {item.category}
-                      {item.discount_price && ( // always show, not just when there is a discount
-                        <Label
-                          color={
-                            item.label === "primary"
-                              ? "blue"
-                              : item.label === "secondary"
-                              ? "green"
-                              : "olive"
-                          }
-                        >
-                          {item.label}
-                        </Label>
-                      )}
-                    </React.Fragment>
-                  </Card.Meta>
-                  <br />
-                  <Card.Description>
-                    <Header as="b" textAlign="center">
-                      Select Size:
-                    </Header>
-                    <br />
-                    <br />
-                    {item.size && ( // shows availiable sizes
-                      <Form onSubmit={() => this.handleAddToCart(item.slug)}>
-                        <Form.Group required inline>
-                          {item.size.map((s) => {
-                            return (
-                              <Form.Field
-                                key={s.id}
-                                control={Radio}
-                                label={s.size}
-                                name={s.name}
-                                value={s.id}
-                                checked={value === s.id}
-                                onChange={this.handleChange}
-                              />
-                            );
-                          })}
-                        </Form.Group>
-                        <Divider />
-                        <React.Fragment>
-                          {item.discount_price && (
-                            <Button color="black" floated="left">
-                              <small>
-                                <strike>${item.price}</strike>
-                              </small>{" "}
-                              ${item.discount_price}
-                            </Button>
-                          )}
-                          {!item.discount_price && (
-                            <Label
-                              basic
-                              color="black"
-                              floated="left"
-                              size="big"
-                            >
-                              ${item.price}
-                            </Label>
-                          )}
-                          <Button
-                            animated="vertical"
-                            color="black"
-                            floated="right"
-                            type="submit"
-                          >
-                            <Button.Content hidden>
-                              <Icon name="cart plus" />
-                            </Button.Content>
-                            <Button.Content type="submit" visible>
-                              Add to cart
-                            </Button.Content>
-                          </Button>
-                        </React.Fragment>
-                      </Form>
-                    )}
-                  </Card.Description>
-                </Card.Content>
-                <Divider />
-              </Card>
-            </Grid.Column>
-            <Grid.Column>
-              <Header as="h2">Description</Header>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris
-                pulvinar auctor urna vitae tincidunt. Nam ut vestibulum dolor,
-                sit amet lobortis orci. Curabitur sollicitudin nisl sed feugiat
-                vulputate. Vivamus eu vehicula leo, eleifend porta nunc. Sed nec
-                turpis sit amet purus tincidunt bibendum vel vel ligula. Nulla
-                consequat eu neque ac consequat. In tristique condimentum erat.
-                Duis eu sapien viverra, finibus ex sed, egestas libero.
-              </p>
-              <p>
-                Nullam lorem nisi, fringilla ac rhoncus viverra, accumsan eget
-                tellus. Praesent elementum purus eget est molestie hendrerit.
-                Aenean ac scelerisque nibh. Donec lobortis eros in ante
-                condimentum euismod et eu metus. Proin consectetur id odio ut
-                blandit. Cras vestibulum sagittis sapien non lobortis. Fusce
-                rutrum nulla est, vel scelerisque purus bibendum vel. Vestibulum
-                a odio finibus, tempor massa id, accumsan libero. Ut venenatis
-                vel lorem ut fermentum. Aenean aliquam dolor pellentesque,
-                pretium magna at, luctus velit. Pellentesque id consequat justo.
-                Sed nec ligula in libero ultricies bibendum quis sit amet
-                libero.
-              </p>
-              {/* {data.variations &&
-                data.variations.map((v) => {
-                  return (
-                    <React.Fragment key={v.id}>
-                      <Header as="h3">{v.name}</Header>
-                      <Item.Group divided>
-                        {v.item_variations.map((iv) => {
-                          return (
-                            <Item key={iv.id}>
-                              {iv.attachment && (
-                                <Item.Image
-                                  size="tiny"
-                                  src={`${localhost}${iv.attachment}`}
-                                />
-                              )}
-                              <Item.Content verticalAlign="middle">
-                                {iv.value}
-                              </Item.Content>
-                            </Item>
-                          );
-                        })}
-                      </Item.Group>
-                    </React.Fragment>
-                  );
-                })} */}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Container>
+        <div className="collection-wrapper">
+          <div className="row">
+            <div className="col-lg-6 col-sm-10 col-xs-12">
+              {images !== undefined && (
+                <ImageGallery
+                  items={images}
+                  showFullscreenButton={false}
+                  showPlayButton={false}
+                  showNav={false}
+                  thumbnailPosition="left"
+                  showIndex={true}
+                />
+              )}
+            </div>
+            <div className="col-lg-4">
+              <div className="product-right product-description-box">
+                <h2 style={{ fontWeight: "bold" }}> {item.title} </h2>
+
+                <Details
+                  item={item}
+                  value={value}
+                  handleChange={this.handleChange}
+                  handleAddToCart={this.handleAddToCart}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style={{marginLeft: '15px'}}>
+          <div className="row">
+            <div className="col-sm-12 col-lg-12">
+              <DetailsTabs item={item} images={imagesForGallery} />
+            </div>
+          </div>
+        </div>
+      </section>
     );
   }
 }

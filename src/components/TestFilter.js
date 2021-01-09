@@ -33,37 +33,19 @@ import {
   productListURL,
   productFilterAndOrderURL,
   productListCategoryURL,
+  categories,
+  orderingOptions,
 } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 import { ItemsCards } from "./ElementsCard";
 
+import StickyBox from "react-sticky-box";
+
 // import "./elements/filters.scss";
 import "./elements/filter.css";
+import "./common/index.css"
 
-
-const orderingOptions = [
-  {
-    key: 'price',
-    text: 'increasing price',
-    value: 'price'
-  },
-  {
-    key: '-price',
-    text: 'decreasing price',
-    value: '-price'
-  },
-  {
-    key: 'title',
-    text: 'increasing name',
-    value: 'title'
-  },
-  {
-    key: '-title',
-    text: 'decreasing name',
-    value: '-title'
-  },
-]
 
 function TestFilter(props) {
   const [filterstate, setFilterstate] = useState({
@@ -109,7 +91,12 @@ function TestFilter(props) {
 
     console.log("state", state);
     console.log("filterstate", filterstate);
-  }, [filterstate.multipleCategories, state.price_min, state.price_max, state.ordering]);
+  }, [
+    filterstate.multipleCategories,
+    state.price_min,
+    state.price_max,
+    state.ordering,
+  ]);
 
   useEffect(() => {
     let fixedFilter = "";
@@ -164,210 +151,163 @@ function TestFilter(props) {
     }
   };
 
-  const onOrderingChange = (e, {value}) => {
+  const onOrderingChange = (e, { value }) => {
     setState((prevState) => ({
       ...prevState,
-      ordering: value
-    }))
-  }
+      ordering: value,
+    }));
+  };
 
   return (
-    <React.Fragment>
+    <div>
       {/* categoryChoose={this.props.location.state.searchValue} */}
-      <Container style={{ marginTop: "10px" }}>
-        <React.Fragment>
-          <Grid columns={3} divided>
-            <Grid.Row>
-              <Grid.Column>
-                <Header
-                  style={{
-                    margin: 10,
-                    fontFamily: "monospace",
-                    fontSize: 30,
-                    marginTop: "30px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Categories
-                </Header>
-                <div>
+      <section className="section-b-space" style={{marginTop: '-50px'}}>
+        <div className="collection-wrapper">
+          <div className='container-fluid' style={{maxWidth: '90%'}}>
+            <div className="row">
+              <div className="col-sm-2 collection-filter">
+                <StickyBox offsetTop={60} offsetBottom={20} style={{maxWidth: '200px'}}>
                   <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      name="Jackets"
-                      value="Jackets"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Jackets
+                    <Header
+                      style={{
+                        margin: 10,
+                        fontFamily: "monospace",
+                        fontSize: 30,
+                        marginTop: "30px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      Categories
+                    </Header>
+                    <div>
+                      {categories.map((c, i) => (
+                        <div key={i}>
+                        <input
+                          className="mr-2"
+                          checked={filterstate.filters.index}
+                          name={c}
+                          value={c}
+                          onChange={onCheckboxChange}
+                          type="checkbox"
+                        />{" "}
+                        {c}
+                      </div>
+                      ))}
+                    </div>
+
+                      <Header
+                        style={{
+                          margin: 10,
+                          fontFamily: "monospace",
+                          fontSize: 30,
+                          marginTop: "30px",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        Price
+                      </Header>
+                      <React.Fragment>
+                        <Slider
+                          className="slider-main-div"
+                          min={0}
+                          max={200}
+                          onChange={onPriceChange}
+                          range={true}
+                          defaultValue={[state.price_min, state.price_max]}
+                          value={[state.price_min, state.price_max]}
+                        />
+                        <div className="range-input-number-main">
+                          <InputNumber
+                            className="min-input-main"
+                            min={0}
+                            max={200}
+                            value={state.price_min}
+                            onChange={onPriceChangeMin}
+                          />
+                          <span className="range-span"> to </span>
+                          <InputNumber
+                            className="min-input-main"
+                            min={0}
+                            max={200}
+                            value={state.price_max}
+                            onChange={onPriceChangeMax}
+                            onStep="false"
+                          />
+                        </div>
+                      </React.Fragment>
+                      <Header
+                        style={{
+                          margin: 10,
+                          fontFamily: "monospace",
+                          fontSize: 30,
+                          marginTop: "30px",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        Ordering
+                      </Header>
+                      <React.Fragment>
+                        <Select
+                          options={orderingOptions}
+                          defaultValue={orderingOptions[0].text}
+                          value={state.ordering}
+                          onChange={onOrderingChange}
+                        />
+                      </React.Fragment>
+
+                      <Divider />
+                      {/* <ItemsCards data={data} /> */}
                   </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Coats"
-                      name="Coats"
-                      value="Coats"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Coats
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Hats"
-                      name="Hats"
-                      value="Hats"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Hats
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Outwear"
-                      name="Outwear"
-                      value="Outwear"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Outwear
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Shirts"
-                      name="Shirts"
-                      value="Shirts"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Shirts
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Shoes"
-                      name="Shoes"
-                      value="Shoes"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Shoes
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="T-shirts"
-                      name="T-shirts"
-                      value="T-shirts"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    T-shirts
-                  </div>
-                  <div>
-                    <input
-                      className="mr-2"
-                      checked={filterstate.filters.index}
-                      label="Sport-wear"
-                      name="Sport-wear"
-                      value="Sport-wear"
-                      onChange={onCheckboxChange}
-                      type="checkbox"
-                    />{" "}
-                    Sport-wear
+                </StickyBox>
+                {/*side-bar banner end here*/}
+              </div>
+
+              <div className="collection-content col">
+                <div className="page-main-content ">
+                  <div className="">
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <div className="top-banner-wrapper">
+                          <a href="#">
+                            <img
+                              src={`${process.env.PUBLIC_URL}/assets/images/mega-menu/2.jpg`}
+                              className="img-fluid"
+                              alt=""
+                            />
+                          </a>
+                          <div className="top-banner-content small-section">
+                            <h4>fashion</h4>
+                            <h5>
+                              Lorem Ipsum is simply dummy text of the printing
+                              and typesetting industry.
+                            </h5>
+                          </div>
+                        </div>
+                        <div className="collection-product-wrapper">
+                          
+
+                          {/*Products Listing Component*/}
+                          {/* <ProductListing
+                              colSize={this.state.layoutColumns}
+                            /> */}
+                          <ItemsCards data={state.data} />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </Grid.Column>
-              <Grid.Column>
-                <Header
-                  style={{
-                    margin: 10,
-                    fontFamily: "monospace",
-                    fontSize: 30,
-                    marginTop: "30px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Price
-                </Header>
-                <React.Fragment>
-                  <Slider
-                    className="slider-main-div"
-                    min={0}
-                    max={200}
-                    onChange={onPriceChange}
-                    range={true}
-                    defaultValue={[state.price_min, state.price_max]}
-                    value={[state.price_min, state.price_max]}
-                  />
-                  <div className="range-input-number-main">
-                    <InputNumber
-                      className="min-input-main"
-                      min={0}
-                      max={200}
-                      value={state.price_min}
-                      onChange={onPriceChangeMin}
-                    />
-                    <span className="range-span"> to </span>
-                    <InputNumber
-                      className="min-input-main"
-                      min={0}
-                      max={200}
-                      value={state.price_max}
-                      onChange={onPriceChangeMax}
-                      onStep="false"
-                    />
-                  </div>
-                </React.Fragment>
-              </Grid.Column>
-              <Grid.Column>
-                <Header
-                  style={{
-                    margin: 10,
-                    fontFamily: "monospace",
-                    fontSize: 30,
-                    marginTop: "30px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Ordering
-                </Header>
-                <React.Fragment>
-                  <Select
-                    options={orderingOptions}
-                    defaultValue={orderingOptions[0].text}
-                    value={state.ordering}
-                    onChange={onOrderingChange}
-                  />
-                </React.Fragment>
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <Divider />
-          {/* <ItemsCards data={data} /> */}
-        </React.Fragment>
-
-        <Divider />
-        <ItemsCards data={state.data} />
-      </Container>
+      <Divider />
 
       <CategoryFilter />
-    </React.Fragment>
+    </div>
   );
 }
-
-
 
 export default TestFilter;
 // export default connect(null, mapDispatchToProps)(TestFilter);
