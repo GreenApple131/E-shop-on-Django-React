@@ -15,6 +15,8 @@ import {
   List,
   Menu,
   Segment,
+  Sidebar,
+  Visibility,
 } from "semantic-ui-react";
 import { productListURL, orderSummaryURL, mediaURL } from "../constants";
 import { logout, logoutReload } from "../store/actions/auth";
@@ -22,11 +24,18 @@ import { fetchCart } from "../store/actions/cart";
 import { SearchBar } from "./SearchResult";
 import Categories from "./Categories";
 
+import "./common/index.css";
+
 // ResponsiveNavBar
+import { createMedia } from "@artsy/fresnel";
+import PropTypes from "prop-types";
+import ResponsiveHeader from "dna-responsive-nav";
 import "semantic-ui-css/semantic.min.css";
+import "dna-responsive-nav/dist/dna-rn.css";
 import "./elements/navbar.css";
 // ResponsiveNavBar
 const Logo = mediaURL + "logo.png";
+
 
 class CustomLayout extends Component {
   state = {
@@ -95,9 +104,9 @@ class CustomLayout extends Component {
 
     return (
       <React.Fragment>
-        <div className="App" style={{minHeight: '650px'}}>
+        <div className="App" style={{ minHeight: "650px" }}>
           <Grid padded className="tablet computer only">
-            <Menu borderless fluid fixed="top" size="huge" inverted >
+            <Menu borderless fluid fixed="top" size="huge" inverted>
               <Container>
                 <Menu.Item onClick={() => this.props.history.push("/")}>
                   <Image
@@ -114,7 +123,7 @@ class CustomLayout extends Component {
 
                 <Dropdown item simple text="Categories" className="link item">
                   <Dropdown.Menu>
-                  <Dropdown.Item
+                    <Dropdown.Item
                       onClick={() => this.props.history.push("/testfilter")}
                     >
                       Test Filter
@@ -174,7 +183,7 @@ class CustomLayout extends Component {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <SearchBar />
+                  <SearchBar searchBarClassName='search_bar_desktop'/>
                 <Menu.Menu position="right">
                   {authenticated ? (
                     <React.Fragment>
@@ -315,7 +324,7 @@ class CustomLayout extends Component {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <SearchBar />
+                <SearchBar searchBarClassName='search_bar_mobile'/>
                 {authenticated ? (
                   <React.Fragment>
                     <Menu.Item

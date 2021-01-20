@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+// import { Formik, Field, Form } from "formik";
 import {
   Button,
   Card,
@@ -12,6 +13,9 @@ import {
   Label,
   Radio,
 } from "semantic-ui-react";
+
+import "../common/index.css";
+
 class Details extends Component {
   render() {
     const { item, value, handleAddToCart, handleChange } = this.props;
@@ -74,21 +78,24 @@ class Details extends Component {
             <br />
             {item.size && ( // shows availiable sizes
               <Form onSubmit={() => handleAddToCart(item.slug)}>
-                <Form.Group required inline>
-                    {item.size.map((s) => {
-                      return (
-                        <Form.Field
-                          key={s.id}
-                          control={Radio}
-                          label={s.size}
-                          name={s.name}
-                          value={s.id}
-                          checked={value === s.id}
-                          onChange={handleChange}
-                        />
-                      );
-                    })}
-                </Form.Group>
+                <div className="form_radio_btn">
+                  <Form.Group required inline>
+                      {item.size.map((s) => {
+                        return (
+                          <Form.Field 
+                            key={s.id}
+                            control={Radio}
+                            name={s.name}
+                            label={s.size}
+                            value={s.id}
+                            checked={value === s.id}
+                            onChange={handleChange}
+                          />
+                        );
+                      })}
+                  </Form.Group>
+                </div>
+                <Divider style={{marginTop: "-16px"}} />
                 <React.Fragment>
                   <Button animated="vertical" color="black" type="submit">
                     <Button.Content hidden>
@@ -109,7 +116,44 @@ class Details extends Component {
                 </React.Fragment>
               </Form>
             )}
+            {/* {item.size && ( // shows availiable sizes
+              <Formik
+              initialValues={{ name: "", value: "" }}
+              onSubmit={(values) => handleAddToCart(item.slug)}
+              >
+              <Form>
+              <div role="group" aria-labelledby="my-radio-group">
+              <div class="form_radio_btn">
+              {item.size.map((s) => {
+                return (
+                  <label key={s.id}>
+                            <Field
+                            id={s.id}
+                            type="radio"
+                            label={s.size}
+                            name={s.name}
+                            value={s.id}
+                            onChange={handleChange}
+                            />
+                            {s.size}
+                            </label>
+                            );
+                          })}
+                          </div>
+                          
+                          <div>Picked: {values.picked}</div> 
+                          </div>
+                          
+                          <button type="submit">Submit</button>
+                          </Form>
+                          </Formik>
+                        )} */}
           </div>
+        </div>
+
+        <div className="border-product">
+          <h6 className="product-title">short description</h6>
+          <div className="product-icon">{this.props.item.description}</div>
         </div>
 
         <div className="border-product">

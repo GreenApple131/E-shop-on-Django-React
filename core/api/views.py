@@ -9,7 +9,6 @@ from django.views.generic.base import TemplateView
 from django.http.response import JsonResponse
 from django.http import Http404
 
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView

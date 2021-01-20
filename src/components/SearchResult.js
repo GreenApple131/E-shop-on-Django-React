@@ -24,6 +24,8 @@ import {
 import { productListURL, productSearchURL } from "../constants";
 import FilterResults from "react-filter-search";
 
+import "./common/index.css"
+
 const initialState = {
   data: [],
   isLoading: false,
@@ -133,7 +135,6 @@ export function SearchBar(props) {
   }, []);
 
   return (
-    <Grid.Column width="7">
       <Search
         loading={loading}
         input={{ fluid: true }}
@@ -149,11 +150,10 @@ export function SearchBar(props) {
           name: "search",
           circular: true,
           link: true,
-          marginTop: "4px",
-          minWidth: "500px",
+          marginTop: "3px",
         }}
+        className={props.searchBarClassName}
       />
-    </Grid.Column>
   );
 }
 
