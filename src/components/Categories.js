@@ -19,7 +19,7 @@ import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListCategoryURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+import ItemsCards from "./ItemsCards";
 
 
 export class Categories extends Component {

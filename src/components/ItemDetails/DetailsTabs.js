@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 // import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.scss";
 import { Link } from "react-router-dom";
-import { Tab } from "semantic-ui-react";
+import { Button, Tab } from "semantic-ui-react";
 
 import Gallery from "react-grid-gallery";
 
@@ -120,9 +120,9 @@ class DetailsTabs extends Component {
                   />
                 </div>
                 <div className="col-md-12">
-                  <button className="btn btn-solid" type="submit">
+                  <Button color="black" type="submit">
                     Submit Your Review
-                  </button>
+                  </Button>
                 </div>
               </div>
             </form>

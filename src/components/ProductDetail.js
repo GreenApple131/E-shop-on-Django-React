@@ -28,7 +28,6 @@ import "./common/index.scss";
 import "./common/index.css";
 
 import "react-image-gallery/styles/scss/image-gallery.scss";
-// import "react-image-gallery/styles/css/image-gallery.css";
 import ImageGallery from "react-image-gallery";
 import Details from "./ItemDetails/Details";
 import DetailsTabs from "./ItemDetails/DetailsTabs";

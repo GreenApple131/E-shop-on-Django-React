@@ -415,4 +415,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(DesktopContainer);
+export default connect(null, mapDispatchToProps)(ResponsiveContainer);

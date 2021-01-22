@@ -35,7 +35,7 @@ import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListURL, productListLimPriceURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+import ItemsCards from "./ItemsCards";
 
 // import "./elements/filters.scss";
 import "./elements/filter.css";

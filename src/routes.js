@@ -42,14 +42,6 @@ const BaseRouter = () => (
     <Route path="/allitems" component={AllItems} />
     <Route path="/testfilter" component={TestFilter} />
 
-    {/* <Route path="/jackets" component={CategorieChoose} />
-    <Route path="/coats" component={CategorieChoose} />
-    <Route path="/shirts" component={CategorieChoose} />
-    <Route path="/t-shirts" component={CategorieChoose} />
-    <Route path="/sport" component={CategorieChoose} />
-    <Route path="/shoes" component={CategorieChoose} />
-    <Route path="/hats" component={CategorieChoose} />
-    <Route path="/outwear" component={CategorieChoose} /> */}
 
     {/* <Route component={PageNotFound} /> */}
   </Hoc>

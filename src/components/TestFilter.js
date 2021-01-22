@@ -38,7 +38,7 @@ import {
 } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
-import { ItemsCards } from "./ElementsCard";
+import ItemsCards from "./ItemsCards";
 
 import StickyBox from "react-sticky-box";
 

@@ -116,38 +116,6 @@ class Details extends Component {
                 </React.Fragment>
               </Form>
             )}
-            {/* {item.size && ( // shows availiable sizes
-              <Formik
-              initialValues={{ name: "", value: "" }}
-              onSubmit={(values) => handleAddToCart(item.slug)}
-              >
-              <Form>
-              <div role="group" aria-labelledby="my-radio-group">
-              <div class="form_radio_btn">
-              {item.size.map((s) => {
-                return (
-                  <label key={s.id}>
-                            <Field
-                            id={s.id}
-                            type="radio"
-                            label={s.size}
-                            name={s.name}
-                            value={s.id}
-                            onChange={handleChange}
-                            />
-                            {s.size}
-                            </label>
-                            );
-                          })}
-                          </div>
-                          
-                          <div>Picked: {values.picked}</div> 
-                          </div>
-                          
-                          <button type="submit">Submit</button>
-                          </Form>
-                          </Formik>
-                        )} */}
           </div>
         </div>
 
