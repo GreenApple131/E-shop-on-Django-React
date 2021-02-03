@@ -29,6 +29,7 @@ python3 manage.py runserver
 ### Run Frontend part
 ```bash
 npm start
+
 ```
 
 ### Additional
