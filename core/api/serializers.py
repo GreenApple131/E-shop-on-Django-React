@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from core.models import Item, Order, OrderItem, Coupon, Sizes, OtherMarks, Variation, ItemVariation
+from core.models import Todo, Item, Order, OrderItem, Coupon, Sizes, OtherMarks, Variation, ItemVariation
+
+class TodoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = '__all__'
 
 
 class StringSerializer(serializers.StringRelatedField):

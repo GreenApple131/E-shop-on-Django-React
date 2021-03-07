@@ -11,20 +11,66 @@ from django.http import Http404
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework import filters
+from rest_framework import filters, viewsets
 from django_filters import rest_framework as django_filters
 from django_filters.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from core.models import Item, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
-from .serializers import ItemSerializer, OrderSerializer, ItemDetailSerializer
+from core.models import Item, Todo, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
+from .serializers import TodoSerializer, ItemSerializer, OrderSerializer, ItemDetailSerializer
 
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+
+@api_view(['GET'])
+def itemList(request):
+	tasks = Todo.objects.all().order_by('-id')
+	serializer = TodoSerializer(tasks, many=True)
+	return Response(serializer.data)
+
+@api_view(['GET'])
+def itemDetail(request, pk):
+	tasks = Todo.objects.get(id=pk)
+	serializer = TodoSerializer(tasks, many=False)
+	return Response(serializer.data)
+
+
+@api_view(['POST'])
+def itemCreate(request):
+	serializer = TodoSerializer(data=request.data)
+
+	if serializer.is_valid():
+		serializer.save()
+
+	return Response(serializer.data)
+
+@api_view(['POST'])
+def itemUpdate(request, pk):
+	task = Todo.objects.get(id=pk)
+	serializer = TodoSerializer(instance=task, data=request.data)
+
+	if serializer.is_valid():
+		serializer.save()
+
+	return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def itemDelete(request, pk):
+	task = Todo.objects.get(id=pk)
+	task.delete()
+
+	return Response('Item succsesfully delete!')
+
+
+
 
 
 class MultiValueCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
@@ -52,10 +98,16 @@ class ItemFilter(django_filters.FilterSet):
         fields = ['title', 'price', 'category', 'other_marks']
 
 
+class TodoView(viewsets.ModelViewSet):
+    serializer_class = TodoSerializer
+    queryset = Todo.objects.all()
+    permission_classes = (AllowAny, )
+
+
 class ItemListView(ListAPIView):
+    serializer_class = ItemSerializer
     queryset = Item.objects.all()
     permission_classes = (AllowAny, )
-    serializer_class = ItemSerializer
     filterset_class = ItemFilter
     
     # ordering = ['username']

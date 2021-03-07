@@ -1,43 +1,18 @@
-import React, { useEffect, useState, Component } from "react";
-import faker from "faker";
-import _ from "lodash";
-import { connect, Provider } from "react-redux";
-// import { render } from "react-dom";
-// import { combineReducers, createStore } from "redux";
-// import _ from "lodash";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState} from "react";
 import axios from "axios";
 import {
-  Breadcrumb,
-  Button,
-  Checkbox,
-  Container,
   Divider,
-  Grid,
   Header,
-  Input,
-  Label,
-  Loader,
-  Rail,
-  Ref,
-  Segment,
   Select,
-  Sticky,
-  Table,
 } from "semantic-ui-react";
 import { Slider, InputNumber } from "antd";
 import "antd/dist/antd.css";
 import CategoryFilter from "./CategoryFilter";
 import {
-  addToCartURL,
-  productListURL,
   productFilterAndOrderURL,
-  productListCategoryURL,
   categories,
   orderingOptions,
 } from "../constants";
-import { authAxios } from "../utils";
-import { fetchCart } from "../store/actions/cart";
 import ItemsCards from "./ItemsCards";
 
 import StickyBox from "react-sticky-box";

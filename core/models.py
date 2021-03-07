@@ -39,6 +39,15 @@ LABEL_CHOICES = (
 )
 
 
+class Todo(models.Model):
+	title = models.CharField(max_length=120)
+	description = models.TextField()
+	# completed = models.BooleanField(default=False)
+
+	def _str_(self):
+		return self.title
+
+
 class UserProfile(models.Model):
 	user = models.OneToOneField(
 		settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -78,7 +87,7 @@ class Item(models.Model):
 	    max_length=5000, default="This is a test description. Write something about this product.")
 	size = models.ManyToManyField(Sizes)
 	other_marks = models.ManyToManyField(OtherMarks)
-	image = models.ImageField()
+	image = models.ImageField(default='Item does not found')
 
 	def __str__(self):
 		return self.title

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import (Item, OrderItem, Order, Payment, BillingAddress,
+from .models import (Todo, Item, OrderItem, Order, Payment, BillingAddress,
                      Coupon, UserProfile, Refund, Variation, ItemVariation, Sizes, OtherMarks
                      )
 
@@ -83,6 +83,7 @@ class ItemAdmin(admin.ModelAdmin):
 	prepopulated_fields={'slug': ('title',)}
 	# используя prepopulated_fields, мы настраиваем поле slug так, чтобы его значение формировалось автоматически из поля name
 
+admin.site.register(Todo)
 
 admin.site.register(ItemVariation, ItemVariationAdmin)
 admin.site.register(Variation, VariationAdmin)

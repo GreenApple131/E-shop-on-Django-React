@@ -151,7 +151,7 @@ class ProductDetail extends Component {
       <Breadcrumb>
         <Breadcrumb.Section>
           <Link to="/">
-            <Icon link color="" name="home" />{" "}
+            <Icon link color="black" name="home" />{" "}
           </Link>
         </Breadcrumb.Section>
         <Breadcrumb.Divider icon="right chevron" />

@@ -16,16 +16,6 @@ import { PageNotFound } from "./components/PageNotFound";
 import AllItems from "./components/AllItems";
 import TestFilter from "./components/TestFilter";
 
-const categories = [
-  "jackets",
-  "coats",
-  "shirts",
-  "t-shirts",
-  "sport",
-  "shoes",
-  "hats",
-  "outwear",
-];
 
 const BaseRouter = () => (
   <Hoc>
