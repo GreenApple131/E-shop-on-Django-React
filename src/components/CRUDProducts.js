@@ -1,11 +1,24 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { get } from "react-hook-form";
+// import {
+//   Button,
+//   Divider,
+//   Grid,
+//   Header,
+//   Icon,
+//   Image,
+//   Menu,
+//   // Modal,
+// } from "semantic-ui-react";
 
-export default class FetchProducts extends Component {
+import { ModalAdd, ModalEdit, ModalDelete } from "./ItemCRUD/ItemCRUD.js";
+
+export default class CRUDProducts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       todoList: [],
+      openModal: false,
       activeItem: {
         id: null,
         title: "",
@@ -19,9 +32,13 @@ export default class FetchProducts extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getCookie = this.getCookie.bind(this);
 
+    this.addNew = this.addNew.bind(this);
     this.startEdit = this.startEdit.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
   }
+
+  toggleModal = () =>
+    this.setState((state) => ({ openModal: !state.openModal }));
 
   getCookie(name) {
     var cookieValue = null;
@@ -121,6 +138,16 @@ export default class FetchProducts extends Component {
       });
   }
 
+  addNew() {
+    this.setState({
+      activeItem: {
+        id: null,
+        title: "",
+        description: "",
+      },
+    });
+  }
+
   startEdit(task) {
     this.setState({
       activeItem: task,
@@ -143,74 +170,44 @@ export default class FetchProducts extends Component {
   }
 
   render() {
+    const { openModal } = this.state;
     var tasks = this.state.todoList;
-    var self = this;
+
     return (
-      <div className="container">
-        <div id="task-container">
-          <div id="form-wrapper">
-            <form onSubmit={this.handleSubmit} id="form">
-              <div className="flex-wrapper">
-                <div style={{ flex: 6 }}>
-                  <input
-                    onChange={this.handleChangeTitle}
-                    className="form-control"
-                    id="title"
-                    value={this.state.activeItem.title}
-                    type="text"
-                    name="title"
-                    placeholder="Add task.."
-                  />
-                  <input
-                    onChange={this.handleChangeDescription}
-                    className="form-control"
-                    id="description"
-                    value={this.state.activeItem.description}
-                    type="text"
-                    name="description"
-                    placeholder="Add description.."
+      <div>
+        <div>
+          <ModalAdd
+            addNew={this.addNew}
+            handleSubmit={this.handleSubmit}
+            activeItem={this.state.activeItem}
+            handleChangeTitle={this.handleChangeTitle}
+            handleChangeDescription={this.handleChangeDescription}
+          />
+        </div>
+
+        <div id="list-wrapper">
+          {tasks.map((task, index) => {
+            return (
+              <div key={index} className="task-wrapper flex-wrapper">
+                <span>{task.title}</span>
+
+                <div style={{ flex: 1 }}>
+                  <ModalEdit
+                    task={task}
+                    startEdit={this.startEdit}
+                    handleSubmit={this.handleSubmit}
+                    activeItem={this.state.activeItem}
+                    handleChangeTitle={this.handleChangeTitle}
+                    handleChangeDescription={this.handleChangeDescription}
                   />
                 </div>
 
                 <div style={{ flex: 1 }}>
-                  <input
-                    id="submit"
-                    className="btn btn-warning"
-                    type="submit"
-                    name="Add"
-                  />
+                  <ModalDelete task={task} deleteItem={this.deleteItem} />
                 </div>
               </div>
-            </form>
-          </div>
-
-          <div id="list-wrapper">
-            {tasks.map(function (task, index) {
-              return (
-                <div key={index} className="task-wrapper flex-wrapper">
-                  <span>{task.title}</span>
-
-                  <div style={{ flex: 1 }}>
-                    <button
-                      onClick={() => self.startEdit(task)}
-                      className="btn btn-sm btn-outline-info"
-                    >
-                      Edit
-                    </button>
-                  </div>
-
-                  <div style={{ flex: 1 }}>
-                    <button
-                      onClick={() => self.deleteItem(task)}
-                      className="btn btn-sm btn-outline-dark delete"
-                    >
-                      -
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+            );
+          })}
         </div>
       </div>
     );

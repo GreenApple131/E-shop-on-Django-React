@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Divider, Grid, Header, Menu } from "semantic-ui-react";
+import { Button, Divider, Grid, Header, Menu } from "semantic-ui-react";
 
-import FetchProducts from './FetchProducts.js';
+import CRUDProducts from './CRUDProducts.js';
 
 import "./elements/example.css";
 
@@ -10,11 +10,6 @@ export default class Profile extends Component {
     super(props);
     this.state = {
       activeItem: "billing address",
-      createNewItem: {
-        title: '',
-        description: '',
-        // slug: '',
-      }
     }
     
   }
@@ -62,10 +57,7 @@ export default class Profile extends Component {
                 <p>marked items</p>
               ) : activeItem === "add new product" ? (
                 <React.Fragment>
-                  <Header>
-                    Add new item
-                  </Header>
-                <FetchProducts />
+                <CRUDProducts />
                 </React.Fragment>
               ) : (
                 <p>shipping history</p>
@@ -80,14 +72,3 @@ export default class Profile extends Component {
 
 
 
-class AddNewItem extends Component {
-
-  render() {
-
-    return(
-      <>
-      Item
-      </>
-    );
-  }
-}
