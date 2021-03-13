@@ -21,7 +21,7 @@ class CouponSerializer(serializers.ModelSerializer):
             'amount'
         )
 
-
+#################################################################
 class ItemSizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sizes
@@ -30,6 +30,41 @@ class ItemSizeSerializer(serializers.ModelSerializer):
             'name',
             'size'
         )
+
+class ItemOtherMarksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OtherMarks
+        fields = (
+            'id',
+            'mark'
+        )
+
+
+class ItemsSerializer(serializers.ModelSerializer):
+    # category = serializers.SerializerMethodField()
+    # label = serializers.SerializerMethodField()
+    # size = serializers.SerializerMethodField()
+    # size = ItemSizeSerializer(many=True)
+    # other_marks = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Item
+        fields = (
+            'id',
+            'title',
+            'price',
+            'discount_price',
+            'category',
+            'category_type',
+            'size',
+            'other_marks',
+            'label',
+            'slug',
+            'description',
+            'image'
+        )
+
+##################################################################
 
 
 class ItemMarkSerializer(serializers.ModelSerializer):
@@ -42,9 +77,10 @@ class ItemMarkSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
-    category = serializers.SerializerMethodField()
+    # category = serializers.SerializerMethodField()
     label = serializers.SerializerMethodField()
-    size = serializers.SerializerMethodField()
+    # size = serializers.SerializerMethodField()
+    size = ItemSizeSerializer(many=True)
     other_marks = serializers.SerializerMethodField()
 
     class Meta:
@@ -64,14 +100,21 @@ class ItemSerializer(serializers.ModelSerializer):
             'image'
         )
 
-    def get_category(self, obj):
-        return obj.get_category_display()
+    def create(self, validated_data):
+        size_data = validated_data.pop('size')
+        item = Item.objects.update_or_create(**validated_data)
+        for size_data in size_data:
+            Sizes.objects.create(item=item, **size_data)
+        return item
+
+    # def get_category(self, obj):
+    #     return obj.get_category_display()
 
     def get_label(self, obj):
         return obj.get_label_display()
 
-    def get_size(self, obj):
-        return ItemSizeSerializer(obj.size, many=True).data
+    # def get_size(self, obj):
+    #     return ItemSizeSerializer(obj.size, many=True).data
     
     def get_other_marks(self, obj):
         return ItemMarkSerializer(obj.other_marks, many=True).data

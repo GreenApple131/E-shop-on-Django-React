@@ -1,6 +1,13 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.urls import path, include
+from rest_framework import routers
 from core.api import views
+
+
+router = routers.DefaultRouter()
+router.register('items', views.ItemsView)
+router.register('sizes', views.SizeView)
+router.register('other-mark', views.OtherMarkView)
 
 
 urlpatterns = [
@@ -16,12 +23,22 @@ urlpatterns = [
          views.OrderItemDeleteView.as_view(), name='order-item-delete'),
     path('order-item/update-quantity/',
          views.OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
+    
+    
+    
+    path('product-list/', views.productList, name="product-list"),
+    path('product-detail/<pk>/', views.productDetail, name="product-detail"),
+    path('product-create/', views.productCreate, name="product-create"),
+    path('product-update/<pk>/', views.productUpdate, name="product-update"),
+    path('product-delete/<pk>/', views.productDelete, name="product-delete"),
+
+
 
     path('item-list/', views.itemList, name="item-list"),
-	path('item-detail/<str:pk>/', views.itemDetail, name="item-detail"),
-	path('item-create/', views.itemCreate, name="item-create"),
-	path('item-update/<str:pk>/', views.itemUpdate, name="item-update"),
-	path('item-delete/<str:pk>/', views.itemDelete, name="item-delete"),
-
-
+    path('item-detail/<str:pk>/', views.itemDetail, name="item-detail"),
+    path('item-create/', views.itemCreate, name="item-create"),
+    path('item-update/<str:pk>/', views.itemUpdate, name="item-update"),
+    path('item-delete/<str:pk>/', views.itemDelete, name="item-delete"),
+    path('i/', include(router.urls))
+    
 ]

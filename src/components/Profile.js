@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Button, Divider, Grid, Header, Menu } from "semantic-ui-react";
 
-import CRUDProducts from './CRUDProducts.js';
+import CRUDTodo from './ItemCRUD/CRUDTodo.js';
+import CRUDProduct from './ItemCRUD/CRUDProduct.js';
 
 import "./elements/example.css";
 
@@ -42,6 +43,11 @@ export default class Profile extends Component {
                   onClick={this.handleItemClick}
                 />
                 <Menu.Item
+                  name="add new todo"
+                  active={activeItem === "add new todo"}
+                  onClick={this.handleItemClick}
+                />
+                <Menu.Item
                   name="add new product"
                   active={activeItem === "add new product"}
                   onClick={this.handleItemClick}
@@ -55,13 +61,17 @@ export default class Profile extends Component {
                 <p>billing address form</p>
               ) : activeItem === "marked items" ? (
                 <p>marked items</p>
+              ) : activeItem === "shipping history" ? (
+                <p>shipping history</p>
+              ) : activeItem === "add new todo" ? (
+                <React.Fragment>
+                <CRUDTodo />
+                </React.Fragment>
               ) : activeItem === "add new product" ? (
                 <React.Fragment>
-                <CRUDProducts />
+                <CRUDProduct />
                 </React.Fragment>
-              ) : (
-                <p>shipping history</p>
-              )}
+              ) : null}
             </Grid.Column>
           </Grid.Row>
         </Grid>

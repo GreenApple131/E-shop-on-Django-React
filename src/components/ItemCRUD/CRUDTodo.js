@@ -11,9 +11,9 @@ import { get } from "react-hook-form";
 //   // Modal,
 // } from "semantic-ui-react";
 
-import { ModalAdd, ModalEdit, ModalDelete } from "./ItemCRUD/ItemCRUD.js";
+import { ModalAdd, ModalEdit, ModalDelete } from "./TodoModals.js";
 
-export default class CRUDProducts extends Component {
+export default class CRUDTodo extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +22,7 @@ export default class CRUDProducts extends Component {
       activeItem: {
         id: null,
         title: "",
-        description: "",
+        // description: "",
       },
       editing: false,
     };
@@ -129,7 +129,7 @@ export default class CRUDProducts extends Component {
           activeItem: {
             id: null,
             title: "",
-            description: "",
+            // description: "",
           },
         });
       })
@@ -143,7 +143,7 @@ export default class CRUDProducts extends Component {
       activeItem: {
         id: null,
         title: "",
-        description: "",
+        // description: "",
       },
     });
   }

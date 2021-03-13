@@ -87,7 +87,7 @@ class Item(models.Model):
 	    max_length=5000, default="This is a test description. Write something about this product.")
 	size = models.ManyToManyField(Sizes)
 	other_marks = models.ManyToManyField(OtherMarks)
-	image = models.ImageField(default='Item does not found')
+	image = models.ImageField(default='NoImageFound.png', blank=True, null=True)
 
 	def __str__(self):
 		return self.title

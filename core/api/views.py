@@ -11,21 +11,89 @@ from django.http import Http404
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from rest_framework import filters, viewsets
 from django_filters import rest_framework as django_filters
 from django_filters.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from core.models import Item, Todo, OrderItem, Order, BillingAddress, Sizes, Payment, Coupon, Refund
+from core.models import Item, Todo, OrderItem, Order, BillingAddress, Sizes, OtherMarks, Payment, Coupon, Refund
 from .serializers import TodoSerializer, ItemSerializer, OrderSerializer, ItemDetailSerializer
-
+################################
+from .serializers import ItemsSerializer, ItemOtherMarksSerializer, ItemSizeSerializer
+############################
 
 import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class SizeView(viewsets.ModelViewSet):
+	queryset = Sizes.objects.all()
+	serializer_class = ItemSizeSerializer
+class OtherMarkView(viewsets.ModelViewSet):
+	queryset = OtherMarks.objects.all()
+	serializer_class = ItemOtherMarksSerializer
+class ItemsView(viewsets.ModelViewSet):
+	parser_classes = (MultiPartParser, FormParser)
+	queryset = Item.objects.all()
+	serializer_class = ItemsSerializer
+
+
+
+@api_view(['GET'])
+def productList(request):
+	products = Item.objects.all().order_by('-id')
+	serializer = ItemSerializer(products, many=True)
+	return Response(serializer.data)
+
+
+@api_view(['GET'])
+def productDetail(request, pk):
+	products = Item.objects.get(id=pk)
+	serializer = ItemSerializer(products, many=False)
+	return Response(serializer.data)
+
+
+@api_view(['POST'])
+def productCreate(request):
+	serializer = ItemSerializer(data=request.data)
+
+	if serializer.is_valid():
+		serializer.create(validated_data=request.data)
+		# serializer.save()
+		return Response(serializer.data, status=HTTP_201_CREATED)
+	serializer.errors
+
+	return Response(serializer.data)
+
+@api_view(['POST'])
+def productUpdate(request, pk):
+	product = Item.objects.get(id=pk)
+	serializer = ItemSerializer(instance=product, data=request.data)
+
+	if serializer.is_valid():
+		serializer.save()
+
+	return Response(serializer.data)
+
+
+@api_view(['DELETE'])
+def productDelete(request, pk):
+	product = Item.objects.get(id=pk)
+	product.delete()
+
+	return Response('Item succsesfully delete!')
+
+
+
+
+
+
+
 
 
 
@@ -97,6 +165,10 @@ class ItemFilter(django_filters.FilterSet):
         model = Item
         fields = ['title', 'price', 'category', 'other_marks']
 
+class ItemView(viewsets.ModelViewSet):
+    serializer_class = ItemSerializer
+    queryset = Item.objects.all()
+    permission_classes = (AllowAny, )
 
 class TodoView(viewsets.ModelViewSet):
     serializer_class = TodoSerializer

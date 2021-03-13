@@ -49,7 +49,7 @@ export const ModalAdd = (props) => {
               name="title"
               placeholder="Add task.."
             />
-            <input
+            {/* <input
               onChange={handleChangeDescription}
               className="form-control"
               id="description"
@@ -57,7 +57,7 @@ export const ModalAdd = (props) => {
               type="text"
               name="description"
               placeholder="Add description.."
-            />
+            /> */}
           </ModalBody>
           <ModalFooter>
             <Button color="primary" id="submit" type="submit" onClick={toggle}>
