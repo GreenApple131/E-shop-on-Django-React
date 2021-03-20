@@ -42,6 +42,7 @@ LABEL_CHOICES = (
 class Todo(models.Model):
 	title = models.CharField(max_length=120)
 	description = models.TextField(null=True, blank=True)
+	image = models.ImageField(default='NoImageFound.png', blank=True, null=True)
 	# completed = models.BooleanField(default=False)
 
 	def _str_(self):

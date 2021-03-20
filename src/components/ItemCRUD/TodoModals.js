@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import {
   Button,
+  Col,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
   Form,
   FormGroup,
+  FormText,
   Input,
   Label,
 } from "reactstrap";
@@ -19,6 +21,7 @@ export const ModalAdd = (props) => {
     activeItem,
     handleChangeTitle,
     handleChangeDescription,
+    handleChangeImage
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -34,10 +37,10 @@ export const ModalAdd = (props) => {
           toggle();
         }}
       >
-        Add new Product
+        Add new Todo
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
-        <ModalHeader toggle={toggle}>Modal title</ModalHeader>
+        <ModalHeader toggle={toggle}>Add todo</ModalHeader>
         <form onSubmit={handleSubmit} id="form">
           <ModalBody>
             <input
@@ -47,9 +50,9 @@ export const ModalAdd = (props) => {
               value={activeItem.title}
               type="text"
               name="title"
-              placeholder="Add task.."
+              placeholder="Add title.."
             />
-            {/* <input
+            <input
               onChange={handleChangeDescription}
               className="form-control"
               id="description"
@@ -57,7 +60,25 @@ export const ModalAdd = (props) => {
               type="text"
               name="description"
               placeholder="Add description.."
-            /> */}
+            />
+            <FormGroup row>
+              <Label for="exampleFile" sm={2}>
+                File
+              </Label>
+              <Col sm={10}>
+                <Input
+                  id="image"
+                  type="file"
+                  name="file"
+                  onChange={handleChangeImage}
+                  className="form-control"
+                  placeholder="image"
+                />
+                <FormText color="muted">
+                  Please, choose image every time You change item
+                </FormText>
+              </Col>
+            </FormGroup>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" id="submit" type="submit" onClick={toggle}>
@@ -82,6 +103,7 @@ export const ModalEdit = (props) => {
     activeItem,
     handleChangeTitle,
     handleChangeDescription,
+    handleChangeImage
   } = props;
 
   const [modal, setModal] = useState(false);
@@ -123,6 +145,25 @@ export const ModalEdit = (props) => {
               name="description"
               placeholder="Add description.."
             />
+            <FormGroup row>
+              <Label for="exampleFile" sm={2}>
+                File
+              </Label>
+              <Col sm={10}>
+                <Input
+                  id="image"
+                  type="file"
+                  name="file"
+                  onChange={handleChangeImage}
+                  className="form-control"
+                  placeholder="image"
+                />
+                <FormText color="muted">
+                  This is some placeholder block-level help text for the above
+                  input. It's a bit lighter and easily wraps to a new line.
+                </FormText>
+              </Col>
+            </FormGroup>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" id="submit" type="submit" onClick={toggle}>

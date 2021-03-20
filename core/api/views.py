@@ -43,6 +43,30 @@ class ItemsView(viewsets.ModelViewSet):
 	serializer_class = ItemsSerializer
 
 
+class TodoUpdate(viewsets.ModelViewSet):
+	parser_classes = (MultiPartParser, FormParser)
+	queryset = Todo.objects.all()
+	serializer_class = TodoSerializer
+
+
+# class PostView(APIView):
+#     parser_classes = (MultiPartParser, FormParser)
+
+#     def get(self, request, *args, **kwargs):
+#         items = Item.objects.all()
+#         serializer = ItemsSerializer(items, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request, *args, **kwargs):
+#         items_serializer = ItemsSerializer(data=request.data)
+#         if items_serializer.is_valid():
+#             items_serializer.save()
+#             return Response(items_serializer.data, status=HTTP_201_CREATED)
+#         else:
+#             print('error', items_serializer.errors)
+#             return Response(items_serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['GET'])
 def productList(request):
@@ -98,29 +122,37 @@ def productDelete(request, pk):
 
 
 @api_view(['GET'])
-def itemList(request):
+def todoList(request):
 	tasks = Todo.objects.all().order_by('-id')
 	serializer = TodoSerializer(tasks, many=True)
 	return Response(serializer.data)
 
 @api_view(['GET'])
-def itemDetail(request, pk):
+def todoDetail(request, pk):
 	tasks = Todo.objects.get(id=pk)
 	serializer = TodoSerializer(tasks, many=False)
 	return Response(serializer.data)
 
+class TodoCreate(APIView):
+	parser_classes = (MultiPartParser, FormParser)
+
+	def get(self, request, *args, **kwargs):
+		posts = Todo.objects.all()
+		serializer = TodoSerializer(posts, many=True)
+		return Response(serializer.data)
+
+	def post(self, request, *args, **kwargs):
+		posts_serializer = TodoSerializer(data=request.data)
+		if posts_serializer.is_valid():
+			posts_serializer.save()
+			return Response(posts_serializer.data, status=HTTP_201_CREATED)
+		else:
+			print('error', posts_serializer.errors)
+			return Response(posts_serializer.errors, status=HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
-def itemCreate(request):
-	serializer = TodoSerializer(data=request.data)
-
-	if serializer.is_valid():
-		serializer.save()
-
-	return Response(serializer.data)
-
-@api_view(['POST'])
-def itemUpdate(request, pk):
+def todoUpdate(request, pk):
 	task = Todo.objects.get(id=pk)
 	serializer = TodoSerializer(instance=task, data=request.data)
 
@@ -131,7 +163,7 @@ def itemUpdate(request, pk):
 
 
 @api_view(['DELETE'])
-def itemDelete(request, pk):
+def todoDelete(request, pk):
 	task = Todo.objects.get(id=pk)
 	task.delete()
 

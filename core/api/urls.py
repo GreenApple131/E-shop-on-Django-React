@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register('items', views.ItemsView)
 router.register('sizes', views.SizeView)
 router.register('other-mark', views.OtherMarkView)
+router.register('todo', views.TodoUpdate)
 
 
 urlpatterns = [
@@ -23,9 +24,9 @@ urlpatterns = [
          views.OrderItemDeleteView.as_view(), name='order-item-delete'),
     path('order-item/update-quantity/',
          views.OrderQuantityUpdateView.as_view(), name='order-item-update-quantity'),
-    
-    
-    
+
+
+
     path('product-list/', views.productList, name="product-list"),
     path('product-detail/<pk>/', views.productDetail, name="product-detail"),
     path('product-create/', views.productCreate, name="product-create"),
@@ -34,11 +35,15 @@ urlpatterns = [
 
 
 
-    path('item-list/', views.itemList, name="item-list"),
-    path('item-detail/<str:pk>/', views.itemDetail, name="item-detail"),
-    path('item-create/', views.itemCreate, name="item-create"),
-    path('item-update/<str:pk>/', views.itemUpdate, name="item-update"),
-    path('item-delete/<str:pk>/', views.itemDelete, name="item-delete"),
-    path('i/', include(router.urls))
-    
+#     path('todos/', views.TodoCreate.as_view(), name='todos'),
+#     path('todo-list/', views.todoList, name="item-list"),
+    #     path('todo-detail/<str:pk>/', views.todoDetail, name="item-detail"),
+    #     path('todo-create/', views.TodoCreate, name="item-create"),
+#     path('todo-update/<pk>/', views.todoUpdate, name="item-update"),
+#     path('todo-delete/<pk>/', views.todoDelete, name="item-delete"),
+
+
+    path('i/', include(router.urls)),
+#     path('prods/', views.PostView.as_view(), name='post_list'),
+
 ]

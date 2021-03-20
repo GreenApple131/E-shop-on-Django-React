@@ -1,4 +1,5 @@
 import React, { Component, useState } from "react";
+import axios from "axios";
 import { get } from "react-hook-form";
 // import {
 //   Button,
@@ -22,13 +23,15 @@ export default class CRUDTodo extends Component {
       activeItem: {
         id: null,
         title: "",
-        // description: "",
+        description: "",
+        image: null,
       },
       editing: false,
     };
     this.fetchTasks = this.fetchTasks.bind(this);
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleChangeDescription = this.handleChangeDescription.bind(this);
+    this.handleChangeImage = this.handleChangeImage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.getCookie = this.getCookie.bind(this);
 
@@ -63,11 +66,11 @@ export default class CRUDTodo extends Component {
   fetchTasks() {
     console.log("Fetching...");
 
-    fetch("http://127.0.0.1:8000/api/item-list/")
+    fetch("http://127.0.0.1:8000/api/i/todo/")
       .then((response) => response.json())
       .then((data) =>
         this.setState({
-          todoList: data,
+          todoList: data.results,
         })
       );
   }
@@ -99,6 +102,19 @@ export default class CRUDTodo extends Component {
       },
     });
   }
+  handleChangeImage(e) {
+    var name = e.target.name;
+    var value = e.target.files[0];
+    console.log("Name:", name);
+    console.log("Value:", value);
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        image: value,
+      },
+    });
+  }
 
   handleSubmit(e) {
     e.preventDefault();
@@ -106,36 +122,79 @@ export default class CRUDTodo extends Component {
 
     var csrftoken = this.getCookie("csrftoken");
 
-    var url = "http://127.0.0.1:8000/api/item-create/";
+    var url = "http://127.0.0.1:8000/api/i/todo/";
+
+    let form_data = new FormData();
+    form_data.append("title", this.state.activeItem.title);
+    form_data.append("description", this.state.activeItem.description);
+    form_data.append("image", this.state.activeItem.image);
 
     if (this.state.editing == true) {
-      url = `http://127.0.0.1:8000/api/item-update/${this.state.activeItem.id}/`;
       this.setState({
         editing: false,
       });
-    }
-
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        "X-CSRFToken": csrftoken,
-      },
-      body: JSON.stringify(this.state.activeItem),
-    })
-      .then((response) => {
-        this.fetchTasks();
-        this.setState({
-          activeItem: {
-            id: null,
-            title: "",
-            // description: "",
+      url = `http://127.0.0.1:8000/api/i/todo/${this.state.activeItem.id}/`;
+      axios
+        .put(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+            "X-CSRFToken": csrftoken,
           },
-        });
-      })
-      .catch(function (error) {
-        console.log("ERROR:", error);
-      });
+        })
+        .then((res) => {
+          this.fetchTasks();
+          this.setState({
+            activeItem: {
+              id: null,
+              title: "",
+              description: "",
+              image: null,
+            },
+          });
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .post(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+            "X-CSRFToken": csrftoken,
+          },
+        })
+        .then((res) => {
+          this.fetchTasks();
+          this.setState({
+            activeItem: {
+              id: null,
+              title: "",
+              description: "",
+              image: null,
+            },
+          });
+        })
+        .catch((err) => console.log(err));
+    }
+    // fetch(url, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-type": "application/json",
+    //     "X-CSRFToken": csrftoken,
+    //   },
+    //   body: JSON.stringify(this.state.activeItem),
+    // })
+    //   .then((response) => {
+    //     this.fetchTasks();
+    //     this.setState({
+    //       activeItem: {
+    //         id: null,
+    //         title: "",
+    //         description: "",
+    //       },
+    //     });
+    //   })
+    //   .catch(function (error) {
+    //     console.log("ERROR:", error);
+    //   });
   }
 
   addNew() {
@@ -158,7 +217,7 @@ export default class CRUDTodo extends Component {
   deleteItem(task) {
     var csrftoken = this.getCookie("csrftoken");
 
-    fetch(`http://127.0.0.1:8000/api/item-delete/${task.id}/`, {
+    fetch(`http://127.0.0.1:8000/api/i/todo/${task.id}/`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -182,6 +241,7 @@ export default class CRUDTodo extends Component {
             activeItem={this.state.activeItem}
             handleChangeTitle={this.handleChangeTitle}
             handleChangeDescription={this.handleChangeDescription}
+            handleChangeImage={this.handleChangeImage}
           />
         </div>
 
@@ -199,6 +259,7 @@ export default class CRUDTodo extends Component {
                     activeItem={this.state.activeItem}
                     handleChangeTitle={this.handleChangeTitle}
                     handleChangeDescription={this.handleChangeDescription}
+                    handleChangeImage={this.handleChangeImage}
                   />
                 </div>
 

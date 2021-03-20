@@ -1,15 +1,5 @@
 import React, { Component, useState } from "react";
-import {
-  Button,
-  Divider,
-  Grid,
-  Header,
-  Icon,
-  Image,
-  Menu,
-  Modal,
-} from "semantic-ui-react";
-
+import axios from "axios";
 import { ModalAdd, ModalEdit, ModalDelete } from "./ProductModals.js";
 
 export default class CRUDProduct extends Component {
@@ -27,9 +17,9 @@ export default class CRUDProduct extends Component {
         label: "",
         slug: "",
         description: "",
-        size: [],
-        other_marks: [],
-        image: "",
+        size: [], // id: size --- | 13: XS | 14: S | 15: M | 16: L | 17: XL | 18: XXL
+        other_marks: [], // id: mark --- | 6: ordinary | 7: special | 8: new | 9: discount | 10: popular
+        image: null,
       },
       editing: false,
     };
@@ -80,11 +70,11 @@ export default class CRUDProduct extends Component {
   fetchTasks() {
     console.log("Fetching...");
 
-    fetch("http://127.0.0.1:8000/api/product-list/")
+    fetch("http://127.0.0.1:8000/api/i/items/")
       .then((response) => response.json())
       .then((data) =>
         this.setState({
-          todoList: data,
+          todoList: data.results,
         })
       );
   }
@@ -99,11 +89,6 @@ export default class CRUDProduct extends Component {
       activeItem: {
         ...this.state.activeItem,
         title: value,
-        size: {
-          "id": 16,
-          "name": "size",
-          "size": "L"
-        }
       },
     });
   }
@@ -194,42 +179,35 @@ export default class CRUDProduct extends Component {
 
   handleChangeSize(e) {
     var name = "size";
-    var value = {
-      id: 16,
-      name: "size",
-      size: "L",
-    };
+    var value = e.target.value;
     console.log("Name:", name);
     console.log("Value:", value);
 
     this.setState({
       activeItem: {
         ...this.state.activeItem,
-        size: value,
+        size: ["16"],
       },
     });
   }
 
   handleChangeOtherMarks(e) {
     var name = "other_marks";
-    var value = {
-      id: 8,
-      mark: "new",
-    };
+    var value = e.target.value;
     console.log("Name:", name);
     console.log("Value:", value);
 
     this.setState({
       activeItem: {
         ...this.state.activeItem,
-        other_marks: value,
+        other_marks: ["8", "10"],
       },
     });
   }
 
   handleChangeImage(e) {
     var name = e.target.name;
-    var value = e.target.value;
+    var value = e.target.files[0];
     console.log("Name:", name);
     console.log("Value:", value);
 
@@ -247,36 +225,80 @@ export default class CRUDProduct extends Component {
 
     var csrftoken = this.getCookie("csrftoken");
 
-    var url = "http://127.0.0.1:8000/api/product-create/";
+    var url = "http://127.0.0.1:8000/api/i/items/";
+
+    let form_data = new FormData();
+    form_data.append("title", this.state.activeItem.title);
+    form_data.append("price", this.state.activeItem.price);
+    form_data.append("category", this.state.activeItem.category);
+    form_data.append("category_type", this.state.activeItem.category_type);
+    form_data.append("label", this.state.activeItem.label);
+    form_data.append("slug", this.state.activeItem.slug);
+    form_data.append("description", this.state.activeItem.description);
+    // form_data.append("size", this.state.activeItem.size);
+    // form_data.append("other_marks", this.state.activeItem.other_marks);
+    // form_data.append("image", this.state.activeItem.image);
 
     if (this.state.editing == true) {
-      url = `http://127.0.0.1:8000/api/product-update/${this.state.activeItem.id}/`;
       this.setState({
         editing: false,
       });
-    }
-
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        "X-CSRFToken": csrftoken,
-      },
-      body: JSON.stringify(this.state.activeItem),
-    })
-      .then((response) => {
-        this.fetchTasks();
-        this.setState({
-          activeItem: {
-            id: null,
-            title: "",
-            description: "",
+      url = `http://127.0.0.1:8000/api/i/items/${this.state.activeItem.id}/`;
+      axios
+        .put(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+            "X-CSRFToken": csrftoken,
           },
-        });
+        })
+        .then((res) => {
+          this.fetchTasks();
+          this.setState({
+            activeItem: {
+              id: null,
+              title: "",
+              price: 0.0,
+              category: "",
+              category_type: "",
+              label: "",
+              slug: "",
+              description: "",
+              size: [], // id: size --- | 13: XS | 14: S | 15: M | 16: L | 17: XL | 18: XXL
+              other_marks: [], // id: mark --- | 6: ordinary | 7: special | 8: new | 9: discount | 10: popular
+              image: null,
+            },
+          });
+        })
+        .catch((err) => console.log(err));
+    } else {
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "multipart/form-data",
+          "X-CSRFToken": csrftoken,
+        },
+        body: form_data,
       })
-      .catch(function (error) {
-        console.log("ERROR:", error);
-      });
+        .then((response) => {
+          this.fetchTasks();
+          this.setState({
+            activeItem: {
+              id: null,
+              title: "",
+              price: 0.0,
+              category: "",
+              category_type: "",
+              label: "",
+              slug: "",
+              description: "",
+              size: [], // id: size --- | 13: XS | 14: S | 15: M | 16: L | 17: XL | 18: XXL
+              other_marks: [], // id: mark --- | 6: ordinary | 7: special | 8: new | 9: discount | 10: popular
+              image: null,
+            },
+          });
+        })
+        .catch((err) => console.log(err));
+    }
   }
 
   addNew() {
@@ -299,7 +321,7 @@ export default class CRUDProduct extends Component {
   deleteItem(task) {
     var csrftoken = this.getCookie("csrftoken");
 
-    fetch(`http://127.0.0.1:8000/api/product-delete/${task.id}/`, {
+    fetch(`http://127.0.0.1:8000/api/i/items/${task.id}/`, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -328,8 +350,8 @@ export default class CRUDProduct extends Component {
             handleChangeLabel={this.handleChangeLabel}
             handleChangeSlug={this.handleChangeSlug}
             handleChangeDescription={this.handleChangeDescription}
-            // handleChangeSize={this.handleChangeSize}
-            // handleChangeOtherMarks={this.handleChangeOtherMarks}
+            handleChangeSize={this.handleChangeSize}
+            handleChangeOtherMarks={this.handleChangeOtherMarks}
             handleChangeImage={this.handleChangeImage}
           />
         </div>
@@ -353,8 +375,8 @@ export default class CRUDProduct extends Component {
                     handleChangeLabel={this.handleChangeLabel}
                     handleChangeSlug={this.handleChangeSlug}
                     handleChangeDescription={this.handleChangeDescription}
-                    // handleChangeSize={this.handleChangeSize}
-                    // handleChangeOtherMarks={this.handleChangeOtherMarks}
+                    handleChangeSize={this.handleChangeSize}
+                    handleChangeOtherMarks={this.handleChangeOtherMarks}
                     handleChangeImage={this.handleChangeImage}
                   />
                 </div>
