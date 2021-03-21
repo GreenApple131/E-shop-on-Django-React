@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Button,
   Col,
+  Row,
   Modal,
   ModalHeader,
   ModalBody,
@@ -19,13 +20,8 @@ export const ModalAdd = (props) => {
     addNew,
     handleSubmit,
     activeItem,
+    handleChangeSmth,
     handleChangeTitle,
-    handleChangePrice,
-    handleChangeCategory,
-    handleChangeCategoryType,
-    handleChangeLabel,
-    handleChangeSlug,
-    handleChangeDescription,
     handleChangeSize,
     handleChangeOtherMarks,
     handleChangeImage,
@@ -60,59 +56,78 @@ export const ModalAdd = (props) => {
               name="title"
               placeholder="Add Title..."
             />
-            <Label for="new-product">Price</Label>
-            <input
-              onChange={handleChangePrice}
-              className="form-control"
-              id="price"
-              value={activeItem.price}
-              type="digit"
-              name="price"
-              placeholder="0.00"
-            />
+            <Row>
+              <Col md={6}>
+                <Label for="new-product">Price</Label>
+                <input
+                  onChange={handleChangeSmth}
+                  className="form-control"
+                  id="price"
+                  value={activeItem.price}
+                  type="digit"
+                  name="price"
+                  placeholder="0.00"
+                />
+              </Col>
+              <Col md={6}>
+                <Label for="new-product">Discount price</Label>
+                <input
+                  onChange={handleChangeSmth}
+                  className="form-control"
+                  id="discount_price"
+                  value={activeItem.discount_price}
+                  type="digit"
+                  name="discount_price"
+                  placeholder="0.00"
+                />
+              </Col>
+            </Row>
             <Label for="new-product">Category</Label>
-            <input
-              onChange={handleChangeCategory}
+            <Input
+              type="select"
               className="form-control"
-              id="category"
-              value={activeItem.category}
-              type="text"
               name="category"
-              placeholder="Category"
-            />
+              id="category"
+              onChange={handleChangeSmth}
+            >
+              <option>Coats</option>
+              <option>Jackets</option>
+              <option>Shirts</option>
+              <option>T-shirts</option>
+              <option>Sport wear</option>
+              <option>Shoes</option>
+              <option>Hats</option>
+              <option>Outwear</option>
+            </Input>
             <Label for="new-product">Category type</Label>
-            <input
-              onChange={handleChangeCategoryType}
+            <Input
+              type="select"
               className="form-control"
-              id="category_type"
-              value={activeItem.category_type}
-              type="text"
               name="category_type"
-              placeholder="Men/Women"
-            />
+              id="category_type"
+              onChange={handleChangeSmth}
+              defaultValue="Men"
+            >
+              <option>Men</option>
+              <option>Women</option>
+            </Input>
             <Label for="new-product">Label</Label>
-            <input
-              onChange={handleChangeLabel}
+            <Input
+              type="select"
               className="form-control"
-              id="label"
-              value={activeItem.label}
-              type="text"
               name="label"
-              placeholder="ordinary / primary / secondary / danger"
-            />
-            <Label for="new-product">Slug</Label>
-            <input
-              onChange={handleChangeSlug}
-              className="form-control"
-              id="slug"
-              value={activeItem.slug}
-              type="text"
-              name="slug"
-              placeholder="slug"
-            />
+              id="label"
+              onChange={handleChangeSmth}
+              defaultValue="O"
+            >
+              <option>O</option>
+              <option>P</option>
+              <option>S</option>
+              <option>D</option>
+            </Input>
             <Label for="new-product">Description</Label>
             <input
-              onChange={handleChangeDescription}
+              onChange={handleChangeSmth}
               className="form-control"
               id="description"
               value={activeItem.description}
@@ -141,12 +156,9 @@ export const ModalAdd = (props) => {
               placeholder="ordinary / special / new / discount / popular"
             />
             <Label for="new-product">Image</Label>
-          
+
             <FormGroup row>
-              <Label for="exampleFile" sm={2}>
-                File
-              </Label>
-              <Col sm={10}>
+              <Col sm={12}>
                 <Input
                   id="image"
                   type="file"
@@ -156,8 +168,7 @@ export const ModalAdd = (props) => {
                   placeholder="image"
                 />
                 <FormText color="muted">
-                  This is some placeholder block-level help text for the above
-                  input. It's a bit lighter and easily wraps to a new line.
+                  Please, choose the file again!!
                 </FormText>
               </Col>
             </FormGroup>
@@ -183,13 +194,8 @@ export const ModalEdit = (props) => {
     startEdit,
     handleSubmit,
     activeItem,
+    handleChangeSmth,
     handleChangeTitle,
-    handleChangePrice,
-    handleChangeCategory,
-    handleChangeCategoryType,
-    handleChangeLabel,
-    handleChangeSlug,
-    handleChangeDescription,
     handleChangeSize,
     handleChangeOtherMarks,
     handleChangeImage,
@@ -226,59 +232,78 @@ export const ModalEdit = (props) => {
               name="title"
               placeholder="Add Title..."
             />
-            <Label for="new-product">Price</Label>
-            <input
-              onChange={handleChangePrice}
-              className="form-control"
-              id="price"
-              value={activeItem.price}
-              type="digit"
-              name="price"
-              placeholder="0.00"
-            />
+            <Row>
+              <Col md={6}>
+                <Label for="new-product">Price</Label>
+                <input
+                  onChange={handleChangeSmth}
+                  className="form-control"
+                  id="price"
+                  value={activeItem.price}
+                  type="digit"
+                  name="price"
+                  placeholder="0.00"
+                />
+              </Col>
+              <Col md={6}>
+                <Label for="new-product">Discount price</Label>
+                <input
+                  onChange={handleChangeSmth}
+                  className="form-control"
+                  id="discount_price"
+                  value={activeItem.discount_price}
+                  type="digit"
+                  name="discount_price"
+                  placeholder="0.00"
+                />
+              </Col>
+            </Row>
             <Label for="new-product">Category</Label>
-            <input
-              onChange={handleChangeCategory}
+            <Input
+              type="select"
               className="form-control"
-              id="category"
-              value={activeItem.category}
-              type="text"
               name="category"
-              placeholder="Category"
-            />
+              id="category"
+              onChange={handleChangeSmth}
+            >
+              <option>Coats</option>
+              <option>Jackets</option>
+              <option>Shirts</option>
+              <option>T-shirts</option>
+              <option>Sport wear</option>
+              <option>Shoes</option>
+              <option>Hats</option>
+              <option>Outwear</option>
+            </Input>
             <Label for="new-product">Category type</Label>
-            <input
-              onChange={handleChangeCategoryType}
+            <Input
+              type="select"
               className="form-control"
-              id="category_type"
-              value={activeItem.category_type}
-              type="text"
               name="category_type"
-              placeholder="Men/Women"
-            />
+              id="category_type"
+              onChange={handleChangeSmth}
+              defaultValue="Men"
+            >
+              <option>Men</option>
+              <option>Women</option>
+            </Input>
             <Label for="new-product">Label</Label>
-            <input
-              onChange={handleChangeLabel}
+            <Input
+              type="select"
               className="form-control"
-              id="label"
-              value={activeItem.label}
-              type="text"
               name="label"
-              placeholder="ordinary / primary / secondary / danger"
-            />
-            <Label for="new-product">Slug</Label>
-            <input
-              onChange={handleChangeSlug}
-              className="form-control"
-              id="slug"
-              value={activeItem.slug}
-              type="text"
-              name="slug"
-              placeholder="slug"
-            />
+              id="label"
+              onChange={handleChangeSmth}
+              defaultValue="O"
+            >
+              <option>O</option>
+              <option>P</option>
+              <option>S</option>
+              <option>D</option>
+            </Input>
             <Label for="new-product">Description</Label>
             <input
-              onChange={handleChangeDescription}
+              onChange={handleChangeSmth}
               className="form-control"
               id="description"
               value={activeItem.description}
@@ -308,10 +333,7 @@ export const ModalEdit = (props) => {
             />
             <Label for="new-product">Image</Label>
             <FormGroup row>
-              <Label for="exampleFile" sm={2}>
-                File
-              </Label>
-              <Col sm={10}>
+              <Col sm={12}>
                 <Input
                   id="image"
                   type="file"
@@ -321,8 +343,7 @@ export const ModalEdit = (props) => {
                   placeholder="image"
                 />
                 <FormText color="muted">
-                  This is some placeholder block-level help text for the above
-                  input. It's a bit lighter and easily wraps to a new line.
+                  Please, choose the file again!!
                 </FormText>
               </Col>
             </FormGroup>
@@ -356,7 +377,7 @@ export const ModalDelete = (props) => {
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>
         <ModalHeader toggle={toggle}>
-          Are You really want to delete this item?
+          Are You really want to delete {task.title}?
         </ModalHeader>
         <ModalFooter>
           <Button

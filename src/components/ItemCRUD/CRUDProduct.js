@@ -1,5 +1,13 @@
 import React, { Component, useState } from "react";
 import axios from "axios";
+import {
+  Button,
+  Divider,
+  Grid,
+  Header,
+  Menu,
+  Segment,
+} from "semantic-ui-react";
 import { ModalAdd, ModalEdit, ModalDelete } from "./ProductModals.js";
 
 export default class CRUDProduct extends Component {
@@ -11,7 +19,8 @@ export default class CRUDProduct extends Component {
       activeItem: {
         id: null,
         title: "",
-        price: 0.0,
+        price: null,
+        discount_price: null,
         category: "",
         category_type: "",
         label: "",
@@ -25,13 +34,8 @@ export default class CRUDProduct extends Component {
     };
     this.fetchTasks = this.fetchTasks.bind(this);
 
+    this.handleChangeSmth = this.handleChangeSmth.bind(this);
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
-    this.handleChangePrice = this.handleChangePrice.bind(this);
-    this.handleChangeCategory = this.handleChangeCategory.bind(this);
-    this.handleChangeCategoryType = this.handleChangeCategoryType.bind(this);
-    this.handleChangeLabel = this.handleChangeLabel.bind(this);
-    this.handleChangeSlug = this.handleChangeSlug.bind(this);
-    this.handleChangeDescription = this.handleChangeDescription.bind(this);
     this.handleChangeSize = this.handleChangeSize.bind(this);
     this.handleChangeOtherMarks = this.handleChangeOtherMarks.bind(this);
     this.handleChangeImage = this.handleChangeImage.bind(this);
@@ -46,6 +50,10 @@ export default class CRUDProduct extends Component {
 
   toggleModal = () =>
     this.setState((state) => ({ openModal: !state.openModal }));
+
+  componentWillMount() {
+    this.fetchTasks();
+  }
 
   getCookie(name) {
     var cookieValue = null;
@@ -63,8 +71,68 @@ export default class CRUDProduct extends Component {
     return cookieValue;
   }
 
-  componentWillMount() {
-    this.fetchTasks();
+  handleChangeSmth(e) {
+    console.log("Name:", e.target.name, "| Value:", e.target.value);
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        [e.target.name]: e.target.value,
+      },
+    });
+  }
+
+  handleChangeTitle(e) {
+    // Typical usage (don't forget to compare props):
+    let slug = e.target.value
+      .toString()
+      .normalize("NFD") // split an accented letter in the base letter and the acent
+      .replace(/[\u0300-\u036f]/g, "") // remove all previously split accents
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-");
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        title: e.target.value,
+        slug: slug,
+      },
+    });
+  }
+
+  handleChangeSize(e) {
+    console.log(e.target.name, ": ", e.target.value);
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        size: [15],
+      },
+    });
+  }
+
+  handleChangeOtherMarks(e) {
+    console.log(e.target.name, ": ", e.target.value);
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        other_marks: [8],
+      },
+    });
+  }
+
+  handleChangeImage(e) {
+    console.log(e.target.name, ": ", e.target.files[0]);
+
+    this.setState({
+      activeItem: {
+        ...this.state.activeItem,
+        image: e.target.files[0],
+      },
+    });
   }
 
   fetchTasks() {
@@ -79,147 +147,6 @@ export default class CRUDProduct extends Component {
       );
   }
 
-  handleChangeTitle(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        title: value,
-      },
-    });
-  }
-
-  handleChangePrice(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        price: value,
-      },
-    });
-  }
-
-  handleChangeCategory(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        category: value,
-      },
-    });
-  }
-
-  handleChangeCategoryType(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        category_type: value,
-      },
-    });
-  }
-
-  handleChangeLabel(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        label: value,
-      },
-    });
-  }
-
-  handleChangeSlug(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        slug: value,
-      },
-    });
-  }
-
-  handleChangeDescription(e) {
-    var name = e.target.name;
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        description: value,
-      },
-    });
-  }
-
-  handleChangeSize(e) {
-    var name = "size";
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        size: [15],
-      },
-    });
-  }
-
-  handleChangeOtherMarks(e) {
-    var name = "other_marks";
-    var value = e.target.value;
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        other_marks: [7],
-        other_marks: [8]
-      },
-    });
-  }
-
-  handleChangeImage(e) {
-    var name = e.target.name;
-    var value = e.target.files[0];
-    console.log("Name:", name);
-    console.log("Value:", value);
-
-    this.setState({
-      activeItem: {
-        ...this.state.activeItem,
-        image: value,
-      },
-    });
-  }
-
   handleSubmit(e) {
     e.preventDefault();
     console.log("ITEM:", this.state.activeItem);
@@ -228,10 +155,12 @@ export default class CRUDProduct extends Component {
 
     var url = "http://127.0.0.1:8000/api/i/items/";
 
-
     let form_data = new FormData();
     form_data.append("title", this.state.activeItem.title);
     form_data.append("price", this.state.activeItem.price);
+    if (this.state.activeItem.discount_price !== null) {
+      form_data.append("discount_price", this.state.activeItem.discount_price);
+    }
     form_data.append("category", this.state.activeItem.category);
     form_data.append("category_type", this.state.activeItem.category_type);
     form_data.append("label", this.state.activeItem.label);
@@ -260,7 +189,8 @@ export default class CRUDProduct extends Component {
             activeItem: {
               id: null,
               title: "",
-              price: 0.0,
+              price: null,
+              discount_price: null,
               category: "",
               category_type: "",
               label: "",
@@ -287,7 +217,8 @@ export default class CRUDProduct extends Component {
             activeItem: {
               id: null,
               title: "",
-              price: 0.0,
+              price: null,
+              discount_price: null,
               category: "",
               category_type: "",
               label: "",
@@ -308,7 +239,16 @@ export default class CRUDProduct extends Component {
       activeItem: {
         id: null,
         title: "",
+        price: null,
+        discount_price: null,
+        category: "",
+        category_type: "Men",
+        label: "O",
+        slug: "",
         description: "",
+        size: [], // id: size --- | 13: XS | 14: S | 15: M | 16: L | 17: XL | 18: XXL
+        other_marks: [], // id: mark --- | 6: ordinary | 7: special | 8: new | 9: discount | 10: popular
+        image: null,
       },
     });
   }
@@ -346,46 +286,47 @@ export default class CRUDProduct extends Component {
             handleSubmit={this.handleSubmit}
             activeItem={this.state.activeItem}
             handleChangeTitle={this.handleChangeTitle}
-            handleChangePrice={this.handleChangePrice}
-            handleChangeCategory={this.handleChangeCategory}
-            handleChangeCategoryType={this.handleChangeCategoryType}
-            handleChangeLabel={this.handleChangeLabel}
-            handleChangeSlug={this.handleChangeSlug}
-            handleChangeDescription={this.handleChangeDescription}
+            handleChangeSmth={this.handleChangeSmth}
             handleChangeSize={this.handleChangeSize}
             handleChangeOtherMarks={this.handleChangeOtherMarks}
             handleChangeImage={this.handleChangeImage}
           />
         </div>
+        <Divider />
 
         <div id="list-wrapper">
           {tasks.map((task, index) => {
             return (
               <div key={index} className="task-wrapper flex-wrapper">
-                <span>{task.title}</span>
-
-                <div style={{ flex: 1 }}>
-                  <ModalEdit
-                    task={task}
-                    startEdit={this.startEdit}
-                    handleSubmit={this.handleSubmit}
-                    activeItem={this.state.activeItem}
-                    handleChangeTitle={this.handleChangeTitle}
-                    handleChangePrice={this.handleChangePrice}
-                    handleChangeCategory={this.handleChangeCategory}
-                    handleChangeCategoryType={this.handleChangeCategoryType}
-                    handleChangeLabel={this.handleChangeLabel}
-                    handleChangeSlug={this.handleChangeSlug}
-                    handleChangeDescription={this.handleChangeDescription}
-                    handleChangeSize={this.handleChangeSize}
-                    handleChangeOtherMarks={this.handleChangeOtherMarks}
-                    handleChangeImage={this.handleChangeImage}
-                  />
-                </div>
-
-                <div style={{ flex: 1 }}>
-                  <ModalDelete task={task} deleteItem={this.deleteItem} />
-                </div>
+                <Grid stackable columns={3}>
+                  <Grid.Row>
+                    <Grid.Column width="10">
+                      <Segment>
+                        <span>{task.title}</span>
+                      </Segment>
+                    </Grid.Column>
+                    <Grid.Column style={{width: '80px' }}>
+                      <Segment style={{width: '80px' }}>
+                        <ModalEdit
+                          task={task}
+                          startEdit={this.startEdit}
+                          handleSubmit={this.handleSubmit}
+                          activeItem={this.state.activeItem}
+                          handleChangeSmth={this.handleChangeSmth}
+                          handleChangeTitle={this.handleChangeTitle}
+                          handleChangeSize={this.handleChangeSize}
+                          handleChangeOtherMarks={this.handleChangeOtherMarks}
+                          handleChangeImage={this.handleChangeImage}
+                        />
+                      </Segment>
+                    </Grid.Column>
+                    <Grid.Column style={{width: '100px' }}>
+                      <Segment style={{width: '100px' }}>
+                        <ModalDelete task={task} deleteItem={this.deleteItem} />
+                      </Segment>
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
               </div>
             );
           })}

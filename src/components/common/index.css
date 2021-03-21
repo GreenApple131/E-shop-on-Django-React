@@ -50,3 +50,27 @@ section {
   max-width: 900px;
   min-width: 200px;
 }
+
+
+/* PROFIlE */
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 3fr;
+  padding: 0 calc(50% - 800px);
+}
+
+.side,
+.main {
+  padding: 2%;
+  border-radius: 10px
+}
+
+@media(max-width: 500px){
+  .grid {
+    grid-template-columns: 3fr;
+  }
+}
+
+/* END PROFILE */
