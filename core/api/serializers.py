@@ -4,12 +4,7 @@ from core.models import Todo, Item, Order, OrderItem, Coupon, Sizes, OtherMarks,
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo
-        fields = (
-            'id',
-            'title',
-            'description',
-            'image'
-        )
+        fields = "__all__"
 
 
 class StringSerializer(serializers.StringRelatedField):
@@ -50,7 +45,7 @@ class ItemsSerializer(serializers.ModelSerializer):
     # label = serializers.SerializerMethodField()
     # size = serializers.SerializerMethodField()
     # size = ItemSizeSerializer(many=True)
-    # other_marks = serializers.SerializerMethodField()
+    # other_marks = ItemOtherMarksSerializer(many=True)
 
     class Meta:
         model = Item

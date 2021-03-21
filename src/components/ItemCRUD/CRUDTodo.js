@@ -162,6 +162,7 @@ export default class CRUDTodo extends Component {
           },
         })
         .then((res) => {
+          console.log(res)
           this.fetchTasks();
           this.setState({
             activeItem: {

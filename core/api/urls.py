@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register('items', views.ItemsView)
 router.register('sizes', views.SizeView)
 router.register('other-mark', views.OtherMarkView)
+
 router.register('todo', views.TodoUpdate)
 
 

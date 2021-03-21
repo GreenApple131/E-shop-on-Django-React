@@ -186,7 +186,7 @@ export default class CRUDProduct extends Component {
     this.setState({
       activeItem: {
         ...this.state.activeItem,
-        size: ["16"],
+        size: [15],
       },
     });
   }
@@ -200,7 +200,8 @@ export default class CRUDProduct extends Component {
     this.setState({
       activeItem: {
         ...this.state.activeItem,
-        other_marks: ["8", "10"],
+        other_marks: [7],
+        other_marks: [8]
       },
     });
   }
@@ -227,6 +228,7 @@ export default class CRUDProduct extends Component {
 
     var url = "http://127.0.0.1:8000/api/i/items/";
 
+
     let form_data = new FormData();
     form_data.append("title", this.state.activeItem.title);
     form_data.append("price", this.state.activeItem.price);
@@ -235,9 +237,9 @@ export default class CRUDProduct extends Component {
     form_data.append("label", this.state.activeItem.label);
     form_data.append("slug", this.state.activeItem.slug);
     form_data.append("description", this.state.activeItem.description);
-    // form_data.append("size", this.state.activeItem.size);
-    // form_data.append("other_marks", this.state.activeItem.other_marks);
-    // form_data.append("image", this.state.activeItem.image);
+    form_data.append("size", this.state.activeItem.size);
+    form_data.append("other_marks", this.state.activeItem.other_marks);
+    form_data.append("image", this.state.activeItem.image);
 
     if (this.state.editing == true) {
       this.setState({
@@ -247,7 +249,8 @@ export default class CRUDProduct extends Component {
       axios
         .put(url, form_data, {
           headers: {
-            "content-type": "multipart/form-data",
+            // "content-type": "multipart/form-data",
+            "content-type": "application/json",
             "X-CSRFToken": csrftoken,
           },
         })
@@ -271,15 +274,14 @@ export default class CRUDProduct extends Component {
         })
         .catch((err) => console.log(err));
     } else {
-      fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-type": "multipart/form-data",
-          "X-CSRFToken": csrftoken,
-        },
-        body: form_data,
-      })
-        .then((response) => {
+      axios
+        .post(url, form_data, {
+          headers: {
+            "content-type": "multipart/form-data",
+            "X-CSRFToken": csrftoken,
+          },
+        })
+        .then((res) => {
           this.fetchTasks();
           this.setState({
             activeItem: {

@@ -120,7 +120,7 @@ export const ModalAdd = (props) => {
               name="description"
               placeholder="Add description.."
             />
-            {/* <Label for="new-product">Size</Label>
+            <Label for="new-product">Size</Label>
             <input
               onChange={handleChangeSize}
               className="form-control"
@@ -140,9 +140,9 @@ export const ModalAdd = (props) => {
               name="other_marks"
               placeholder="ordinary / special / new / discount / popular"
             />
-            <Label for="new-product">Image</Label> */}
+            <Label for="new-product">Image</Label>
           
-            {/* <FormGroup row>
+            <FormGroup row>
               <Label for="exampleFile" sm={2}>
                 File
               </Label>
@@ -160,7 +160,7 @@ export const ModalAdd = (props) => {
                   input. It's a bit lighter and easily wraps to a new line.
                 </FormText>
               </Col>
-            </FormGroup> */}
+            </FormGroup>
           </ModalBody>
           <ModalFooter>
             <Button color="primary" id="submit" type="submit" onClick={toggle}>
