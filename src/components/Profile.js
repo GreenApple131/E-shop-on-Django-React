@@ -35,47 +35,47 @@ export default class Profile extends Component {
       <React.Fragment>
         <div className=" grid" style={{ margin: 20 }}>
           <div className="main">
-            <Menu vertical>
+            <Menu pointing secondary vertical>
               <Menu.Item
-                name="billing address"
-                active={activeItem === "billing address"}
+                name="Billing address"
+                active={activeItem === "Billing address"}
                 onClick={this.handleItemClick}
               />
               <Menu.Item
-                name="marked items"
-                active={activeItem === "marked items"}
+                name="Marked items"
+                active={activeItem === "Marked items"}
                 onClick={this.handleItemClick}
               />
               <Menu.Item
-                name="shipping history"
-                active={activeItem === "shipping history"}
+                name="Shipping history"
+                active={activeItem === "Shipping history"}
                 onClick={this.handleItemClick}
               />
               <Menu.Item
-                name="todo management"
-                active={activeItem === "todo management"}
+                name="Todo management"
+                active={activeItem === "Todo management"}
                 onClick={this.handleItemClick}
               />
               <Menu.Item
-                name="products management"
-                active={activeItem === "products management"}
+                name="Products management"
+                active={activeItem === "Products management"}
                 onClick={this.handleItemClick}
               />
             </Menu>
           </div>
           <div className='side'>
-            <Header textAlign="center" as='h2' style={{marginLeft: -120}}>Profile</Header>
+            <Header textAlign="center" as='h2' style={{margin: 0}}>{activeItem}</Header>
             <Divider />
 
-            {activeItem === "billing address" ? (
+            {activeItem === "Billing address" ? (
               <p>billing address form</p>
-            ) : activeItem === "marked items" ? (
+            ) : activeItem === "Marked items" ? (
               <p>marked items</p>
-            ) : activeItem === "shipping history" ? (
+            ) : activeItem === "Shipping history" ? (
               <p>shipping history</p>
-            ) : activeItem === "todo management" ? (
+            ) : activeItem === "Todo management" ? (
               <CRUDTodo />
-            ) : activeItem === "products management" ? (
+            ) : activeItem === "Products management" ? (
               <CRUDProduct />
             ) : null}
           </div>

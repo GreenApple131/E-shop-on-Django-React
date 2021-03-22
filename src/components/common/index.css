@@ -67,10 +67,19 @@ section {
   border-radius: 10px
 }
 
-@media(max-width: 500px){
+@media(max-width: 767px){
   .grid {
     grid-template-columns: 3fr;
   }
+}
+
+.list-wrapper {
+  padding-bottom: 0rem;
+}
+
+.profile-segment {
+  width: 90%;
+  height: 50px
 }
 
 /* END PROFILE */

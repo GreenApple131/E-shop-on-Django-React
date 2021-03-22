@@ -34,11 +34,12 @@ export const ModalAdd = (props) => {
   return (
     <div>
       <Button
-        color="danger"
+        color="success"
         onClick={() => {
           addNew();
           toggle();
         }}
+        style={{marginLeft: 28}}
       >
         Add new Product
       </Button>
@@ -210,11 +211,12 @@ export const ModalEdit = (props) => {
   return (
     <div>
       <Button
-        color="danger"
+        color='secondary'
         onClick={() => {
           startEdit(task);
           toggle();
         }}
+        style={{width: 55, marginRight: 5}}
       >
         Edit
       </Button>
@@ -372,7 +374,7 @@ export const ModalDelete = (props) => {
 
   return (
     <div>
-      <Button color="danger" onClick={toggle}>
+      <Button color="danger" onClick={toggle} style={{width: 65}}>
         Delete
       </Button>
       <Modal isOpen={modal} toggle={toggle} className={className}>

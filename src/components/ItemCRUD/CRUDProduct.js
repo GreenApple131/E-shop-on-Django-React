@@ -280,33 +280,85 @@ export default class CRUDProduct extends Component {
 
     return (
       <div>
-        <div>
-          <ModalAdd
-            addNew={this.addNew}
-            handleSubmit={this.handleSubmit}
-            activeItem={this.state.activeItem}
-            handleChangeTitle={this.handleChangeTitle}
-            handleChangeSmth={this.handleChangeSmth}
-            handleChangeSize={this.handleChangeSize}
-            handleChangeOtherMarks={this.handleChangeOtherMarks}
-            handleChangeImage={this.handleChangeImage}
-          />
-        </div>
+        <Grid>
+          <Grid.Row only="computer tablet">
+            <ModalAdd
+              addNew={this.addNew}
+              handleSubmit={this.handleSubmit}
+              activeItem={this.state.activeItem}
+              handleChangeTitle={this.handleChangeTitle}
+              handleChangeSmth={this.handleChangeSmth}
+              handleChangeSize={this.handleChangeSize}
+              handleChangeOtherMarks={this.handleChangeOtherMarks}
+              handleChangeImage={this.handleChangeImage}
+            />
+          </Grid.Row>
+        </Grid>
+        <Grid textAlign="center">
+          <Grid.Row only="mobile" style={{ marginLeft: -30 }}>
+            <ModalAdd
+              addNew={this.addNew}
+              handleSubmit={this.handleSubmit}
+              activeItem={this.state.activeItem}
+              handleChangeTitle={this.handleChangeTitle}
+              handleChangeSmth={this.handleChangeSmth}
+              handleChangeSize={this.handleChangeSize}
+              handleChangeOtherMarks={this.handleChangeOtherMarks}
+              handleChangeImage={this.handleChangeImage}
+            />
+          </Grid.Row>
+        </Grid>
         <Divider />
 
-        <div id="list-wrapper">
+        <div>
           {tasks.map((task, index) => {
             return (
               <div key={index} className="task-wrapper flex-wrapper">
-                <Grid stackable columns={3}>
-                  <Grid.Row>
+                <Grid stackable columns={2}>
+                  <Grid.Row
+                    style={{ paddingBottom: "0rem", marginLeft: 0 }}
+                    only="computer tablet"
+                  >
+                      <Segment className='profile-segment'>
                     <Grid.Column width="10">
-                      <Segment>
                         <span>{task.title}</span>
+                    </Grid.Column>
+                    <Grid.Row textAlign="right" style={{ paddingBottom: "0rem" }}>
+                      <Grid.Column floated="right">
+                        <Button.Group floated="right" style={{marginTop: -27, marginRight: 10}}>
+                            <ModalEdit
+                              task={task}
+                              startEdit={this.startEdit}
+                              handleSubmit={this.handleSubmit}
+                              activeItem={this.state.activeItem}
+                              handleChangeSmth={this.handleChangeSmth}
+                              handleChangeTitle={this.handleChangeTitle}
+                              handleChangeSize={this.handleChangeSize}
+                              handleChangeOtherMarks={
+                                this.handleChangeOtherMarks
+                              }
+                              handleChangeImage={this.handleChangeImage}
+                              />
+                            <ModalDelete
+                              task={task}
+                              deleteItem={this.deleteItem}
+                              />
+                        </Button.Group>
+                      </Grid.Column>
+                    </Grid.Row>
+                              </Segment>
+                  </Grid.Row>
+                </Grid>
+
+                <Grid stackable columns={2} only="mobile">
+                  <Grid.Row style={{ paddingBottom: "0rem" }} only="mobile">
+                    <Grid.Column width="10" floated="left">
+                      <Segment>
+                        <span>{task.title} | Amount = 10 items</span>
                       </Segment>
                     </Grid.Column>
-                    <Grid.Column style={{width: '80px' }}>
-                      <Segment style={{width: '80px' }}>
+                    <Grid.Column floated="right">
+                      <Button.Group floated="right" style={{ marginTop: -27 }}>
                         <ModalEdit
                           task={task}
                           startEdit={this.startEdit}
@@ -318,12 +370,8 @@ export default class CRUDProduct extends Component {
                           handleChangeOtherMarks={this.handleChangeOtherMarks}
                           handleChangeImage={this.handleChangeImage}
                         />
-                      </Segment>
-                    </Grid.Column>
-                    <Grid.Column style={{width: '100px' }}>
-                      <Segment style={{width: '100px' }}>
                         <ModalDelete task={task} deleteItem={this.deleteItem} />
-                      </Segment>
+                      </Button.Group>
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
