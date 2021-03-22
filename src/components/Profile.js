@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import {
   Button,
   Container,
@@ -14,7 +16,7 @@ import CRUDProduct from "./ItemCRUD/CRUDProduct.js";
 import "./elements/example.css";
 import "./common/index.css";
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,6 +32,12 @@ export default class Profile extends Component {
 
   render() {
     const { activeItem } = this.state;
+
+    const { isAuthenticated } = this.props;
+    if (!isAuthenticated) {
+      return <Redirect to="/login" />;
+    }
+
 
     return (
       <React.Fragment>
@@ -84,3 +92,12 @@ export default class Profile extends Component {
     );
   }
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.token !== null,
+  };
+};
+
+export default connect(mapStateToProps)(Profile);
