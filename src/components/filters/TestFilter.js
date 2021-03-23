@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Divider, Button, Dropdown, Grid, Header, Select } from "semantic-ui-react";
+import {
+  Divider,
+  Button,
+  Grid,
+  Icon,
+  Header,
+  Select,
+  Sidebar,
+  Segment,
+  Menu,
+} from "semantic-ui-react";
 import { Slider, InputNumber } from "antd";
 import "antd/dist/antd.css";
 import {
@@ -162,22 +172,33 @@ function TestFilter(props) {
       {/* categoryChoose={this.props.location.state.searchValue} */}
 
       <div className="filter-grid">
-        <Grid style={{ marginTop: 30, marginLeft: 30 }}>
-          <Grid.Row only="mobile">
-            <Grid.Column>
-              <div className="top-col-ordering">
-                <Button icon="sliders" label='Ordering'/>
-              </div>
-              <div className="top-col-filters">
-                <Button icon="sliders"/>
-              </div>
-
-              {/* <div className="top-col-buttons"> */}
-                {/* <ViewButtons /> */}
-              {/* </div> */}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+        <div className="mobile-page">
+          <Grid>
+            <Grid.Row only="mobile">
+              <Grid.Column>
+                <div className="top-col-ordering">
+                  <Select
+                    options={orderingOptions}
+                    defaultValue={orderingOptions[0].text}
+                    value={state.ordering}
+                    onChange={onOrderingChange}
+                  />
+                </div>
+                <div className="top-col-filters">
+                  <Button color="black" icon="sliders" />
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+            <Divider style={{marginTop: -15}}/>
+            <Grid.Row style={{marginTop: -30}}>
+              <Grid.Column>
+                <div className='items-mobile'>
+                  <SidebarFilters />
+                </div>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </div>
         <div className="filter-left">
           <FilterBox
             categories={categories}
@@ -192,21 +213,129 @@ function TestFilter(props) {
         </div>
 
         <div className="filter-right">
-          <div className="view-buttons-desktop">
-            <ViewButtons />
+          <div className="top-col">
+            <div className="top-col-ordering-desktop">
+              Ordering:{" "}
+              <Select
+                options={orderingOptions}
+                defaultValue={orderingOptions[0].text}
+                value={state.ordering}
+                onChange={onOrderingChange}
+              />
+            </div>
+            <div className="view-buttons-desktop">
+              <ViewButtons />
+            </div>
           </div>
           <Divider />
           <div>
             {cardView.activationGrid === 1 ? (
               <ItemsCards data={state.data} />
             ) : cardView.activationList === 1 ? (
-              <> ItemsList </>
+              <>
+                {" "}
+                <Header>ItemsList</Header>
+                <SidebarFilters />
+              </>
             ) : null}
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+class SidebarFilters extends React.Component {
+  state = {
+    sidebarVisible: false,
+  };
+
+  toggleSidebar = () => {
+    this.setState({ sidebarVisible: !this.state.sidebarVisible });
+  };
+
+  render() {
+    const { sidebarVisible } = this.state;
+    return (
+      <div>
+        <Sidebar.Pushable>
+          <Sidebar
+            as={Menu}
+            animation="push"
+            width="thin"
+            visible={sidebarVisible}
+            icon="labeled"
+            vertical
+            inverted
+            className="sidebar-menu"
+            style={{ width: "100%" }}
+          >
+            <Menu.Header name="brand" className="item">
+              Brand
+            </Menu.Header>
+            <Menu.Item link onClick={this.toggleSidebar}>
+              <Icon name="book" />
+              Menu 1
+            </Menu.Item>
+            <Menu.Item link onClick={this.toggleSidebar}>
+              <Icon name="graduation" />
+              Menu 2
+            </Menu.Item>
+            <Menu.Item link onClick={this.toggleSidebar}>
+              <Icon name="setting" />
+              Menu 3
+            </Menu.Item>
+            <Menu.Item link onClick={this.toggleSidebar}>
+              <Icon name="user" />
+              Menu 4
+            </Menu.Item>
+            <Menu.Item link onClick={this.toggleSidebar}>
+              <Icon name="sign out" />
+              Logout
+            </Menu.Item>
+          </Sidebar>
+          <Menu inverted borderless fixed="top" className="header-menu">
+            <Menu.Item
+              position="left"
+              link
+              icon
+              active={sidebarVisible}
+              onClick={this.toggleSidebar}
+            >
+              <Icon
+                name="bars"
+                aria-label="menu"
+                className="menu-icon"
+                size="large"
+              />
+            </Menu.Item>
+          </Menu>
+          <Sidebar.Pusher dimmed={sidebarVisible}>
+            <div>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+              <Segment basic>BlahBlah</Segment>
+            </div>
+            <Menu inverted borderless fixed="bottom" className="bottom-menu">
+              <Menu.Item>Bottom Fixed Menu</Menu.Item>
+            </Menu>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+      </div>
+    );
+  }
 }
 
 export default TestFilter;

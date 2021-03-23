@@ -97,7 +97,7 @@ export const FilterBox = (props) => {
               />
             </div>
           </React.Fragment>
-          <Header
+          {/* <Header
             style={{
               margin: 10,
               fontFamily: "monospace",
@@ -115,7 +115,7 @@ export const FilterBox = (props) => {
               value={state.ordering}
               onChange={onOrderingChange}
             />
-          </React.Fragment>
+          </React.Fragment> */}
 
           <Divider />
           {/* <ItemsCards data={data} /> */}
