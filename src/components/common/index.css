@@ -83,3 +83,16 @@ section {
 }
 
 /* END PROFILE */
+
+/* TEST FILTER */
+.section-filter {
+  padding: 0 calc(50% - 800px);
+  margin-top: -50px;
+}
+
+
+
+
+
+
+/* END TEST FILTER */

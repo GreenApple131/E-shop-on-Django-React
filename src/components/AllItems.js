@@ -31,7 +31,6 @@ import {
   Segment,
   Sticky,
 } from "semantic-ui-react";
-import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListURL, productListLimPriceURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
@@ -399,7 +398,6 @@ class AllItems extends Component {
           {/* <ItemsCards data={data} /> */}
         </Container>
 
-        <CategoryFilter />
       </React.Fragment>
     );
   }

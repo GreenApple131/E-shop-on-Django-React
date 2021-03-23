@@ -12,6 +12,7 @@ server {
     
     location /media {
         root /home/dmytro/Projects/eshop/eshop/;
+        # root /home/dmytro/Projects/eshop/eshop/build/static/;
 
     }
     

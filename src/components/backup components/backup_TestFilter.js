@@ -34,7 +34,7 @@ import {
   MenuItem,
   FormHelperText,
 } from "@material-ui/core";
-import CategoryFilter from "../CategoryFilter";
+// import CategoryFilter from "../CategoryFilter";
 import {
   addToCartURL,
   productListURL,
@@ -192,7 +192,7 @@ import "./elements/filter.css";
           <ItemsCards data={getData} />
         </Container> */}
   
-        <CategoryFilter />
+        {/* <CategoryFilter /> */}
       </React.Fragment>
     );
   }

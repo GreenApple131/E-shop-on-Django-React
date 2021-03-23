@@ -41,7 +41,7 @@ class Profile extends Component {
 
     return (
       <React.Fragment>
-        <div className=" grid" style={{ margin: 20 }}>
+        <div className="grid" style={{ margin: 20 }}>
           <div className="main">
             <Menu pointing secondary vertical>
               <Menu.Item
