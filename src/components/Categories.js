@@ -15,7 +15,6 @@ import {
   Label,
   Menu,
 } from "semantic-ui-react";
-import CategoryFilter from "./CategoryFilter";
 import { addToCartURL, productListCategoryURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
@@ -149,7 +148,6 @@ function CategorieChoose() {
         <ItemsCards data={data} />
       </Container>
 
-      <CategoryFilter />
     </React.Fragment>
   );
 }

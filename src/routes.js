@@ -14,7 +14,7 @@ import SearchResult from "./components/SearchResult";
 import CategorieChoose from "./components/Categories";
 import { PageNotFound } from "./components/PageNotFound";
 import AllItems from "./components/AllItems";
-import TestFilter from "./components/TestFilter";
+import TestFilter from "./components/filters/TestFilter";
 
 
 const BaseRouter = () => (
