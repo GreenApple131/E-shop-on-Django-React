@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   Divider,
   Button,
+  Card,
   Grid,
   Icon,
   Header,
@@ -18,6 +19,7 @@ import {
   categories,
   orderingOptions,
 } from "../../constants.js";
+import ElementsCard from "../ElementsCard";
 import ItemsCards from "../ItemsCards";
 import { FilterBox } from "./FilterBox.js";
 
@@ -32,7 +34,7 @@ function TestFilter(props) {
     data: [],
     category: "",
     price_min: 0,
-    price_max: 200,
+    price_max: 1000,
     other_marks: undefined,
     ordering: "price",
   });
@@ -189,10 +191,10 @@ function TestFilter(props) {
                 </div>
               </Grid.Column>
             </Grid.Row>
-            <Divider style={{marginTop: -15}}/>
-            <Grid.Row style={{marginTop: -30}}>
+            <Divider style={{ marginTop: -15 }} />
+            <Grid.Row style={{ marginTop: -30 }}>
               <Grid.Column>
-                <div className='items-mobile'>
+                <div className="items-mobile">
                   <SidebarFilters />
                 </div>
               </Grid.Column>
@@ -230,12 +232,16 @@ function TestFilter(props) {
           <Divider />
           <div>
             {cardView.activationGrid === 1 ? (
-              <ItemsCards data={state.data} />
+              <Card.Group className="items-desktop" fluid>
+                {state.data.map((item, x) => (
+                  <ElementsCard key={x} {...item}></ElementsCard>
+                ))}
+              </Card.Group>
             ) : cardView.activationList === 1 ? (
               <>
-                {" "}
-                <Header>ItemsList</Header>
-                <SidebarFilters />
+                <Header>Flat Cards</Header>
+                
+                {/* <SidebarFilters /> */}
               </>
             ) : null}
           </div>

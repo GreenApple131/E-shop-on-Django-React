@@ -13,6 +13,7 @@ import {
   Item,
   Label,
 } from "semantic-ui-react";
+import './elements/filter.css'
 
 function ElementsCard(props) {
   const history = useHistory();
@@ -30,8 +31,8 @@ function ElementsCard(props) {
 
   return (
     <React.Fragment key={props.id}>
-      <Card style={{ width: "200px", height: "auto" }}>
-        <Image
+      <Card className='cards-desktop' style={{ width: "200px", height: "auto" }}>
+        <Image className='cards-image-desktop'
           src={props.image}
           style={{
             width: "200px",
