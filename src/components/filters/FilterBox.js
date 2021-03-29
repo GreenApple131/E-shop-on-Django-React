@@ -34,7 +34,7 @@ export const FilterBox = (props) => {
           <Header
             style={{
               fontFamily: "monospace",
-              fontSize: 24,
+              fontSize: 20,
               marginTop: "30px",
               marginBottom: "10px",
               marginLeft: -3,
@@ -63,7 +63,7 @@ export const FilterBox = (props) => {
           <Header
             style={{
               fontFamily: "monospace",
-              fontSize: 24,
+              fontSize: 20,
               marginTop: "15px",
               marginBottom: "10px",
               marginLeft: -1,
