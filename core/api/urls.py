@@ -13,9 +13,8 @@ router.register('todo', views.TodoUpdate)
 
 
 urlpatterns = [
-    path('', views.ItemListView.as_view(), name='product-list'),
+    path('', views.ItemListView.as_view(), name='product-list'), # filtering goes here
     path('search/', views.ItemListView.as_view(), name='product-search-list'),
-    # path('', include(router.urls)),
     path('products/<slug>/', views.ItemDetailView.as_view(), name='product-detail'),
     path('add-to-cart/', views.AddToCartView.as_view(), name='add-to-cart'),
     path('order-summary/', views.OrderDetailView.as_view(), name='order-summary'),

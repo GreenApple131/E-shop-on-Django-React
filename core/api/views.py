@@ -12,6 +12,7 @@ from django.http import Http404
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -31,176 +32,168 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
+############# PAGINATION ###########
+class ItemSetPagination(PageNumberPagination):
+    page_size = 7
+    page_size_query_param = 'page_size'
+    max_page_size = 60
+############# END PAGINATION ###########
+
+
 class SizeView(viewsets.ModelViewSet):
-	queryset = Sizes.objects.all()
-	serializer_class = ItemSizeSerializer
+    queryset = Sizes.objects.all()
+    serializer_class = ItemSizeSerializer
+
+
 class OtherMarkView(viewsets.ModelViewSet):
-	queryset = OtherMarks.objects.all()
-	serializer_class = ItemOtherMarksSerializer
+    queryset = OtherMarks.objects.all()
+    serializer_class = ItemOtherMarksSerializer
+
+
 class ItemsView(viewsets.ModelViewSet):
-	parser_classes = (MultiPartParser, FormParser)
-	queryset = Item.objects.all()
-	serializer_class = ItemsSerializer
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Item.objects.all()
+    serializer_class = ItemsSerializer
 
 
 class TodoUpdate(viewsets.ModelViewSet):
-	parser_classes = (MultiPartParser, FormParser)
-	queryset = Todo.objects.all()
-	serializer_class = TodoSerializer
-
-
-# class PostView(APIView):
-#     parser_classes = (MultiPartParser, FormParser)
-
-#     def get(self, request, *args, **kwargs):
-#         items = Item.objects.all()
-#         serializer = ItemsSerializer(items, many=True)
-#         return Response(serializer.data)
-
-#     def post(self, request, *args, **kwargs):
-#         items_serializer = ItemsSerializer(data=request.data)
-#         if items_serializer.is_valid():
-#             items_serializer.save()
-#             return Response(items_serializer.data, status=HTTP_201_CREATED)
-#         else:
-#             print('error', items_serializer.errors)
-#             return Response(items_serializer.errors, status=HTTP_400_BAD_REQUEST)
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
 
 
 
 @api_view(['GET'])
 def productList(request):
-	products = Item.objects.all().order_by('-id')
-	serializer = ItemSerializer(products, many=True)
-	return Response(serializer.data)
+    products = Item.objects.all().order_by('-id')
+    serializer = ItemSerializer(products, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
 def productDetail(request, pk):
-	products = Item.objects.get(id=pk)
-	serializer = ItemSerializer(products, many=False)
-	return Response(serializer.data)
+    products = Item.objects.get(id=pk)
+    serializer = ItemSerializer(products, many=False)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
 def productCreate(request):
-	serializer = ItemSerializer(data=request.data)
+    serializer = ItemSerializer(data=request.data)
 
-	if serializer.is_valid():
-		serializer.create(validated_data=request.data)
-		# serializer.save()
-		return Response(serializer.data, status=HTTP_201_CREATED)
-	serializer.errors
+    if serializer.is_valid():
+        serializer.create(validated_data=request.data)
+        # serializer.save()
+        return Response(serializer.data, status=HTTP_201_CREATED)
+    serializer.errors
 
-	return Response(serializer.data)
+    return Response(serializer.data)
+
 
 @api_view(['POST'])
 def productUpdate(request, pk):
-	product = Item.objects.get(id=pk)
-	serializer = ItemSerializer(instance=product, data=request.data)
+    product = Item.objects.get(id=pk)
+    serializer = ItemSerializer(instance=product, data=request.data)
 
-	if serializer.is_valid():
-		serializer.save()
+    if serializer.is_valid():
+        serializer.save()
 
-	return Response(serializer.data)
+    return Response(serializer.data)
 
 
 @api_view(['DELETE'])
 def productDelete(request, pk):
-	product = Item.objects.get(id=pk)
-	product.delete()
+    product = Item.objects.get(id=pk)
+    product.delete()
 
-	return Response('Item succsesfully delete!')
-
-
-
-
-
-
-
-
+    return Response('Item succsesfully delete!')
 
 
 @api_view(['GET'])
 def todoList(request):
-	tasks = Todo.objects.all().order_by('-id')
-	serializer = TodoSerializer(tasks, many=True)
-	return Response(serializer.data)
+    tasks = Todo.objects.all().order_by('-id')
+    serializer = TodoSerializer(tasks, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 def todoDetail(request, pk):
-	tasks = Todo.objects.get(id=pk)
-	serializer = TodoSerializer(tasks, many=False)
-	return Response(serializer.data)
+    tasks = Todo.objects.get(id=pk)
+    serializer = TodoSerializer(tasks, many=False)
+    return Response(serializer.data)
+
 
 class TodoCreate(APIView):
-	parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (MultiPartParser, FormParser)
 
-	def get(self, request, *args, **kwargs):
-		posts = Todo.objects.all()
-		serializer = TodoSerializer(posts, many=True)
-		return Response(serializer.data)
+    def get(self, request, *args, **kwargs):
+        posts = Todo.objects.all()
+        serializer = TodoSerializer(posts, many=True)
+        return Response(serializer.data)
 
-	def post(self, request, *args, **kwargs):
-		posts_serializer = TodoSerializer(data=request.data)
-		if posts_serializer.is_valid():
-			posts_serializer.save()
-			return Response(posts_serializer.data, status=HTTP_201_CREATED)
-		else:
-			print('error', posts_serializer.errors)
-			return Response(posts_serializer.errors, status=HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        posts_serializer = TodoSerializer(data=request.data)
+        if posts_serializer.is_valid():
+            posts_serializer.save()
+            return Response(posts_serializer.data, status=HTTP_201_CREATED)
+        else:
+            print('error', posts_serializer.errors)
+            return Response(posts_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 def todoUpdate(request, pk):
-	task = Todo.objects.get(id=pk)
-	serializer = TodoSerializer(instance=task, data=request.data)
+    task = Todo.objects.get(id=pk)
+    serializer = TodoSerializer(instance=task, data=request.data)
 
-	if serializer.is_valid():
-		serializer.save()
+    if serializer.is_valid():
+        serializer.save()
 
-	return Response(serializer.data)
+    return Response(serializer.data)
 
 
 @api_view(['DELETE'])
 def todoDelete(request, pk):
-	task = Todo.objects.get(id=pk)
-	task.delete()
+    task = Todo.objects.get(id=pk)
+    task.delete()
 
-	return Response('Item succsesfully delete!')
-
-
-
+    return Response('Item succsesfully delete!')
 
 
 class MultiValueCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
-    # Так як наші categories and other_marks мають відношення ManyToMany, щоб фільтрувати їх діапазон ВСЕРЕДИНІ (lookup_expr='in') використовуємо django_filters.BaseInFilter.  
+    # Так як наші categories and other_marks мають відношення ManyToMany, щоб фільтрувати їх діапазон ВСЕРЕДИНІ (lookup_expr='in') використовуємо django_filters.BaseInFilter.
     # django_filters.CharFilter підключається тому, що ми шукаємо не по primary_key(pk), а по Char словах('Jackets', 'Hats' і тд.)
     # запит виглядає так http://localhost:8000/api/?category=Hats,Jackets і видає результат по шуканих категоріях "Hats + Jackets"
     pass
 
 
 class ItemFilter(django_filters.FilterSet):
-    title = django_filters.CharFilter(field_name="title", lookup_expr='icontains')
-    category = MultiValueCharFilter(field_name="category", lookup_expr='in') # call custom filter class
-    other_marks = MultiValueCharFilter(field_name='other_marks__mark', lookup_expr='in') # call custom filter class
-    price = django_filters.RangeFilter(field_name="price") # range from min to max
+    title = django_filters.CharFilter(
+        field_name="title", lookup_expr='icontains')
+    category = MultiValueCharFilter(
+        field_name="category", lookup_expr='in')  # call custom filter class
+    other_marks = MultiValueCharFilter(
+        field_name='other_marks__mark', lookup_expr='in')  # call custom filter class
+    price = django_filters.RangeFilter(
+        field_name="price")  # range from min to max
     ordering = django_filters.OrderingFilter(
         fields={
             'price': 'price',
             'title': 'title',
             # add 'discount_price' and 'star rate'(оцінка)
         })
-        # http://localhost:8000/api/?category=Hats&ordering=-price 
+    # http://localhost:8000/api/?category=Hats&ordering=-price
 
     class Meta:
         model = Item
         fields = ['title', 'price', 'category', 'other_marks']
 
+
 class ItemView(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
     permission_classes = (AllowAny, )
+
 
 class TodoView(viewsets.ModelViewSet):
     serializer_class = TodoSerializer
@@ -208,12 +201,13 @@ class TodoView(viewsets.ModelViewSet):
     permission_classes = (AllowAny, )
 
 
-class ItemListView(ListAPIView):
+class ItemListView(ListAPIView): # main entrance point for frontend
+    pagination_class = ItemSetPagination
     serializer_class = ItemSerializer
     queryset = Item.objects.all()
     permission_classes = (AllowAny, )
     filterset_class = ItemFilter
-    
+
     # ordering = ['username']
 
     # filter_backends = [filters.OrderingFilter]
@@ -226,12 +220,11 @@ class ItemDetailView(RetrieveAPIView):
     serializer_class = ItemDetailSerializer
     queryset = Item.objects.all()
     lookup_field = 'slug'
-    
 
 
 class OrderQuantityUpdateView(APIView):
     def post(self, request, *args, **kwargs):
-        slug = request.data.get('slug', None) # get slug OR None
+        slug = request.data.get('slug', None)  # get slug OR None
         if slug is None:
             return Response({"message": "Invalid data"}, status=HTTP_400_BAD_REQUEST)
 
@@ -449,7 +442,6 @@ class AddCouponView(APIView):
             order.coupon = coupon
             order.save()
             return Response(status=HTTP_200_OK)
-
 
 
 # class MultiValueCharFilter(django_filters.BaseCSVFilter, django_filters.CharFilter):

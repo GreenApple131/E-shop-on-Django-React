@@ -15,6 +15,7 @@ import {
 } from "semantic-ui-react";
 
 import "../common/index.css";
+// import "../elements/radio.css"
 
 class Details extends Component {
   render() {
@@ -78,19 +79,22 @@ class Details extends Component {
             <br />
             {item.size && ( // shows availiable sizes
               <Form onSubmit={() => handleAddToCart(item.slug)}>
-                <div className="form_radio_btn">
+                <div>
                   <Form.Group required inline>
                       {item.size.map((s) => {
                         return (
-                          <Form.Field 
+                          <>
+                          <input 
                             key={s.id}
-                            control={Radio}
+                            type='radio'
                             name={s.name}
-                            label={s.size}
                             value={s.id}
-                            checked={value === s.id}
-                            onChange={handleChange}
+                            id={s.size}
+                            // checked={value === s.id}
+                            onChange={(e, name, value) => {handleChange(e, name, value)}}
                           />
+                          <label for={s.size}>{s.size}</label>
+                          </>
                         );
                       })}
                   </Form.Group>

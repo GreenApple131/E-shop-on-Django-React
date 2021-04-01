@@ -87,7 +87,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS':
         'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 40,
+        'PAGE_SIZE': 60,
         'ORDERING_PARAM': 'ordering',
 }
 
@@ -153,7 +153,7 @@ DATABASES = {
 #     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-STATIC_URL = '/static/'
+STATIC_URL = '/build/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

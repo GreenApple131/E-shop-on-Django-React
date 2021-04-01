@@ -3,13 +3,16 @@ import axios from "axios";
 import {
   Divider,
   Button,
+  Card,
   Grid,
   Icon,
+  Item,
   Header,
   Select,
   Sidebar,
   Segment,
   Menu,
+  Pagination,
 } from "semantic-ui-react";
 import { Slider, InputNumber } from "antd";
 import "antd/dist/antd.css";
@@ -18,8 +21,10 @@ import {
   categories,
   orderingOptions,
 } from "../../constants.js";
-import ItemsCards from "../ItemsCards";
-import { FilterBox } from "./FilterBox.js";
+import ElementsCard from "../ElementsCard";
+import ElementsWideItems from "../ElementsWideItems";
+import Paginations from "./Pagination";
+import { FilterBox } from "./FilterBox";
 
 import "../common/index.css";
 
@@ -32,9 +37,11 @@ function TestFilter(props) {
     data: [],
     category: "",
     price_min: 0,
-    price_max: 200,
+    price_max: 1000,
     other_marks: undefined,
     ordering: "price",
+    page: undefined,
+    pageCount: 1,
   });
   const [cardView, setCardView] = useState({
     cards: "grid",
@@ -51,7 +58,8 @@ function TestFilter(props) {
           state.price_min,
           state.price_max,
           state.other_marks,
-          state.ordering
+          state.ordering,
+          state.page
         )
       )
       // .get(productListCategoryURL(category))
@@ -64,19 +72,19 @@ function TestFilter(props) {
         setState((prevState) => ({
           ...prevState,
           data: res.data.results,
+          pageCount: Math.ceil(res.data.count / 7),
         }));
       })
       .catch((err) => {
         setError(err);
       });
-
-    console.log("state", state);
-    console.log("filterstate", filterstate);
   }, [
     filterstate.multipleCategories,
     state.price_min,
     state.price_max,
     state.ordering,
+    state.page,
+    state.pageCount,
   ]);
 
   useEffect(() => {
@@ -139,6 +147,13 @@ function TestFilter(props) {
     }));
   };
 
+  const handlePages = (e, data) => {
+    setState((prevState) => ({
+      ...prevState,
+      page: data,
+    }));
+  };
+
   const ViewButtons = () => (
     <Button.Group>
       <Button
@@ -189,11 +204,15 @@ function TestFilter(props) {
                 </div>
               </Grid.Column>
             </Grid.Row>
-            <Divider style={{marginTop: -15}}/>
-            <Grid.Row style={{marginTop: -30}}>
-              <Grid.Column>
-                <div className='items-mobile'>
-                  <SidebarFilters />
+            <Divider style={{ marginTop: -15 }} />
+            <Grid.Row style={{ marginTop: -30 }} only="mobile">
+              <Grid.Column> 
+                <div className="items-mobile">
+                  <Item.Group>
+                    {state.data.map((item, x) => (
+                      <ElementsWideItems key={x} {...item} />
+                    ))}
+                  </Item.Group>
                 </div>
               </Grid.Column>
             </Grid.Row>
@@ -230,15 +249,21 @@ function TestFilter(props) {
           <Divider />
           <div>
             {cardView.activationGrid === 1 ? (
-              <ItemsCards data={state.data} />
+              <Card.Group className="items-desktop" fluid>
+                {state.data.map((item, x) => (
+                  <ElementsCard key={x} {...item} />
+                ))}
+              </Card.Group>
             ) : cardView.activationList === 1 ? (
-              <>
-                {" "}
-                <Header>ItemsList</Header>
-                <SidebarFilters />
-              </>
+              <Item.Group relaxed>
+                {state.data.map((item, x) => (
+                  <ElementsWideItems key={x} {...item} />
+                ))}
+              </Item.Group>
             ) : null}
           </div>
+
+          <Paginations handlePages={handlePages} state={state} />
         </div>
       </div>
     </div>

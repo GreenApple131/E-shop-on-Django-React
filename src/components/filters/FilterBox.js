@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Divider, Header, Select } from "semantic-ui-react";
+import { Checkbox, Divider, Header, Input, Select } from "semantic-ui-react";
 import { Slider, InputNumber } from "antd";
 import "antd/dist/antd.css";
 import {
@@ -27,52 +27,54 @@ export const FilterBox = (props) => {
     onOrderingChange,
   } = props;
   return (
-    <div className='filter-box'>
+    <div className="filter-box">
       <StickyBox offsetTop={60} offsetBottom={20}>
         <div>
           <Header
             style={{
-              margin: 10,
               fontFamily: "monospace",
-              fontSize: 30,
+              fontSize: 20,
               marginTop: "30px",
               marginBottom: "10px",
+              marginLeft: -3,
             }}
           >
             Categories
           </Header>
           <div>
             {categories.map((c, i) => (
-              <div key={i}>
+              <div key={i} className="custom-control custom-checkbox">
                 <input
-                  className="mr-2"
+                  className="custom-control-input"
                   checked={filterstate.filters.index}
                   name={c}
                   value={c}
+                  id={c}
                   onChange={onCheckboxChange}
                   type="checkbox"
-                />{" "}
-                {c}
+                />
+                <label className="custom-control-label" htmlFor={c}>{c}</label>
+                <br />
               </div>
             ))}
           </div>
 
           <Header
             style={{
-              margin: 10,
               fontFamily: "monospace",
-              fontSize: 30,
-              marginTop: "30px",
+              fontSize: 20,
+              marginTop: "15px",
               marginBottom: "10px",
+              marginLeft: -1,
             }}
           >
             Price
           </Header>
           <React.Fragment>
             <Slider
-              className="slider-main-div"
+              style={{ maxWidth: "190px" }}
               min={0}
-              max={200}
+              max={1000}
               onChange={onPriceChange}
               range={true}
               defaultValue={[state.price_min, state.price_max]}
@@ -80,17 +82,20 @@ export const FilterBox = (props) => {
             />
             <div className="range-input-number-main">
               <InputNumber
+                size="small"
                 className="min-input-main"
                 min={0}
-                max={200}
+                max={1000}
                 value={state.price_min}
                 onChange={onPriceChangeMin}
               />
-              <span className="range-span"> to </span>
+              <span className="range-span"> - </span>
               <InputNumber
+                size="small"
+                width={40}
                 className="min-input-main"
                 min={0}
-                max={200}
+                max={1000}
                 value={state.price_max}
                 onChange={onPriceChangeMax}
                 onStep="false"

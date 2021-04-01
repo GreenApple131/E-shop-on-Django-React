@@ -14,7 +14,6 @@ import {
   Label,
 } from "semantic-ui-react";
 
-
 function ItemsCards(props) {
   const history = useHistory();
 
@@ -47,16 +46,12 @@ function ItemsCards(props) {
                 wrapped
                 ui={true}
                 as="a"
-                onClick={() =>
-                  history.push(`/products/${item.slug}`)
-                }
+                onClick={() => history.push(`/products/${item.slug}`)}
               />
               <Card.Content>
                 <Item.Header
                   as="a"
-                  onClick={() =>
-                    history.push(`/products/${item.slug}`)
-                  }
+                  onClick={() => history.push(`/products/${item.slug}`)}
                 >
                   {item.title}
                 </Item.Header>
@@ -68,45 +63,43 @@ function ItemsCards(props) {
                 </Card.Meta>
                 <Card.Description>Rating...</Card.Description>
               </Card.Content>
-              <Card.Content extra>
-                <React.Fragment>
-                  {item.discount_price && (
-                    <Header
-                      floated="left"
-                      color="violet"
-                      style={{ marginTop: "10px" }}
-                    >
-                      <small>
-                        <strike>
-                          <span>${item.price}</span>
-                        </strike>
-                      </small>{" "}
-                      ${item.discount_price}
-                    </Header>
-                  )}
-                  {!item.discount_price && (
-                    <Header
-                      // color="black"
-                      floated="left"
-                      size="medium"
-                      style={{ marginTop: "7px" }}
-                    >
-                      ${item.price}
-                    </Header>
-                  )}
-                  <Button
-                    animated="vertical"
-                    color="black"
-                    floated="right"
-                    onClick={() => handleAddToCart(item.slug)}
+              <Card.Extra>
+                {item.discount_price && (
+                  <Header
+                    floated="left"
+                    color="violet"
+                    style={{ marginTop: "10px" }}
                   >
-                    <Button.Content hidden>Buy</Button.Content>
-                    <Button.Content visible>
-                      <Icon name="cart plus" />
-                    </Button.Content>
-                  </Button>
-                </React.Fragment>
-              </Card.Content>
+                    <small>
+                      <strike>
+                        <span>${item.price}</span>
+                      </strike>
+                    </small>{" "}
+                    ${item.discount_price}
+                  </Header>
+                )}
+                {!item.discount_price && (
+                  <Header
+                    // color="black"
+                    floated="left"
+                    size="medium"
+                    style={{ marginTop: "7px" }}
+                  >
+                    ${item.price}
+                  </Header>
+                )}
+                <Button
+                  floated="right"
+                  animated="vertical"
+                  color="black"
+                  onClick={() => handleAddToCart(item.slug)}
+                >
+                  <Button.Content hidden>Buy</Button.Content>
+                  <Button.Content visible>
+                    <Icon name="cart plus" />
+                  </Button.Content>
+                </Button>
+              </Card.Extra>
             </Card>
           </React.Fragment>
         ))}

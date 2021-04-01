@@ -33,7 +33,8 @@ export const productFilterAndOrderURL = (
   price_min,
   price_max,
   other_marks,
-  ordering
+  ordering,
+  page,
 ) =>
   `${endpoint}/?
 ${"category=" + category}
@@ -43,6 +44,7 @@ ${
   other_marks === undefined ? (other_marks = "") : "&other_marks=" + other_marks
 }
 ${ordering === undefined ? (ordering = "") : "&ordering=" + ordering}
+${page === undefined ? (page = "") : "&page=" + page}
 `;
 
 export const categories = [
