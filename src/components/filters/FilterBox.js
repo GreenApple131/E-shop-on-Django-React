@@ -14,7 +14,6 @@ import StickyBox from "react-sticky-box";
 
 // import "./elements/filters.scss";
 import "../elements/filter.css";
-import "../elements/filterbox.css";
 
 export const FilterBox = (props) => {
   const {

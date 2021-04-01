@@ -125,7 +125,7 @@ class ProductDetail extends Component {
       });
   };
 
-  handleChange = (e, { name, value }) => {
+  handleChange = (e, name, value ) => {
     // функція вже готова для приймання різних типів одягу (розмір, колір і т.д.). Лишилось реалізувати підтримку інштх типів в моделях Django і допилити у формі відображення
     this.setState({ value });
     const { formData } = this.state;
