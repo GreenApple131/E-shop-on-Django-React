@@ -15,7 +15,8 @@ import {
 } from "semantic-ui-react";
 
 import "../common/index.css";
-// import "../elements/radio.css"
+import "../elements/radio.css";
+import "../elements/detail.css";
 
 class Details extends Component {
   render() {
@@ -39,34 +40,6 @@ class Details extends Component {
                 </span>
                 <h3>${item.discount_price} </h3>
               </h4>
-
-              <ul className="color-variant"></ul>
-              <div className="product-description border-product">
-                <h6 className="product-title">Time Reminder</h6>
-                <div className="timer">
-                  <p id="demo">
-                    <span>
-                      25
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Days</span>
-                    </span>
-                    <span>
-                      22
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Hrs</span>
-                    </span>
-                    <span>
-                      13
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Min</span>
-                    </span>
-                    <span>
-                      57
-                      <span className="timer-cal">Sec</span>
-                    </span>
-                  </p>
-                </div>
-              </div>
             </div>
           )}
         </div>
@@ -80,26 +53,32 @@ class Details extends Component {
             {item.size && ( // shows availiable sizes
               <Form onSubmit={() => handleAddToCart(item.slug)}>
                 <div>
-                  <Form.Group required inline>
-                      {item.size.map((s) => {
-                        return (
-                          <>
-                          <input 
+                  <Form.Group inline>
+                    {item.size.map((s) => {
+                      return (
+                        <Form.Field>
+                          <input
+                            className="radio-button"
+                            role="button"
                             key={s.id}
-                            type='radio'
+                            type="radio"
                             name={s.name}
                             value={s.id}
                             id={s.size}
                             // checked={value === s.id}
-                            onChange={(e, name, value) => {handleChange(e, name, value)}}
+                            onChange={(e) => {
+                              handleChange(e);
+                            }}
                           />
-                          <label for={s.size}>{s.size}</label>
-                          </>
-                        );
-                      })}
+                          <label for={s.size} className="radio-button-label">
+                            {s.size}
+                          </label>
+                        </Form.Field>
+                      );
+                    })}
                   </Form.Group>
                 </div>
-                <Divider style={{marginTop: "-16px"}} />
+                <Divider style={{ marginTop: "-10px" }} />
                 <React.Fragment>
                   <Button animated="vertical" color="black" type="submit">
                     <Button.Content hidden>

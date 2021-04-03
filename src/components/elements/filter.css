@@ -67,13 +67,15 @@
     grid-template-columns: 170px auto; 
   }
   .cards-image-desktop {
-    height: 200px !important;
+    height: 220px !important;
+    width: auto;
   }
 }
 @media(max-width: 1083px) {
   .cards-desktop {
     width: 180px !important;
   }
+  
 }
 @media(max-width: 796px) {
   .cards-desktop {
@@ -104,4 +106,8 @@
 
 
 
-
+/* FilterBox */
+.filterbox-checkbox
+  :focus + label {
+    outline: 0px;
+  }

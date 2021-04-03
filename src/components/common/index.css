@@ -5,39 +5,6 @@ section {
   padding: 0 calc(50% - 800px);
 }
 
-.form_radio_btn {
-  display: inline-block;
-  margin-right: 10px;
-}
-.form_radio_btn input[type="radio"] {
-  display: none;
-}
-.form_radio_btn label {
-  display: inline-block;
-  cursor: pointer;
-  padding: 0px 15px;
-  line-height: 34px;
-  border: 1px solid #999;
-  border-radius: 6px;
-  user-select: none;
-}
-
-/* Checked */
-.form_radio_btn input[type="radio"]:checked + label {
-  background: black;
-  color: white;
-}
-
-/* Hover */
-.form_radio_btn label:hover {
-  color: #666;
-}
-
-/* Disabled */
-.form_radio_btn input[type="radio"]:disabled + label {
-  background: #efefef;
-  color: #666;
-}
 
 .search_bar_desktop {
   /* padding: 0 calc(50% - 800px); */
