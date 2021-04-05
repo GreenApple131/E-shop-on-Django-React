@@ -14,7 +14,7 @@ import {
   Radio,
 } from "semantic-ui-react";
 
-import "../common/index.css";
+import "../elements/index.css";
 import "../elements/radio.css";
 import "../elements/detail.css";
 
@@ -24,10 +24,12 @@ class Details extends Component {
 
     return (
       <React.Fragment>
-        <div className="product-right">
-          <Label basic color="green">
-            In stock
-          </Label>
+        <div>
+          <div className="product-label-desktop">
+            <Label basic color="green">
+              In stock
+            </Label>
+          </div>
           <Divider />
           {!item.discount_price && <h2>${item.price} </h2>}
           {item.discount_price && (
@@ -43,6 +45,8 @@ class Details extends Component {
             </div>
           )}
         </div>
+        <br />
+
         <div className="product-description border-product">
           <div className="size-box" style={{ marginBottom: "70px" }}>
             <Header as="b" textAlign="center">
@@ -80,20 +84,17 @@ class Details extends Component {
                 </div>
                 <Divider style={{ marginTop: "-10px" }} />
                 <React.Fragment>
-                  <Button animated="vertical" color="black" type="submit">
+                  <Button
+                    animated="vertical"
+                    color="black"
+                    type="submit"
+                    size="large"
+                  >
                     <Button.Content hidden>
                       <Icon name="cart plus" />
                     </Button.Content>
                     <Button.Content type="submit" visible>
                       ADD TO CART
-                    </Button.Content>
-                  </Button>
-                  <Button animated="vertical" color="black" type="submit">
-                    <Button.Content hidden>
-                      <Icon name="cart plus" />
-                    </Button.Content>
-                    <Button.Content type="submit" visible>
-                      BUY NOW
                     </Button.Content>
                   </Button>
                 </React.Fragment>
@@ -102,41 +103,32 @@ class Details extends Component {
           </div>
         </div>
 
-        <div className="border-product">
-          <h6 className="product-title">short description</h6>
-          <div className="product-icon">{this.props.item.description}</div>
+        <div>
+          <Header>Short description:</Header>
+          <div>{this.props.item.description}</div>
         </div>
 
-        <div className="border-product">
-          <h6 className="product-title">share it</h6>
-          <div className="product-icon">
-            <ul className="product-social">
-              <li>
-                <a href="https://www.facebook.com/" target="_blank">
-                  <Icon className="facebook"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://plus.google.com/discover" target="_blank">
-                  <Icon className="google plus"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/" target="_blank">
-                  <Icon className="twitter"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.instagram.com/" target="_blank">
-                  <Icon className="instagram"></Icon>
-                </a>
-              </li>
-            </ul>
-            <button className="wishlist-btn">
-              <Icon className="heart"></Icon>
-              <span className="title-font">Add To WishList</span>
-            </button>
-          </div>
+        <Header>Share it</Header>
+        <div>
+          <a href="https://www.facebook.com/" target="_blank">
+            <Icon color="black" className="facebook" size="large"></Icon>
+          </a>
+          <a href="https://plus.google.com/discover" target="_blank">
+            <Icon color="black" className="google plus" size="large"></Icon>
+          </a>
+          <a href="https://twitter.com/" target="_blank">
+            <Icon color="black" className="twitter" size="large"></Icon>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank">
+            <Icon color="black" className="instagram" size="large"></Icon>
+          </a>
+        </div>
+        <Divider />
+        <div>
+          <button className="wishlist-button">
+            <Icon className="heart"></Icon>
+            <span>Add To Wishlist</span>
+          </button>
         </div>
       </React.Fragment>
     );

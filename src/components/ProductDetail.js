@@ -24,8 +24,9 @@ import { productDetailURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 
-import "./common/index.scss";
-import "./common/index.css";
+import "./elements/index.scss";
+import "./elements/index.css";
+import "./elements/detail.css";
 
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import ImageGallery from "react-image-gallery";
@@ -84,7 +85,10 @@ class ProductDetail extends Component {
           thumbnail: res.data.image,
           thumbnailWidth: 320,
           caption: res.data.title,
-          tags: [{value: "Jacket", title: "Jacket"}, {value: "Man", title: "Man"}],
+          tags: [
+            { value: "Jacket", title: "Jacket" },
+            { value: "Man", title: "Man" },
+          ],
         });
 
         this.setState({
@@ -192,6 +196,16 @@ class ProductDetail extends Component {
         <div className="collection-wrapper">
           <div className="row">
             <div className="col-lg-6 col-sm-10 col-xs-12">
+              <h2
+                className="title-mobile"
+                style={{ fontWeight: "bold", marginLeft: 30, marginBottom: 10 }}
+              >
+                {" "}
+                {item.title}{" "}
+                <Label basic color="green" className='product-label-mobile'>
+                  In stock
+                </Label>
+              </h2>
               {images !== undefined && (
                 <ImageGallery
                   items={images}
@@ -205,7 +219,10 @@ class ProductDetail extends Component {
             </div>
             <div className="col-lg-4">
               <div className="product-right product-description-box">
-                <h2 style={{ fontWeight: "bold" }}> {item.title} </h2>
+                <h2 className="title-desktop" style={{ fontWeight: "bold" }}>
+                  {" "}
+                  {item.title}{" "}
+                </h2>
 
                 <Details
                   item={item}
@@ -217,7 +234,7 @@ class ProductDetail extends Component {
             </div>
           </div>
         </div>
-        <div style={{marginLeft: '15px'}}>
+        <div style={{ marginLeft: "15px" }}>
           <div className="row">
             <div className="col-sm-12 col-lg-12">
               <DetailsTabs item={item} images={imagesForGallery} />

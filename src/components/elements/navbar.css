@@ -59,3 +59,25 @@ body {
     font-weight: 300;
   }
   
+
+  .dnarn nav .logo img {
+    display: inline-block; /** to show/hide logo image **/
+    vertical-align: middle;
+    padding-right: 5px; /** editable **/
+    height: 36px; /** editable **/
+  }
+  .dnarn nav .logo span {
+    display: none; /** to hide/show sitename **/
+  }
+   
+  /** when page width < 780px **/
+  @media (max-width: 779px) {
+    .dnarn nav .logo img {
+      padding-right: 0;
+      display: none; /** to hide/show the logo image **/
+    }
+   
+    .dnarn nav .logo span {
+      display: inline-block; /** to show/hide sitename **/
+    }
+  }
