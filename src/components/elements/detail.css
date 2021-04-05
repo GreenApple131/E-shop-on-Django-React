@@ -1,0 +1,20 @@
+/* desktop version */
+@media(min-width: 992px) {
+    .title-mobile {
+        display: none;
+    }
+    
+}
+
+
+/* mobile version */
+@media(max-width: 991px) {
+    .title-desktop,
+    .product-label-desktop {
+        display: none;
+    }
+    .product-label-mobile {
+        vertical-align: text-bottom !important;
+        margin-left: 30px;
+    }
+}

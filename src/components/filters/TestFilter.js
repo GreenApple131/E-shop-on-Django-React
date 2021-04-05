@@ -26,7 +26,7 @@ import ElementsWideItems from "../ElementsWideItems";
 import Paginations from "./Pagination";
 import { FilterBox } from "./FilterBox";
 
-import "../common/index.css";
+import "../elements/index.css";
 
 function TestFilter(props) {
   const [filterstate, setFilterstate] = useState({

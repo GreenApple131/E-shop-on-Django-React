@@ -24,7 +24,7 @@ import { fetchCart } from "../store/actions/cart";
 import { SearchBar } from "./SearchResult";
 import Categories from "./Categories";
 
-import "./common/index.css";
+import "./elements/index.css";
 
 // ResponsiveNavBar
 import { createMedia } from "@artsy/fresnel";

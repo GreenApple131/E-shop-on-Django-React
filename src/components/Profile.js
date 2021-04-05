@@ -14,7 +14,7 @@ import CRUDTodo from "./ItemCRUD/CRUDTodo.js";
 import CRUDProduct from "./ItemCRUD/CRUDProduct.js";
 
 import "./elements/example.css";
-import "./common/index.css";
+import "./elements/index.css";
 
 class Profile extends Component {
   constructor(props) {

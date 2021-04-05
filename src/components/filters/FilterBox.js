@@ -12,7 +12,6 @@ import ItemsCards from "../ItemsCards";
 
 import StickyBox from "react-sticky-box";
 
-// import "./elements/filters.scss";
 import "../elements/filter.css";
 
 export const FilterBox = (props) => {
@@ -43,9 +42,8 @@ export const FilterBox = (props) => {
           </Header>
           <div>
             {categories.map((c, i) => (
-              <div key={i} className="custom-control custom-checkbox">
+              <div key={i} className='filterbox-checkbox'>
                 <input
-                  className="custom-control-input"
                   checked={filterstate.filters.index}
                   name={c}
                   value={c}
@@ -53,7 +51,7 @@ export const FilterBox = (props) => {
                   onChange={onCheckboxChange}
                   type="checkbox"
                 />
-                <label className="custom-control-label" htmlFor={c}>{c}</label>
+                <label htmlFor={c}>{c}</label>
                 <br />
               </div>
             ))}

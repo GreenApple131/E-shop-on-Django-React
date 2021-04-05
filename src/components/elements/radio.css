@@ -1,0 +1,46 @@
+/* * {
+  font-family: "Goudy Bookletter 1911", sans-serif;
+} */
+.radio-button-label,
+.radio-button {
+  font-family: "Goudy Bookletter 1911", sans-serif;
+  font-size: large !important;
+}
+
+/* Custom Radio and Checkbox input */
+
+[type="radio"] {
+  opacity: 0;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute;
+}
+
+[type="radio"] + label {
+  cursor: pointer;
+  margin-right: 20px;
+  display: inline-block;
+  line-height: 1.5em;
+
+}
+
+
+/* Checkbox and Radio Buttons */
+
+.radio-button + label,
+.check-button + label {
+  margin: -3px !important;
+  padding: 0.2em 0.5em;
+  border-radius: 5px;
+}
+
+.check-button:checked + label,
+.radio-button:checked + label {
+  background: #1b1c1d;
+  color: white !important;
+}
+
+.check-button + label::before,
+.radio-button + label::before {
+  display: none;
+}

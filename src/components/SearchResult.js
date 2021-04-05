@@ -24,7 +24,7 @@ import {
 import { productListURL, productSearchURL } from "../constants";
 import FilterResults from "react-filter-search";
 
-import "./common/index.css"
+import "./elements/index.css"
 
 const initialState = {
   data: [],

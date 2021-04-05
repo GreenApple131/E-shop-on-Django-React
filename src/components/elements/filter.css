@@ -20,13 +20,13 @@
   border-radius: 10px;
 }
 
-@media(min-width: 768px) {
+@media (min-width: 768px) {
   .mobile-page,
   .items-mobile {
     display: none;
   }
 }
-@media(max-width: 767px) {
+@media (max-width: 767px) {
   /* MOBILE VIEW */
   .mobile-page {
     display: grid;
@@ -55,27 +55,28 @@
   .top-col-ordering {
     float: left;
   }
-  .items-mobile{
+  .items-mobile {
     padding: 0 calc(50% - 500px);
   }
 }
-@media(min-width: 768px) and (max-width: 1256px) {
+@media (min-width: 768px) and (max-width: 1256px) {
   .filter-left {
-    width: 170px !important; 
+    width: 170px !important;
   }
   .filter-grid {
-    grid-template-columns: 170px auto; 
+    grid-template-columns: 170px auto;
   }
   .cards-image-desktop {
-    height: 200px !important;
+    height: 220px !important;
+    width: auto;
   }
 }
-@media(max-width: 1083px) {
+@media (max-width: 1083px) {
   .cards-desktop {
     width: 180px !important;
   }
 }
-@media(max-width: 796px) {
+@media (max-width: 796px) {
   .cards-desktop {
     width: 170px !important;
   }
@@ -97,11 +98,44 @@
   text-align: right;
 }
 
-
 .min-input-main {
   width: 65px !important;
 }
 
+/* FilterBox */
+.filterbox-checkbox :focus + label {
+  outline: 0px;
+}
 
+[type="checkbox"] {
+  opacity: 0;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute;
+}
+[type="checkbox"] + label {
+  cursor: pointer;
+  margin-right: 20px;
+  display: inline-block;
+  line-height: 1.3em;
+}
+[type="checkbox"] + label::before {
+  content: "";
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  margin: -1px 7px 0 0;
+  background-color: white;
+  vertical-align: text-bottom;
+}
+[type="checkbox"] + label::before {
+  transition: background-color 0.2s ease-in-out;
+  border: 1px solid;
+  border-radius: 4px;
+}
 
-
+[type="checkbox"]:checked + label::before {
+  background: no-repeat 50% 50% / 1em;   
+  background-color: #1d1d1d;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Cpath d='M12 2L5 8 2 5 0 6l5 6 9-9z' fill='white'/%3E%3C/svg%3E");
+}

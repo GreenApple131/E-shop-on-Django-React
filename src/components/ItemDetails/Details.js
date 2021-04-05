@@ -14,8 +14,9 @@ import {
   Radio,
 } from "semantic-ui-react";
 
-import "../common/index.css";
-// import "../elements/radio.css"
+import "../elements/index.css";
+import "../elements/radio.css";
+import "../elements/detail.css";
 
 class Details extends Component {
   render() {
@@ -23,10 +24,12 @@ class Details extends Component {
 
     return (
       <React.Fragment>
-        <div className="product-right">
-          <Label basic color="green">
-            In stock
-          </Label>
+        <div>
+          <div className="product-label-desktop">
+            <Label basic color="green">
+              In stock
+            </Label>
+          </div>
           <Divider />
           {!item.discount_price && <h2>${item.price} </h2>}
           {item.discount_price && (
@@ -39,37 +42,11 @@ class Details extends Component {
                 </span>
                 <h3>${item.discount_price} </h3>
               </h4>
-
-              <ul className="color-variant"></ul>
-              <div className="product-description border-product">
-                <h6 className="product-title">Time Reminder</h6>
-                <div className="timer">
-                  <p id="demo">
-                    <span>
-                      25
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Days</span>
-                    </span>
-                    <span>
-                      22
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Hrs</span>
-                    </span>
-                    <span>
-                      13
-                      <span className="padding-l">:</span>
-                      <span className="timer-cal">Min</span>
-                    </span>
-                    <span>
-                      57
-                      <span className="timer-cal">Sec</span>
-                    </span>
-                  </p>
-                </div>
-              </div>
             </div>
           )}
         </div>
+        <br />
+
         <div className="product-description border-product">
           <div className="size-box" style={{ marginBottom: "70px" }}>
             <Header as="b" textAlign="center">
@@ -80,41 +57,44 @@ class Details extends Component {
             {item.size && ( // shows availiable sizes
               <Form onSubmit={() => handleAddToCart(item.slug)}>
                 <div>
-                  <Form.Group required inline>
-                      {item.size.map((s) => {
-                        return (
-                          <>
-                          <input 
+                  <Form.Group inline>
+                    {item.size.map((s) => {
+                      return (
+                        <Form.Field>
+                          <input
+                            className="radio-button"
+                            role="button"
                             key={s.id}
-                            type='radio'
+                            type="radio"
                             name={s.name}
                             value={s.id}
                             id={s.size}
                             // checked={value === s.id}
-                            onChange={(e, name, value) => {handleChange(e, name, value)}}
+                            onChange={(e) => {
+                              handleChange(e);
+                            }}
                           />
-                          <label for={s.size}>{s.size}</label>
-                          </>
-                        );
-                      })}
+                          <label for={s.size} className="radio-button-label">
+                            {s.size}
+                          </label>
+                        </Form.Field>
+                      );
+                    })}
                   </Form.Group>
                 </div>
-                <Divider style={{marginTop: "-16px"}} />
+                <Divider style={{ marginTop: "-10px" }} />
                 <React.Fragment>
-                  <Button animated="vertical" color="black" type="submit">
+                  <Button
+                    animated="vertical"
+                    color="black"
+                    type="submit"
+                    size="large"
+                  >
                     <Button.Content hidden>
                       <Icon name="cart plus" />
                     </Button.Content>
                     <Button.Content type="submit" visible>
                       ADD TO CART
-                    </Button.Content>
-                  </Button>
-                  <Button animated="vertical" color="black" type="submit">
-                    <Button.Content hidden>
-                      <Icon name="cart plus" />
-                    </Button.Content>
-                    <Button.Content type="submit" visible>
-                      BUY NOW
                     </Button.Content>
                   </Button>
                 </React.Fragment>
@@ -123,41 +103,32 @@ class Details extends Component {
           </div>
         </div>
 
-        <div className="border-product">
-          <h6 className="product-title">short description</h6>
-          <div className="product-icon">{this.props.item.description}</div>
+        <div>
+          <Header>Short description:</Header>
+          <div>{this.props.item.description}</div>
         </div>
 
-        <div className="border-product">
-          <h6 className="product-title">share it</h6>
-          <div className="product-icon">
-            <ul className="product-social">
-              <li>
-                <a href="https://www.facebook.com/" target="_blank">
-                  <Icon className="facebook"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://plus.google.com/discover" target="_blank">
-                  <Icon className="google plus"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://twitter.com/" target="_blank">
-                  <Icon className="twitter"></Icon>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.instagram.com/" target="_blank">
-                  <Icon className="instagram"></Icon>
-                </a>
-              </li>
-            </ul>
-            <button className="wishlist-btn">
-              <Icon className="heart"></Icon>
-              <span className="title-font">Add To WishList</span>
-            </button>
-          </div>
+        <Header>Share it</Header>
+        <div>
+          <a href="https://www.facebook.com/" target="_blank">
+            <Icon color="black" className="facebook" size="large"></Icon>
+          </a>
+          <a href="https://plus.google.com/discover" target="_blank">
+            <Icon color="black" className="google plus" size="large"></Icon>
+          </a>
+          <a href="https://twitter.com/" target="_blank">
+            <Icon color="black" className="twitter" size="large"></Icon>
+          </a>
+          <a href="https://www.instagram.com/" target="_blank">
+            <Icon color="black" className="instagram" size="large"></Icon>
+          </a>
+        </div>
+        <Divider />
+        <div>
+          <button className="wishlist-button">
+            <Icon className="heart"></Icon>
+            <span>Add To Wishlist</span>
+          </button>
         </div>
       </React.Fragment>
     );

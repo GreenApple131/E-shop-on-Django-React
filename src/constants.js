@@ -8,7 +8,7 @@ export const endpoint = `${localhost}${apiURL}`;
 
 export const mediaURL = `${localhost}/media/`;
 
-export const productListURL = `${endpoint}/`;
+export const productListURL = `${endpoint}/i/items/`;
 export const productListLimPriceURL = (min_price, max_price) =>
   `${endpoint}/?min_price=${
     min_price === undefined ? (min_price = 0) : min_price

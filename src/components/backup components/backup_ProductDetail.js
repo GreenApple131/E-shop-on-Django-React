@@ -24,8 +24,8 @@ import { productDetailURL, addToCartURL } from "../constants";
 import { authAxios } from "../utils";
 import { fetchCart } from "../store/actions/cart";
 
-import "./common/index.scss";
-import "./common/index.css";
+import "./elements/index.scss";
+import "./elements/index.css";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
